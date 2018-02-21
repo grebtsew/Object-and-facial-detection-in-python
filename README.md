@@ -2,6 +2,9 @@
 I have tried a couple of modells for object and facial detection i python. Here i share some knowledge and links.
 
 In this repo I share some of the problems and solutions I had during my learning process.
+Nothing in this repo can solo-run, but is intresting to look at or copy into finished tutorials descibed below. 
+Make sure to read though all repo-readme files in the linked repos below.
+
 
 # This is my process of learning how to work with Tensorflow and later Dlib
 
