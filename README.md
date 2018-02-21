@@ -20,16 +20,16 @@ https://github.com/tensorflow/models
 
 After this tutorial you will have a fair idea about how to work with tensorflow.
 
-# Further Testing and Facial detection 
+# Further Testing and Facial detection, good practice
 Now you know the basics of object detection. 
 
-So i looked closer at facial recognition in tensorflow and found this: (2)
+I wanted to look closer at facial recognition in tensorflow and found this: (2)
 https://github.com/habrman/FaceRecognition
 
-A repo where a modell for facial detection is used and landmarks to find a couple of spots on the face.
+Repo (2) is a modell for facial detection and uses landmarks to find a couple of spots on the face.
 The modell from this repo can be used in the first tutorial too.
 
-With this starting knowledge of how to detect faces and some attributes i wanted to take it to the next level.
+With this starting knowledge of how to detect faces and some attributes I wanted to take it to the next level.
 And found this tutorial:
 https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78
 
@@ -41,3 +41,5 @@ Here they use face_recognition import.
 Another modell i tried is openFace, with both dlib and tensorflow. Found here:
 https://github.com/ColeMurray/medium-facenet-tutorial
 
+From here on you probably have a great overall competence of object and facial detection
+And create your own content.
