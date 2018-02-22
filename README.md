@@ -44,5 +44,12 @@ Here they use face_recognition import.
 Another modell i tried is openFace, with both dlib and tensorflow. Found here:
 https://github.com/ColeMurray/medium-facenet-tutorial
 
+To achive a object detection with much greater preformance we can look at object tracking and detection. (4)
+https://github.com/inayatkh/tracking-python3
+This is a repo using OpenCV for tracking and face recognition with great examples. Note that one example runs 
+object detection at really high speed. Find out how, here:
+https://www.learnopencv.com/object-tracking-using-opencv-cpp-python/
+In this article they explain how object tracking works.
+
 From here on you probably have a great overall competence of object and facial detection
 And create your own content.
