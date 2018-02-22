@@ -54,4 +54,4 @@ https://www.learnopencv.com/object-tracking-using-opencv-cpp-python/
 In this article they explain how object tracking works.
 
 From here on you probably have a great overall competence of object and facial detection
-And create your own content.
+You are ready to create your own content.
