@@ -55,3 +55,6 @@ In this article they explain how object tracking works.
 
 From here on you probably have a great overall competence of object and facial detection
 You are ready to create your own content.
+
+# Own implementation
+In folder "Own implementation" I have combinated some code from the repos linked above to create a customable python script using face-detection, face-recognition and object-tracking. Importing dlib and OpenCV.
