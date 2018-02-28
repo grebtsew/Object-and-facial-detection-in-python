@@ -1,11 +1,20 @@
-# This Code uses dlib detection and camShiftTracking to track one person at a time from webcam
+# This Code uses dlib detection and various tracking models to track one person at a time from webcam
 
-import os
-import sys
+#own imports
+import frame_listener as FL
+import logging_data as LOG
+
+import threading
+import time
+
+# tracker imports
 import cv2
+from trackers.camshifttracker import CAMShiftTracker
+
+
+# detection import
 import face_recognition
 import dlib
-from trackers.camshifttracker import CAMShiftTracker
 
 tracker = None
 face_landmarks_list = None
@@ -18,6 +27,7 @@ cam_cap = None
 face_box = None
 FaceDetector = None
 frame = None
+frame_listener = FL.Frame_Listener()
 
 # For camShift tracking
 camShifTracker = None
@@ -28,7 +38,9 @@ y = None
 w = None
 h = None
 
+
 # Own Implementation Class
+
 
 # Init
 #
@@ -53,7 +65,7 @@ def init():
 # I will probably not use this tracking due to scaling fixes
 #
 def object_CamShift_tracking():
-    print("Tracking")
+    #print("Tracking")
     global frame
 
     # Send box to tracker
@@ -104,7 +116,7 @@ def update_custom_tracker():
 # This function uses the OpenCV tracking form uncommented in update_custom_tracking
 #
 def object_custom_tracking():
-    print("Tracking")
+    #print("Tracking")
     global frame  
 
     # Send box to tracker
@@ -152,7 +164,7 @@ def detect_facial_features():
 # Then transform the result to OpenCV 
 #
 def object_detection():
-    print("Detection")
+    #print("Detection")
     global face_box
     global FaceDetector
     global frame
@@ -228,15 +240,22 @@ def run():
                 cam_cap.release()
                 cv2.destroyAllWindows()
                 break
+
+            time.sleep(0.2) # Sleep
+
+            frame_listener.set(frame) # notify all
+
+          #  LOG.log(threading.enumerate(), "SYSTEM")
+            
 # End Class
 
 # Main function
 def main():
-    print(" Starting program ")
-    print(" Setup init ")
+    LOG.log("Starting system", "SYSTEM")
+    LOG.log("Setting up system", "SYSTEM")
     init()  # Set up init
 
-    print(" Start loop ")
+    LOG.log("System is running", "SYSTEM") 
     run()   # run loop
 
 
