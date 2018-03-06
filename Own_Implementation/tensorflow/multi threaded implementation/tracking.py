@@ -9,8 +9,6 @@ import sys
 import threading
 import listener
 
-
-
 # Tracking
 # Class that handles tracking thread
 #
@@ -20,7 +18,7 @@ class Tracking(threading.Thread):
     frame = None
 
     # Initiate thread
-    #
+    # parameters name , shared_variables reference
     #
     def __init__(self, name = None,  shared_variables = None):
         threading.Thread.__init__(self)
@@ -51,6 +49,7 @@ class Tracking(threading.Thread):
     # Create_custom_tracker
     #
     # Create custom tracker, can chage tracking method here
+    # will need cv2 and cv2-contrib to work!
     #
     def create_custom_tracker(self):
         self.tracker = cv2.TrackerBoosting_create()

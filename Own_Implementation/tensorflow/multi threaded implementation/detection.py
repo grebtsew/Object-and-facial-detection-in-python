@@ -23,18 +23,24 @@ class Detection(threading.Thread):
     rnet = None
     onet = None
     model_path = 'model/20170512-110547.pb'
+
+    # Thread sleep times    
     sleep_time = 0.1
     LONG_SLEEP = 2
     SHORT_SLEEP = 1
+
+    # Number of detection fails to start energy save
     no_face_count = 0
     NO_FACE_MAX = 10
     Loaded_model = False
 
     # Initiate thread
+    # parameters name, and shared_variables reference
     def __init__(self, name=None,  shared_variables = None):
         threading.Thread.__init__(self)
         self.name = name
         self.shared_variables = shared_variables
+        self.sleep_time = self.SHORT_SLEEP
        
         
     # Convert_tensorflow_box_to_OpenCV_box(box)
@@ -88,7 +94,7 @@ class Detection(threading.Thread):
                         self.shared_variables.landmarks = landmarks
                         listener.landmarks_notify(frame, landmarks)
                         
-                        # Convert box to OpenCV
+                        # Convert box from Tensorflow to OpenCV
                         face_box = self.convert_tensorflow_box_to_openCV_box(padded_bounding_boxes[0])
 
                         # Save boxes
@@ -115,7 +121,7 @@ class Detection(threading.Thread):
                         # No face
                         self.shared_variables.face_found = False
 
-                        # if max face misses has been done, stop tracking
+                        # if max face misses has been done, stop tracking and do less detections
                         if self.no_face_count >= self.NO_FACE_MAX and self.shared_variables.tracking_running:
                             self.sleep_time = self.LONG_SLEEP
                             self.shared_variables.tracking_running = False

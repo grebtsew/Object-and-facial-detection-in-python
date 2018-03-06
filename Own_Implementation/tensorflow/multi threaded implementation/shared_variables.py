@@ -1,22 +1,27 @@
 # Shared variables between threads
+# contains:
+# ENUM
+# SHARED_VARIABLES
+# CAMERA_STREAM
+
+# Imports
 import detection
 import tracking
 import show_camera
-
-# system
 import sys
 import threading
-
-# camera
 import cv2
 
+# Create Enums with this class
 class Enum(set):
     def __getattr__(self, name):
         if name in self:
             return name
         raise AttributeError
 
-# global shared variables
+
+# Global shared variables
+# an instace of this class share variables between system threads
 class Shared_Variables():
     face_box = None
     detection_box = None
@@ -27,12 +32,12 @@ class Shared_Variables():
     detection_running = True
     landmarks = None
 
-    # Frames
-    frame = None
-    detection_frame = None
-    tracking_and_detection_frame = None
+    # Frames, can be showed in show_camera
+    frame = None                        # current camera frame
+    detection_frame = None              # latest detection frame
+    tracking_and_detection_frame = None # latest tracking or detection frame
 
-    # Threads
+    # Threads reference
     detection_thread = None
     tracking_thread = None
     camera_thread = None
@@ -46,7 +51,7 @@ class Shared_Variables():
         self.name = name
         self.camera_capture = camera_capture
 
-       # start camerea read Thread()
+       # start camera read Thread()
         self.camera_stream_running = True
         self.camera_stream_thread = camera_stream(shared_variables = self)
         self.camera_stream_thread.start()
@@ -67,12 +72,11 @@ class Shared_Variables():
         self.camera_thread.start()
 
 
-# Thread that reads camera stream, to only read stream once
+# Class Thread that reads camera stream, to make sure system only read camera stream once
 class camera_stream(threading.Thread):
     def __init__(self, shared_variables = None):
         threading.Thread.__init__(self)
         self.shared_variables = shared_variables
-       
         
     def run(self):
         while self.shared_variables.detection_running:

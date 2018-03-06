@@ -1,8 +1,6 @@
-# Camera thread
+# Visualize Camera thread
 
 # imports
-
-# import own
 import utils.logging_data as LOG
 from testing.trackers.camshifttracker import CAMShiftTracker
 
@@ -16,28 +14,29 @@ import time
 # Class that show camera in thread
 class Show_Camera(threading.Thread):
 
-    show_fps = True
-    show_combo = True
-    show_detection = False
-    show_tracking = False
-    show_landmarks = True
+    # Change these 
+    show_combo = True           # Show both detection and tracking as BLUE
+    show_detection = False      # Show detection RED
+    show_tracking = False       # Show tracking GREEN
+    show_landmarks = True       # Show facial features
+    showbackprojectedFrame = False      
+  
     frame = None
-    stream_reader_thread = None
-    showbackprojectedFrame = True
-    do_once = True
-    fps = 0
-    
+    do_once = True              # initiate backprojektedframe once
+
+    # Initiate function
+    # Parameters CameraName, Shared_variables reference, show_mode
     def __init__(self, name=None,  shared_variables = None, mode = 'NORMAL'):
         threading.Thread.__init__(self)
         self.name = name
         self.shared_variables = shared_variables
         self.mode = mode
 
+    #Run
+    # Get image, add detections, create and show in window
     def run(self):
         while True:
             if self.shared_variables.camera_capture.isOpened():
-
-               # start = time.time()
 
                 # Display mode
                 if self.mode == self.shared_variables.Display_enum.NORMAL:
@@ -83,26 +82,13 @@ class Show_Camera(threading.Thread):
                                 cv2.rectangle(self.frame, top_left, bottom_right, (255, 0, 255), 2)
                 
                 
-                # print fps
-                #end = time.time()
-
-                #seconds = end - start
-                #if seconds != 0:
-                #    self.fps = round(1 / seconds, 2)
-        
-                
-                #if self.show_fps:
-                #    font = cv2.FONT_HERSHEY_SIMPLEX
-                #    cv2.putText(self.frame, str(self.fps), (0, 100), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
-
-                
                 # show frame
                 if self.frame is not None:
                     cv2.imshow(self.shared_variables.name, self.frame)
 
+                # Create and show backproject frames
                 if self.showbackprojectedFrame:
                     if self.shared_variables.face_box is not None:
-                    # Create and show backproject frames
                         if self.do_once:
                             camShifTracker = CAMShiftTracker(self.shared_variables.face_box, self.frame)
                             self.do_once = False
@@ -115,7 +101,7 @@ class Show_Camera(threading.Thread):
                 if cv2.waitKey(1) == 27:
                     break  # esc to quit
                 if cv2.waitKey(25) & 0xFF == ord('q'):
-                     break
+                    break
 
 
         # terminate all threads

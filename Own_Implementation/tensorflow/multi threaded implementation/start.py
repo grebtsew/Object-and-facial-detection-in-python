@@ -3,15 +3,10 @@
 #own imports
 import utils.logging_data as LOG
 import shared_variables
-
-# system
 import sys
 import threading
-
-# camera
 import cv2
 
-    
 
 # Start_instance
 # Function that starts an instance of threads for each camera
@@ -58,7 +53,7 @@ def countCameras():
             break
     return n
 
-
+# Start a system instance for each camera in computer
 def start_instances_for_all_cameras():
     # start all cameras
     number_of_cameras =  countCameras()
