@@ -90,7 +90,6 @@ class Tracking(threading.Thread):
         if self.tracker_test:
             self.shared_variables.face_box = face_box
             self.shared_variables.tracking_box = face_box
-            listener.box_notify(self.frame, face_box)
             self.shared_variables.tracking_and_detection_frame = self.frame
             
          #   print ("tracked s%s" % (threading.get_ident()))

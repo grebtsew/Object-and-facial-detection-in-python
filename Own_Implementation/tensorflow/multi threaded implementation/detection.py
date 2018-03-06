@@ -2,7 +2,6 @@
 
 # imports
 import utils.logging_data as LOG
-import listener
 import tensorflow as tf
 import cv2
 
@@ -27,7 +26,7 @@ class Detection(threading.Thread):
     # Thread sleep times    
     sleep_time = 0.1
     LONG_SLEEP = 2
-    SHORT_SLEEP = 1
+    SHORT_SLEEP = 0.5
 
     # Number of detection fails to start energy save
     no_face_count = 0
@@ -90,9 +89,14 @@ class Detection(threading.Thread):
                         feed_dict = {images_placeholder: face_patches, phase_train_placeholder: False}
                         embs = sess.run(embeddings, feed_dict=feed_dict)
 
+                        self.no_face_count = 0
+
+                        # Save frames
+                        self.shared_variables.detection_frame = frame
+                        self.shared_variables.tracking_and_detection_frame = frame
+
                         # Save landmark
                         self.shared_variables.landmarks = landmarks
-                        listener.landmarks_notify(frame, landmarks)
                         
                         # Convert box from Tensorflow to OpenCV
                         face_box = self.convert_tensorflow_box_to_openCV_box(padded_bounding_boxes[0])
@@ -100,17 +104,7 @@ class Detection(threading.Thread):
                         # Save boxes
                         self.shared_variables.face_box = face_box
                         self.shared_variables.detection_box = face_box
-                        listener.box_notify(frame, face_box)
-
-                        # Notify detection
-                        self.shared_variables.face_found = True
-                        self.shared_variables.detection_done = True
-                        self.no_face_count = 0
-
-                        # Save frames
-                        self.shared_variables.detection_frame = frame
-                        self.shared_variables.tracking_and_detection_frame = frame
-
+                        
                         # Wake tracking thread
                         if not self.shared_variables.tracking_running:
                             self.sleep_time = self.SHORT_SLEEP

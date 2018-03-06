@@ -51,7 +51,7 @@ class Show_Camera(threading.Thread):
                 if self.shared_variables.face_found:
 
                     # Show combination of tracking and detection, BLUE
-                    if self.shared_variables.face_box:
+                    if self.shared_variables.face_box is not None:
 
                         
                         if self.show_combo:
@@ -60,14 +60,15 @@ class Show_Camera(threading.Thread):
                             cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
 
                      # Show tracking GREEN
-                    if self.shared_variables.tracking_box:
+                    if self.shared_variables.tracking_box is not None:
                         if self.show_tracking:
                             topLeft = (int(self.shared_variables.tracking_box[0]), int(self.shared_variables.tracking_box[1]))
                             bottomRight = (int(self.shared_variables.tracking_box[0] + self.shared_variables.tracking_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
 
+  
                     # Show detections RED
-                    if self.shared_variables.detection_box:
+                    if self.shared_variables.detection_box is not None:
                         if self.show_detection:
                             topLeft = (int(self.shared_variables.detection_box[0]), int(self.shared_variables.detection_box[1]))
                             bottomRight = (int(self.shared_variables.detection_box[0] + self.shared_variables.detection_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
@@ -75,13 +76,16 @@ class Show_Camera(threading.Thread):
 
                     # Show Landmarks
                     if self.show_landmarks:
-                            for j in range(5):
-                                size = 1
-                                top_left = (int(self.shared_variables.landmarks[0, j]) - size, int(self.shared_variables.landmarks[0, j + 5]) - size)
-                                bottom_right = (int(self.shared_variables.landmarks[0, j]) + size, int(self.shared_variables.landmarks[0, j + 5]) + size)
-                                cv2.rectangle(self.frame, top_left, bottom_right, (255, 0, 255), 2)
-                
-                
+                        size = 1
+    
+                        for j in range(5):
+                            x = int(self.shared_variables.landmarks[0, j])
+                            y = int(self.shared_variables.landmarks[0, j + 5])
+                            top_left = (x - size, y - size)
+                            bottom_right = (x + size, y + size)
+                            cv2.rectangle(self.frame, top_left, bottom_right, (255, 0, 255), 2)
+
+                        
                 # show frame
                 if self.frame is not None:
                     cv2.imshow(self.shared_variables.name, self.frame)

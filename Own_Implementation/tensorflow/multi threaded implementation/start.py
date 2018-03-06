@@ -17,10 +17,6 @@ def start_instance(instance_name,camera_id,camera_mode='NORMAL'):
     # Capture camera
     _camera_capture = cv2.VideoCapture(camera_id)
 
-    # Wait for camera capture
-    #while not _camera_capture.isOpened():
-    #   pass 
-
      # initiate shared variables instance
     _shared_variables = shared_variables.Shared_Variables(instance_name,
                                           _camera_capture)
@@ -72,8 +68,6 @@ def main():
 
     start_instances_for_all_cameras();
 
-    # example
-        # start_instance('cam_0',0)
     
 # Starts Program here! 
 if __name__ == '__main__':
