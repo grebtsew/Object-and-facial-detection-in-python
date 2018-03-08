@@ -21,7 +21,7 @@ class Detection(threading.Thread):
     pnet = None
     rnet = None
     onet = None
-    model_path = 'model/20170512-110547.pb'
+    model_path = None
 
     # Thread sleep times    
     sleep_time = 0.1
@@ -33,6 +33,22 @@ class Detection(threading.Thread):
     NO_FACE_MAX = 10
     Loaded_model = False
 
+    # Get model path
+    # return path to current model or highest in model folder if not found
+    def get_model_path(self):
+        # get model from current file
+        for root, dirs, files in os.walk("./model/current/"):
+            for file in files:
+                if file.endswith(".pb"):
+                    return os.path.join("model/current/", file)
+        # get model from all model folder
+        for root, dirs, files in os.walk("./model/"):
+            for file in files:
+                if file.endswith(".pb"):
+                    return os.path.join("model/", file)
+            
+        raise Exception('No model found in model/ or model/current!') 
+
     # Initiate thread
     # parameters name, and shared_variables reference
     def __init__(self, name=None,  shared_variables = None):
@@ -40,7 +56,8 @@ class Detection(threading.Thread):
         self.name = name
         self.shared_variables = shared_variables
         self.sleep_time = self.SHORT_SLEEP
-       
+        self.model_path = self.get_model_path()
+        
         
     # Convert_tensorflow_box_to_OpenCV_box(box)
     # @param takes in a tensorflow box
