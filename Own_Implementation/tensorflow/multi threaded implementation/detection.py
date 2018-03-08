@@ -14,6 +14,7 @@ import threading
 import numpy as np
 import re
 import time
+import datetime
 
 #Detection
 # Class that handle detection in own thread
@@ -22,7 +23,9 @@ class Detection(threading.Thread):
     rnet = None
     onet = None
     model_path = None
-
+    start_time = None
+    end_time = None
+    
     # Thread sleep times    
     sleep_time = 0.1
     LONG_SLEEP = 2
@@ -93,6 +96,8 @@ class Detection(threading.Thread):
             while self.shared_variables.detection_running:
                 
                 if self.shared_variables.camera_capture.isOpened():
+                    self.start_time = datetime.datetime.now()
+                    
                    # ret_val, frame = self.shared_variables.camera_capture.read()
                     frame = self.shared_variables.frame
                     # Do detection
@@ -140,5 +145,10 @@ class Detection(threading.Thread):
                         else:
                             self.no_face_count = self.no_face_count + 1
 
-                
+                self.end_time = datetime.datetime.now()
+
+                # Debug detection time
+                if self.shared_variables.debug_detection or self.shared_variables.debug:
+                    LOG.log('Detection time:' + str(self.end_time - self.start_time),self.shared_variables.name)
+
                 time.sleep(self.sleep_time) # sleep if wanted   

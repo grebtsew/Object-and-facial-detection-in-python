@@ -30,6 +30,11 @@ class Shared_Variables():
     tracking_running = True
     detection_running = True
 
+    # Debugging threads
+    debug = False   # debug mode, doesnt do much right now
+    debug_detection = False
+    debug_tracking = False
+    
     # Listen to these variables
     _landmarks = None
     _detection_box = None
@@ -86,7 +91,7 @@ class Shared_Variables():
         
         # Send to listener when variable set
         listener.box_notify(self.detection_frame, box)
-
+        
         # Notify detection
         self.face_found = True
         self.detection_done = True
@@ -107,17 +112,15 @@ class Shared_Variables():
         # Send to listener when variable set
         listener.landmarks_notify(self.detection_frame, landmark)
 
-       
-                        
-        
     @landmarks.getter
     def landmarks(self):
         return self._landmarks
 
-
-
 # Class Thread that reads camera stream, to make sure system only read camera stream once
 class camera_stream(threading.Thread):
+    start_time = None
+    end_time = None
+    
     def __init__(self, shared_variables = None):
         threading.Thread.__init__(self)
         self.shared_variables = shared_variables

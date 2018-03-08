@@ -1,7 +1,10 @@
 # This function will calculate the skin color of person and logg rgb value
 
+
+from numpy import median
 import threading
 import sys
+
 
 sys.path.append('../')
 
@@ -19,17 +22,52 @@ class skin_color(threading.Thread):
 
     def run(self):
 
+        color_array = []
+
+        # Get 9 pixels on nose
         x, y = self.get_facial(2)
+
+        nose_points = self.get_approx_positions( x, y, -1, 1) # list of point round nose
+
+        # left cheek
+        x, y = self.get_more_facial(i1 = 0, i2 = 3) # point between
+
+        left_cheek = self.get_approx_positions( x, y, -1, 1)
+
+        # right cheek
+        x, y = self.get_more_facial(i1 = 1, i2 = 4)
+
+        right_cheek = self.get_approx_positions( x, y, -1, 1)
+
+        # put them in an array
+        color_array.append(nose_points)
+        color_array.append(left_cheek)
+        color_array.append(right_cheek)
+
+        # calculate median rgb
+        mean_RGB = self.calculate_medium_color(color_array)
         
-        LOG.log( "Nose BGR: " + str(self.get_color(x,y)), "SKIN_COLOR: ")
+        LOG.log( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
 
-        # for later:
-        # get 3 good positions in face
-        # take x approx positions
-        # create array of color values
-        # calculate medium value
-        # log medium value
 
+    # Calculates mean color of several pointlists and transform bgr to rgb
+    def calculate_medium_color(self, arr):
+        list_of_bgr = []
+
+        # get all bgr in a list
+        for points in arr:
+            for point in points:
+                list_of_bgr.append(self.get_color(point[0], point[1]))      
+ 
+        r = []
+        b = []
+        g = []
+        for color in list_of_bgr:
+            r.append(color[2])
+            g.append(color[1])
+            b.append(color[0])
+
+        return (median(r), median(g), median(b))
         
 
     def get_color(self, x, y):
@@ -37,6 +75,9 @@ class skin_color(threading.Thread):
 
     # Get Facial
     # return coordinates of facial
+    # x x
+    #  x
+    # x x
     # 0 = left eye
     # 1 = right eye
     # 2 = nose
@@ -51,31 +92,35 @@ class skin_color(threading.Thread):
     # uses nose position to add more positions
     # send in 2 will return nose
     # param:
-    #i = compare pos, gets distance from nose to i, see get facial for i
-    #y_multi = multiply y change
-    #x_multi = multiply x change
-    #positive = up or down pos
-    def get_more_facial(self, i = 0, y_multi = 1, x_multi = 1, positive = True):
-        x = int(self.landmarks[0, i])
-        y = int(self.landmarks[0, i + 5])
-        center_x = int(self.landmarks[0, 2])
-        center_y = int(self.landmarks[0, 2 + 5])
+    # i1 = first point
+    # i2 = second point
+    # y multi
+    # x multi
+    # add or remove
+    def get_more_facial(self, i1 = 0, i2 = 1, y_multi = 1, x_multi = 1, positive = True):
 
-        if i == 2:
-            return x,y
+        x1 = int(self.landmarks[0, i1])
+        y1 = int(self.landmarks[0, i1 + 5])
+        x2 = int(self.landmarks[0, i2])
+        y2 = int(self.landmarks[0, i2 + 5])
 
         # calculate pos
         if positive:
-            x = x_multi*abs(x - center_x) + x
-            y = y_multi*abs(y - center_y) + y
+            x = x_multi*abs(x1 - x2) + x1
+            y = y_multi*abs(y1 - y2) + y1
         else:
-            x = x - x_multi*abs(x - center_x) 
-            y = y - y_multi*abs(y - center_y) 
+            x = x1 - x_multi*abs(x1 - x2) 
+            y = y1 - y_multi*abs(y1 - y2) 
         return x,y
+    
 
 
     # get approx positions
     # takes a position, returns an array of closeby points
-    def get_approx_positions(self, x, y):
-        pass
+    # params, x, y, from, to
+    def get_approx_positions(self, x, y, f, t):
+        result = []
+        for i in range(f,t):
+            result.append([i + x,i + y])
+        return result
  

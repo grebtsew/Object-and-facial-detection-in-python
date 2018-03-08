@@ -8,6 +8,7 @@ import cv2
 import sys
 import threading
 import listener
+import datetime
 
 # Tracking
 # Class that handles tracking thread
@@ -16,6 +17,9 @@ class Tracking(threading.Thread):
     tracker_test = None
     tracker = None
     frame = None
+
+    start_time = None
+    end_time = None
 
     # Initiate thread
     # parameters name , shared_variables reference
@@ -40,9 +44,15 @@ class Tracking(threading.Thread):
         while self.shared_variables.tracking_running:
            
             if self.shared_variables.camera_capture.isOpened():
+                self.start_time = datetime.datetime.now()
+                
                 #ret_val, self.frame = self.shared_variables.camera_capture.read()
                 self.frame = self.shared_variables.frame
                 self.object_custom_tracking()
+                self.end_time = datetime.datetime.now()
+
+                if self.shared_variables.debug or self.shared_variables.debug_tracking:
+                    LOG.log("Tracking time : " + str(self.end_time - self.start_time),self.shared_variables.name)
 
       
 
