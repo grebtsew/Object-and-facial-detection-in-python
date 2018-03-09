@@ -12,6 +12,7 @@ import sys
 import threading
 import cv2
 import listener
+import imutils
 
 # Create Enums with this class
 class Enum(set):
@@ -29,6 +30,8 @@ class Shared_Variables():
     detection_done = False
     tracking_running = True
     detection_running = True
+    flipp_test_degree = 0
+    flipp_test = True
 
     # Debugging threads
     debug = False   # debug mode, doesnt do much right now
@@ -128,5 +131,11 @@ class camera_stream(threading.Thread):
     def run(self):
         while self.shared_variables.detection_running:
             if self.shared_variables.camera_capture.isOpened():
-                temp, self.shared_variables.frame = self.shared_variables.camera_capture.read() 
+                temp, frame = self.shared_variables.camera_capture.read() 
+
+                # flipp if needed
+                if self.shared_variables.flipp_test:
+                    self.shared_variables.frame = imutils.rotate(frame, self.shared_variables.flipp_test_degree)
+                else: 
+                    self.shared_variables.frame = frame
                 

@@ -8,6 +8,7 @@ import cv2
 from tensorflow.python.platform import gfile
 from utils import detect_and_align
 
+import imutils
 import os
 import sys
 import threading
@@ -23,8 +24,17 @@ class Detection(threading.Thread):
     rnet = None
     onet = None
     model_path = None
+
+    # Flipp testing camera
+    flipp_test_nr = 1
+    flipp_test_degree = 90
+    do_flipp_test = False
+    flipp_test_long_intervall = 12
+
+    # Calculate time
     start_time = None
     end_time = None
+    
     
     # Thread sleep times    
     sleep_time = 0.1
@@ -100,6 +110,10 @@ class Detection(threading.Thread):
                     
                    # ret_val, frame = self.shared_variables.camera_capture.read()
                     frame = self.shared_variables.frame
+
+                    if self.do_flipp_test:
+                        frame = imutils.rotate(frame, self.flipp_test_degree*self.flipp_test_nr)
+                    
                     # Do detection
                     face_patches, padded_bounding_boxes, landmarks = detect_and_align.align_image(frame, self.pnet, self.rnet, self.onet)
 
@@ -126,6 +140,24 @@ class Detection(threading.Thread):
                         # Save boxes
                         self.shared_variables.face_box = face_box
                         self.shared_variables.detection_box = face_box
+
+                        # Do flipp test on detection
+                        if self.shared_variables.flipp_test and self.do_flipp_test:  
+                                # save flipp as success
+                                degree = self.shared_variables.flipp_test_degree + self.flipp_test_nr*self.flipp_test_degree
+
+                                degree = degree - (degree % 360)*360 
+                
+                                self.shared_variables.flipp_test_degree = degree
+                                
+
+                                # log frame change
+                                LOG.log("Flipp test successful add degree :" + str(self.flipp_test_nr*self.flipp_test_degree),self.shared_variables.name)
+                        
+                                # end flipp test
+                                self.do_flipp_test = False
+                                self.flipp_test_nr = 1
+                                
                         
                         # Wake tracking thread
                         if not self.shared_variables.tracking_running:
@@ -139,12 +171,37 @@ class Detection(threading.Thread):
 
                         # if max face misses has been done, stop tracking and do less detections
                         if self.no_face_count >= self.NO_FACE_MAX and self.shared_variables.tracking_running:
-                            self.sleep_time = self.LONG_SLEEP
-                            self.shared_variables.tracking_running = False
-                            LOG.log("Initiate energy save",self.shared_variables.name)
+
+                            # do flipp test
+                            if self.shared_variables.flipp_test:
+
+                                # doing flipp test
+                                if self.do_flipp_test:
+                                    self.flipp_test_nr = self.flipp_test_nr + 1
+
+                                    # flipp test did not find anything
+                                    if self.flipp_test_nr*self.flipp_test_degree >= 360:
+                                        self.do_flipp_test = False
+                                        self.flipp_test_nr = 1
+                                        
+                                        self.sleep_time = self.LONG_SLEEP
+                                        self.shared_variables.tracking_running = False
+                                        LOG.log("Initiate energy save",self.shared_variables.name)
+                        
+                                else:
+                                    self.do_flipp_test = True
+                            
+                            else:
+                                self.sleep_time = self.LONG_SLEEP
+                                self.shared_variables.tracking_running = False
+                                LOG.log("Initiate energy save",self.shared_variables.name)
+                                
                         else:
                             self.no_face_count = self.no_face_count + 1
 
+                        if self.no_face_count >= self.flipp_test_long_intervall and self.shared_varuables.flipp_test:
+                           self.no_face_count = 0
+                       
                 self.end_time = datetime.datetime.now()
 
                 # Debug detection time
