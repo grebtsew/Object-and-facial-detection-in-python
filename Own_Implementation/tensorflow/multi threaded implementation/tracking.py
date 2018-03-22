@@ -86,7 +86,8 @@ class Tracking(threading.Thread):
     # This function uses the OpenCV tracking form uncommented in update_custom_tracking
     #
     def object_custom_tracking(self):
-        #print("Tracking")
+       # print("Tracking")
+        
 
     # See if detection is done
         if self.shared_variables.detection_done:

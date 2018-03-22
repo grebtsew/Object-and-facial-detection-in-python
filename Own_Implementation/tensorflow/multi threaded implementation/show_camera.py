@@ -19,7 +19,8 @@ class Show_Camera(threading.Thread):
     show_detection = False      # Show detection RED
     show_tracking = False       # Show tracking GREEN
     show_landmarks = True       # Show facial features
-    showbackprojectedFrame = False      
+    showbackprojectedFrame = False
+    show_detection_score = False
   
     frame = None
     do_once = True              # initiate backprojektedframe once
@@ -50,10 +51,17 @@ class Show_Camera(threading.Thread):
                 # Some face detected
                 if self.shared_variables.face_found:
 
+                    #show score in terminal
+                    if self.show_detection_score:
+                        if self.shared_variables.detection_score is not None:
+                            print(self.shared_variables.detection_score)
+                        
+
                     # Show combination of tracking and detection, BLUE
                     if self.shared_variables.face_box is not None:
 
-                        
+
+                                            
                         if self.show_combo:
                             topLeft = (int(self.shared_variables.face_box[0]), int(self.shared_variables.face_box[1]))
                             bottomRight = (int(self.shared_variables.face_box[0] + self.shared_variables.face_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
@@ -77,7 +85,7 @@ class Show_Camera(threading.Thread):
                     # Show Landmarks
                     if self.show_landmarks:
                         size = 1
-    
+
                         for j in range(5):
                             x = int(self.shared_variables.landmarks[0, j])
                             y = int(self.shared_variables.landmarks[0, j + 5])

@@ -32,6 +32,7 @@ class Shared_Variables():
     detection_running = True
     flipp_test_degree = 0
     flipp_test = True
+    detection_score = None
 
     # Debugging threads
     debug = False   # debug mode, doesnt do much right now

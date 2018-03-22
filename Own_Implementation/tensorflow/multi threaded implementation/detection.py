@@ -94,10 +94,6 @@ class Detection(threading.Thread):
                         graph_def.ParseFromString(f.read())
                         tf.import_graph_def(graph_def, name='')
 
-                # Training references     
-                images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
-                embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-                phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
                 self.Loaded_model = True
         
             LOG.log("Start detections",self.shared_variables.name)
@@ -115,16 +111,15 @@ class Detection(threading.Thread):
                         frame = imutils.rotate(frame, self.flipp_test_degree*self.flipp_test_nr)
                     
                     # Do detection
-                    face_patches, padded_bounding_boxes, landmarks = detect_and_align.align_image(frame, self.pnet, self.rnet, self.onet)
+                    face_patches, padded_bounding_boxes, landmarks, score = detect_and_align.align_image(frame, self.pnet, self.rnet, self.onet)
 
+                    
                     # if found faces
                     if len(face_patches) > 0:
-
-                        # Session
-                        face_patches = np.stack(face_patches)
-                        feed_dict = {images_placeholder: face_patches, phase_train_placeholder: False}
-                        embs = sess.run(embeddings, feed_dict=feed_dict)
-
+                        
+                        
+                        self.shared_variables.detection_score = score
+                        
                         self.no_face_count = 0
 
                         # Save frames
@@ -199,7 +194,7 @@ class Detection(threading.Thread):
                         else:
                             self.no_face_count = self.no_face_count + 1
 
-                        if self.no_face_count >= self.flipp_test_long_intervall and self.shared_varuables.flipp_test:
+                        if self.no_face_count >= self.flipp_test_long_intervall and self.shared_variables.flipp_test:
                            self.no_face_count = 0
                        
                 self.end_time = datetime.datetime.now()

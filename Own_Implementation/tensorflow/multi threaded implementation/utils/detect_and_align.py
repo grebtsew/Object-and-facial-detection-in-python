@@ -11,7 +11,7 @@ def align_image(img, pnet, rnet, onet):
     image_size = 160
 
     img_size = np.asarray(img.shape)[0:2]
-    bounding_boxes, landmarks = detect_face(img, pnet, rnet, onet)
+    bounding_boxes, landmarks, accur = detect_face(img, pnet, rnet, onet)
     nrof_bb = bounding_boxes.shape[0]
     padded_bounding_boxes = [None] * nrof_bb
     face_patches = [None] * nrof_bb
@@ -32,7 +32,7 @@ def align_image(img, pnet, rnet, onet):
             padded_bounding_boxes[i] = bb
             face_patches[i] = prewhitened
 
-    return face_patches, padded_bounding_boxes, landmarks
+    return face_patches, padded_bounding_boxes, landmarks, accur
 
 
 def prewhiten(x):
@@ -77,7 +77,7 @@ def generateBoundingBox(imap, reg, scale, t):
 
 def nms(boxes, threshold, method):
     if boxes.size == 0:
-        return np.empty((0, 3))
+        return np.empty((0, 3)), None
     x1 = boxes[:, 0]
     y1 = boxes[:, 1]
     x2 = boxes[:, 2]
@@ -105,7 +105,7 @@ def nms(boxes, threshold, method):
             o = inter / (area[i] + area[idx] - inter)
         I = I[np.where(o <= threshold)]
     pick = pick[0:counter]
-    return pick
+    return pick, o
 
 
 def rerec(bboxA):
@@ -337,9 +337,9 @@ class Network(object):
 
     @layer
     def softmax(self, target, axis, name=None):
-        max_axis = tf.reduce_max(target, axis, keep_dims=True)
+        max_axis = tf.reduce_max(target, axis, keepdims=True)
         target_exp = tf.exp(target - max_axis)
-        normalize = tf.reduce_sum(target_exp, axis, keep_dims=True)
+        normalize = tf.reduce_sum(target_exp, axis, keepdims=True)
         softmax = tf.div(target_exp, normalize, name)
         return softmax
 
@@ -441,6 +441,8 @@ def detect_face(img, pnet, rnet, onet):
     minsize = 20  # minimum size of face
     threshold = [0.6, 0.7, 0.7]  # three steps's threshold
     factor = 0.709  # scale factor
+    accur = None
+    score = None
 
     factor_count = 0
     total_boxes = np.empty((0, 9))
@@ -473,14 +475,14 @@ def detect_face(img, pnet, rnet, onet):
         boxes, _ = generateBoundingBox(out1[0, :, :, 1].copy(), out0[0, :, :, :].copy(), scale, threshold[0])
 
         # inter-scale nms
-        pick = nms(boxes.copy(), 0.5, 'Union')
+        pick, accur = nms(boxes.copy(), 0.5, 'Union')
         if boxes.size > 0 and pick.size > 0:
             boxes = boxes[pick, :]
             total_boxes = np.append(total_boxes, boxes, axis=0)
 
     numbox = total_boxes.shape[0]
     if numbox > 0:
-        pick = nms(total_boxes.copy(), 0.7, 'Union')
+        pick, accur = nms(total_boxes.copy(), 0.7, 'Union')
         total_boxes = total_boxes[pick, :]
         regw = total_boxes[:, 2] - total_boxes[:, 0]
         regh = total_boxes[:, 3] - total_boxes[:, 1]
@@ -514,12 +516,13 @@ def detect_face(img, pnet, rnet, onet):
         total_boxes = np.hstack([total_boxes[ipass[0], 0:4].copy(), np.expand_dims(score[ipass].copy(), 1)])
         mv = out0[:, ipass[0]]
         if total_boxes.shape[0] > 0:
-            pick = nms(total_boxes, 0.7, 'Union')
+            pick, accur = nms(total_boxes, 0.7, 'Union')
             total_boxes = total_boxes[pick, :]
             total_boxes = bbreg(total_boxes.copy(), np.transpose(mv[:, pick]))
             total_boxes = rerec(total_boxes.copy())
 
     numbox = total_boxes.shape[0]
+    
     if numbox > 0:
         # third stage
         total_boxes = np.fix(total_boxes).astype(np.int32)
@@ -549,10 +552,17 @@ def detect_face(img, pnet, rnet, onet):
         h = total_boxes[:, 3] - total_boxes[:, 1] + 1
         points[0:5, :] = np.tile(w, (5, 1)) * points[0:5, :] + np.tile(total_boxes[:, 0], (5, 1)) - 1
         points[5:10, :] = np.tile(h, (5, 1)) * points[5:10, :] + np.tile(total_boxes[:, 1], (5, 1)) - 1
+        
         if total_boxes.shape[0] > 0:
             total_boxes = bbreg(total_boxes.copy(), np.transpose(mv))
-            pick = nms(total_boxes.copy(), 0.7, 'Min')
+            pick, accur = nms(total_boxes.copy(), 0.7, 'Min')
             total_boxes = total_boxes[pick, :]
             points = points[:, pick]
 
-    return total_boxes, points
+    if score is not None:
+        accur = score
+
+    if accur is not None:
+        return total_boxes, points, accur[pick]
+    else:
+        return total_boxes, points, None
