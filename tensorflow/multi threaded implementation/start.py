@@ -58,15 +58,16 @@ def start_instances_for_all_cameras():
     for i in range(number_of_cameras):
         start_instance('CAM_%s' % (i), i, 'NORMAL')
 
-        
+   
     
 # Main function
 def main():
     LOG.log("Starting system", "SYSTEM")
     LOG.log("Start all threads", "SYSTEM")
-    LOG.log("Find all cameras", "SYSTEM")
+    #LOG.log("Find all cameras", "SYSTEM")
 
-    start_instances_for_all_cameras();
+    #start_instances_for_all_cameras();
+    start_instance('CAM_%s' % (0), 0, 'NORMAL')
 
     
 # Starts Program here! 

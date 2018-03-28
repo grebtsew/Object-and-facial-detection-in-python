@@ -8,6 +8,7 @@ import cv2
 from tensorflow.python.platform import gfile
 from utils import detect_and_align
 
+
 import imutils
 import os
 import sys
@@ -116,7 +117,7 @@ class Detection(threading.Thread):
                     
                     # if found faces
                     if len(face_patches) > 0:
-                        
+
                         
                         self.shared_variables.detection_score = score
                         

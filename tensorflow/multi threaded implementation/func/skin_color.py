@@ -110,7 +110,9 @@ class skin_color(threading.Thread):
             y = y_multi*abs(y1 - y2) + y1
         else:
             x = x1 - x_multi*abs(x1 - x2) 
-            y = y1 - y_multi*abs(y1 - y2) 
+            y = y1 - y_multi*abs(y1 - y2)
+
+            
         return x,y
     
 

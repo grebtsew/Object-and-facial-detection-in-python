@@ -124,6 +124,7 @@ class Shared_Variables():
 class camera_stream(threading.Thread):
     start_time = None
     end_time = None
+    grayscale = False
     
     def __init__(self, shared_variables = None):
         threading.Thread.__init__(self)
@@ -133,6 +134,8 @@ class camera_stream(threading.Thread):
         while self.shared_variables.detection_running:
             if self.shared_variables.camera_capture.isOpened():
                 temp, frame = self.shared_variables.camera_capture.read() 
+
+               
 
                 # flipp if needed
                 if self.shared_variables.flipp_test:

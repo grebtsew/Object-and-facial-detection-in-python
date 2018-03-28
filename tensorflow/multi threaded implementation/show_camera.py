@@ -21,6 +21,8 @@ class Show_Camera(threading.Thread):
     show_landmarks = True       # Show facial features
     showbackprojectedFrame = False
     show_detection_score = False
+    grayscale = False
+
   
     frame = None
     do_once = True              # initiate backprojektedframe once
@@ -85,7 +87,8 @@ class Show_Camera(threading.Thread):
                     # Show Landmarks
                     if self.show_landmarks:
                         size = 1
-
+                        #self.cropEyes(self.frame,self.shared_variables.landmarks)
+               
                         for j in range(5):
                             x = int(self.shared_variables.landmarks[0, j])
                             y = int(self.shared_variables.landmarks[0, j + 5])
@@ -93,9 +96,15 @@ class Show_Camera(threading.Thread):
                             bottom_right = (x + size, y + size)
                             cv2.rectangle(self.frame, top_left, bottom_right, (255, 0, 255), 2)
 
-                        
+
+                
+                
                 # show frame
                 if self.frame is not None:
+                    
+                    if self.grayscale:
+                        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+
                     cv2.imshow(self.shared_variables.name, self.frame)
 
                 # Create and show backproject frames
@@ -123,4 +132,35 @@ class Show_Camera(threading.Thread):
         # stop camera
         self.shared_variables.camera_capture.release()
         cv2.destroyAllWindows()
+
+
+      # TEST FUNC
+    # Return box of eye images
+    def cropEyes(self,frame, landmarks):
+        nose_pos = [landmarks[0,2], landmarks[0,7]]
+        left_eye_pos = [landmarks[0,0], landmarks[0,5]]
+       # right_eye_pos = [landmarks[1], landmarks[6]]
+
+        
+
+        #calculate eye size
+        w = abs((nose_pos[0]- left_eye_pos[0])*0.4);
+        h = abs((nose_pos[1]- left_eye_pos[1])*0.2);
+        
+
+        x = int(landmarks[0,0] - w/2)
+        y = int(landmarks[0,5] - h/2)
+
+        h = 50   #height pixels
+        w = 100  #width pixels
+
+        x = int(landmarks[0,1] - w/2)
+        y = int(landmarks[0,6] - h/2)
+        
+        left_eye_img = frame[y:y+h, x:x+w]
+
+        cv2.imshow('test_eye', left_eye_img)
+        
+        pass
+   
 

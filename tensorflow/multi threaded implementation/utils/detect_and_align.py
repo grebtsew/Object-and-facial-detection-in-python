@@ -559,10 +559,10 @@ def detect_face(img, pnet, rnet, onet):
             total_boxes = total_boxes[pick, :]
             points = points[:, pick]
 
-    if score is not None:
-        accur = score
+    #if score is not None:
+     #   accur = score
 
-    if accur is not None:
-        return total_boxes, points, accur[pick]
-    else:
-        return total_boxes, points, None
+    #if accur is not None and pick < accur.size:
+    #    return total_boxes, points, accur[pick]
+    #else:
+    return total_boxes, points, None
