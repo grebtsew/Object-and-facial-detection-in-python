@@ -14,6 +14,8 @@ import cv2
 import listener
 import imutils
 
+from utils import intern_camera
+from utils import ip_camera
 from func.blink_frequency import dlib_blink_frequency as blink_frequency
 from func.age_gender_estimation import dlib_age_gender_estimation as age_gender_estimation
 
@@ -66,15 +68,24 @@ class Shared_Variables():
         self.camera_capture = camera_capture
 
        # start camera read thread
-        self.camera_stream_running = True
-        self.camera_stream_thread = camera_stream(shared_variables = self)
-        self.camera_stream_thread.start()
-
+        #self.start_ip_camera_stream()
+        self.start_intern_camera_stream()
+       
         # start blink function thread
         #self.start_blink_thread()
 
         # start age gender function thread
-        self.start_age_gender_thread()
+        #self.start_age_gender_thread()
+
+    def start_ip_camera_stream(self):
+        self.camera_stream_running = True
+        self.camera_stream_thread = gige_camera.gige_camera_stream(shared_variables = self)
+        self.camera_stream_thread.start()
+
+    def start_ip_camera_stream(self):
+        self.camera_stream_running = True
+        self.camera_stream_thread = ip_camera.ip_camera_stream(shared_variables = self)
+        self.camera_stream_thread.start()
 
     def start_age_gender_thread(self):
         age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self)
@@ -83,7 +94,12 @@ class Shared_Variables():
     def start_blink_thread(self):
         blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self)
         blink_thread.start()
-   
+
+    def start_intern_camera_stream(self):
+        self.camera_stream_running = True
+        self.camera_stream_thread = intern_camera.camera_stream(shared_variables = self)
+        self.camera_stream_thread.start()
+
     def start_detection_thread(self):
         self.detection_running = True
         self.detection_thread = detection.Detection(name = "Detection", shared_variables = self)
@@ -137,27 +153,3 @@ class Shared_Variables():
     @landmarks.getter
     def landmarks(self):
         return self._landmarks
-
-# Class Thread that reads camera stream, to make sure system only read camera stream once
-class camera_stream(threading.Thread):
-    start_time = None
-    end_time = None
-    grayscale = False
-    
-    def __init__(self, shared_variables = None):
-        threading.Thread.__init__(self)
-        self.shared_variables = shared_variables
-        
-    def run(self):
-        while self.shared_variables.detection_running:
-            if self.shared_variables.camera_capture.isOpened():
-                temp, frame = self.shared_variables.camera_capture.read() 
-
-               
-
-                # flipp if needed
-                if self.shared_variables.flipp_test:
-                    self.shared_variables.frame = imutils.rotate(frame, self.shared_variables.flipp_test_degree)
-                else: 
-                    self.shared_variables.frame = frame
-                

@@ -1,4 +1,4 @@
-#This file contains startmethods
+#This file contains start methods
 
 #own imports
 import utils.logging_data as LOG
@@ -6,7 +6,8 @@ import shared_variables
 import sys
 import threading
 import cv2
-from func.blink_frequency import dlib_blink_frequency as blink_frequency
+
+import utils.intern_camera as i_cam
 
 
 # Start_instance
@@ -31,30 +32,12 @@ def start_instance(instance_name,camera_id,camera_mode='NORMAL'):
     _shared_variables.start_camera_thread(camera_mode)
 
 
-# Functions to calculate available cameras copied from
-#https://stackoverflow.com/questions/7322939/how-to-count-cameras-in-opencv-2-3
-def clearCapture(capture):
-    capture.release()
-    cv2.destroyAllWindows()
 
-def countCameras():
-    n = 0
-    for i in range(10):
-        try:
-            cap = cv2.VideoCapture(i)
-            ret, frame = cap.read()
-            cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            clearCapture(cap)
-            n += 1
-        except:
-            clearCapture(cap)
-            break
-    return n
 
 # Start a system instance for each camera in computer
 def start_instances_for_all_cameras():
     # start all cameras
-    number_of_cameras =  countCameras()
+    number_of_cameras =  i_cam.countCameras()
     
     LOG.log("Found %s cameras" % (number_of_cameras), "SYSTEM")
     for i in range(number_of_cameras):
@@ -69,6 +52,8 @@ def main():
     #LOG.log("Find all cameras", "SYSTEM")
 
     #start_instances_for_all_cameras();
+    #print(i_cam.countCameras())
+    
     start_instance('CAM_%s' % (0), 0, 'NORMAL')
 
     
