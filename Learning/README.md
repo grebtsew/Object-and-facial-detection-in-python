@@ -56,4 +56,4 @@ From here on you probably have a great overall competence of object and facial d
 You are ready to create your own content.
 
 # Own implementation
-In folder "Own implementation" I have combinated some code from the repos linked above to create a customable python script using face-detection, face-recognition and object-tracking. The result is realtime facial features detection with OpenCV tracking to boost preformance. One solution for Tensorflow detection and one solution for dlib detection. The tracking models can be easily changed. 
+In folder "tensorflow"/"dlib" I have combinated some code from the repos linked above to create a customable python script using face-detection, face-recognition and object-tracking. The result is realtime facial features detection with OpenCV tracking to boost preformance. One solution for Tensorflow detection and one solution for dlib detection. The tracking models can be easily changed.
