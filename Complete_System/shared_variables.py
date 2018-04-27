@@ -5,7 +5,7 @@
 # CAMERA_STREAM
 
 # Imports
-import detection
+import detection_dlib as detection
 import tracking
 import show_camera
 import sys
@@ -44,7 +44,7 @@ class Shared_Variables():
     debug = False   # debug mode, doesnt do much right now
     debug_detection = False
     debug_tracking = False
-    
+
     # Listen to these variables
     _landmarks = None
     _detection_box = None
@@ -59,7 +59,7 @@ class Shared_Variables():
     tracking_thread = None
     camera_thread = None
     camera_stream_thread = None
-    
+
     # Enum
     Display_enum = Enum(["NORMAL", "DETECTION", "TRACKING_AND_DETECTION"])
 
@@ -82,7 +82,7 @@ class Shared_Variables():
         self.camera_stream_running = True
         self.camera_stream_thread = gige_camera.camera_stream(shared_variables = self)
         self.camera_stream_thread.start()
-        
+
 
     def start_ip_camera_stream(self):
         self.camera_stream_running = True
@@ -92,7 +92,7 @@ class Shared_Variables():
     def start_age_gender_thread(self):
         age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self)
         age_gender_thread.start()
-        
+
     def start_blink_thread(self):
         blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self)
         blink_thread.start()
@@ -107,12 +107,12 @@ class Shared_Variables():
         self.detection_running = True
         self.detection_thread = detection.Detection(name = "Detection", shared_variables = self)
         self.detection_thread.start()
-        
+
     def start_tracking_thread(self):
         self.tracking_running = True
         self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self)
         self.tracking_thread.start()
-        
+
     def start_camera_thread(self, mode = Display_enum.NORMAL):
         self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, mode = mode)
         self.camera_thread.start()
@@ -120,22 +120,22 @@ class Shared_Variables():
     # Start_instance
     # Function that starts an instance of threads for each camera
     def start_instance(instance_name,camera_id,camera_mode='NORMAL'):
-    
-        LOG.log("Capturing Camera %s" % camera_id, instance_name) 
-    
+
+        LOG.log("Capturing Camera %s" % camera_id, instance_name)
+
         # Capture camera
         #_camera_capture = cv2.VideoCapture(camera_id)
 
          # initiate shared variables instance
         #_shared_variables = shared_variables.Shared_Variables(instance_name,
          #                                 _camera_capture)
-    
-        # detection Thread  
+
+        # detection Thread
         #_shared_variables.start_detection_thread()
 
         # tracking Thread
         #_shared_variables.start_tracking_thread()
-    
+
         # show camera thread
         #_shared_variables.start_camera_thread(camera_mode)
 
@@ -146,12 +146,12 @@ class Shared_Variables():
     def start_instances_for_all_cameras():
     # start all cameras
         number_of_cameras =  i_cam.countCameras()
-    
+
         LOG.log("Found %s cameras" % (number_of_cameras), "SYSTEM")
         for i in range(number_of_cameras):
             start_instance('CAM_%s' % (i), i, 'NORMAL')
 
-    
+
 
     # Listen at variables
     # Detection variable
@@ -162,14 +162,14 @@ class Shared_Variables():
     @detection_box.setter
     def detection_box(self, box):
         self._detection_box = box
-        
+
         # Send to listener when variable set
         listener.box_notify(self.detection_frame, box)
-        
+
         # Notify detection
         self.face_found = True
         self.detection_done = True
-        
+
     @detection_box.getter
     def detection_box(self):
         return self._detection_box
