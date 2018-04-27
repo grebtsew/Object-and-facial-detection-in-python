@@ -51,15 +51,15 @@ class Detection(threading.Thread):
     # return path to current model or highest in model folder if not found
     def get_model_path(self):
         # get model from current file
-        for root, dirs, files in os.walk("./model/current/"):
+        for root, dirs, files in os.walk("../../../model/current/"):
             for file in files:
                 if file.endswith(".pb"):
-                    return os.path.join("model/current/", file)
+                    return os.path.join("../../../model/current/", file)
         # get model from all model folder
-        for root, dirs, files in os.walk("./model/"):
+        for root, dirs, files in os.walk("../../../model/"):
             for file in files:
                 if file.endswith(".pb"):
-                    return os.path.join("model/", file)
+                    return os.path.join("../../../model/", file)
             
         raise Exception('No model found in model/ or model/current!') 
 

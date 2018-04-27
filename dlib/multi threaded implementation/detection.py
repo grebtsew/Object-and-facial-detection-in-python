@@ -22,7 +22,7 @@ class Detection(threading.Thread):
     pnet = None
     rnet = None
     onet = None
-    landmarks_model_path = 'model/shape_predictor_68_face_landmarks.dat'
+    landmarks_model_path = '../../../model/shape_predictor_68_face_landmarks.dat'
     face_detector = None
     landmarks_predictor = None
     
