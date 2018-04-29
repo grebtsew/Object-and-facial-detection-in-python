@@ -22,9 +22,10 @@ class parse_controller(threading.Thread):
                  ('stop', 'stop a system, send with reference'),
                  ('close', 'close instances for -web 0-camnr., -gige, -ip : -all close all threads'),
                  ('status', 'show system status: Active Cameras, System Count, Syatem Reference'),
+                 ('kill', 'Stop running thread'),
                     ('clear', 'clear terminal'))
 
-    def __init__(self , shared_variables = None):
+    def __init__(self, shared_variables = None):
         threading.Thread.__init__(self)
         self.shared_variables = shared_variables
 
@@ -44,8 +45,6 @@ class parse_controller(threading.Thread):
                     pass
                 else:
                     print("No command : " + input_str + " (for help type h)")
-
-
 
             #print(help(shared_variables))
             #print(dir(shared_variables))
@@ -105,24 +104,25 @@ class parse_controller(threading.Thread):
     def call_start(self, args = None):
 
         if args is not None :
-            if len(args) > 3:
-
+            if len(args) >= 3:
 
                 if args[1] == "-read":
                     if args[2] == "-web":
-                        self.status_array.append(["web", args[2]])
-                        self.shared_variables.start_intern_camera_stream(int(args[2]))
+                        self.status_array.append(["web", args[3]])
+                        self.shared_variables.start_intern_camera_stream(int(args[3]))
                     elif args[2] == "-gige":
-                        self.status_array.append(list("gige", args[2]))
+                        self.status_array.append(list("gige", args[3]))
                         #self.shared_variables.start_intern_camera_stream(int(args[2]))
                     elif args[2] == "-ip":
-                        self.status_array.append(list("ip", args[2]))
+                        self.status_array.append(list("ip", args[3]))
                         #self.shared_variables.start_intern_camera_stream(int(args[2]))
+
                 elif args[1] == "-detect":
                     if args[2] == "-dlib":
-                        self.shared_variables.start_detection_thread()
+                        self.shared_variables.start_dlib_detection_thread(0)
                         pass
-                    elif: args[2] == "-tf":
+                    elif args[2] == "-tf":
+                        self.shared_variables.start_tf_detection_thread(0)
                         pass
 
                 else:
@@ -134,7 +134,7 @@ class parse_controller(threading.Thread):
 
         pass
 
-    def call_close(args):
+    def call_close(self, args):
          if args is not None:
             if len(args) > 2:
 
@@ -156,15 +156,14 @@ class parse_controller(threading.Thread):
             print("No parameters!")
 
 
-
-
     def call_show(self, args):
          if args is not None:
-            if len(args) > 2:
+            if len(args) >= 2:
 
                 if args[1] == "-web":
 
                     self.status_array.append(["show web", args[2]])
+                    print("gere")
                     self.shared_variables.start_camera_thread()
                     #self.shared_variables.start_intern_camera_stream(int(args[2]))
                 elif args[1] == "-gige":
@@ -179,9 +178,14 @@ class parse_controller(threading.Thread):
          else:
             print("No parameters!")
 
-
+    def call_kill(self):
+        pass
 
     def call_status(self):
+
+        print()
+        print("Running threads:")
+        print()
 
         for s in self.status_array:
             string = ""

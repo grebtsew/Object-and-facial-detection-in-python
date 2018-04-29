@@ -14,7 +14,7 @@ import time
 # Class that show camera in thread
 class Show_Camera(threading.Thread):
 
-    # Change these 
+    # Change these
     show_combo = True           # Show both detection and tracking as BLUE
     show_detection = False      # Show detection RED
     show_tracking = False       # Show tracking GREEN
@@ -23,7 +23,7 @@ class Show_Camera(threading.Thread):
     show_detection_score = False
     grayscale = False
 
-  
+
     frame = None
     do_once = True              # initiate backprojektedframe once
 
@@ -57,13 +57,13 @@ class Show_Camera(threading.Thread):
                     if self.show_detection_score:
                         if self.shared_variables.detection_score is not None:
                             print(self.shared_variables.detection_score)
-                        
+
 
                     # Show combination of tracking and detection, BLUE
                     if self.shared_variables.face_box is not None:
 
 
-                                            
+
                         if self.show_combo:
                             topLeft = (int(self.shared_variables.face_box[0]), int(self.shared_variables.face_box[1]))
                             bottomRight = (int(self.shared_variables.face_box[0] + self.shared_variables.face_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
@@ -76,7 +76,7 @@ class Show_Camera(threading.Thread):
                             bottomRight = (int(self.shared_variables.tracking_box[0] + self.shared_variables.tracking_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
 
-  
+
                     # Show detections RED
                     if self.shared_variables.detection_box is not None:
                         if self.show_detection:
@@ -90,11 +90,11 @@ class Show_Camera(threading.Thread):
                         # and draw them on the image
                         for (x, y) in self.shared_variables.landmarks:
                             cv2.circle(self.frame, (x, y), 1, (0, 0, 255), -1)
-                
-                
+
+
                 # show frame
                 if self.frame is not None:
-                    
+
                     if self.grayscale:
                         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
@@ -106,11 +106,11 @@ class Show_Camera(threading.Thread):
                         if self.do_once:
                             camShifTracker = CAMShiftTracker(self.shared_variables.face_box, self.frame)
                             self.do_once = False
-                            
-                        cv2.imshow('BackImg %s' % self.shared_variables.name, camShifTracker.getBackProjectedImage(self.frame))
-               
 
-                    
+                        cv2.imshow('BackImg %s' % self.shared_variables.name, camShifTracker.getBackProjectedImage(self.frame))
+
+
+
                 # close program
                 if cv2.waitKey(1) == 27:
                     break  # esc to quit
@@ -125,7 +125,3 @@ class Show_Camera(threading.Thread):
         # stop camera
         self.shared_variables.camera_capture.release()
         cv2.destroyAllWindows()
-
-
-     
-

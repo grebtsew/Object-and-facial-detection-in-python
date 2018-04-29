@@ -14,7 +14,7 @@ import time
 # Class that show camera in thread
 class Show_Camera(threading.Thread):
 
-    # Change these 
+    # Change these
     show_combo = True           # Show both detection and tracking as BLUE
     show_detection = False      # Show detection RED
     show_tracking = False       # Show tracking GREEN
@@ -23,7 +23,7 @@ class Show_Camera(threading.Thread):
     show_detection_score = False
     grayscale = False
 
-  
+
     frame = None
     do_once = True              # initiate backprojektedframe once
 
@@ -57,13 +57,13 @@ class Show_Camera(threading.Thread):
                     if self.show_detection_score:
                         if self.shared_variables.detection_score is not None:
                             print(self.shared_variables.detection_score)
-                        
+
 
                     # Show combination of tracking and detection, BLUE
                     if self.shared_variables.face_box is not None:
 
 
-                                            
+
                         if self.show_combo:
                             topLeft = (int(self.shared_variables.face_box[0]), int(self.shared_variables.face_box[1]))
                             bottomRight = (int(self.shared_variables.face_box[0] + self.shared_variables.face_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
@@ -76,7 +76,7 @@ class Show_Camera(threading.Thread):
                             bottomRight = (int(self.shared_variables.tracking_box[0] + self.shared_variables.tracking_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
 
-  
+
                     # Show detections RED
                     if self.shared_variables.detection_box is not None:
                         if self.show_detection:
@@ -88,7 +88,6 @@ class Show_Camera(threading.Thread):
                     if self.show_landmarks:
                         size = 1
                         #self.cropEyes(self.frame,self.shared_variables.landmarks)
-               
                         for j in range(5):
                             x = int(self.shared_variables.landmarks[0, j])
                             y = int(self.shared_variables.landmarks[0, j + 5])
@@ -97,11 +96,11 @@ class Show_Camera(threading.Thread):
                             cv2.rectangle(self.frame, top_left, bottom_right, (255, 0, 255), 2)
 
 
-                
-                
+
+
                 # show frame
                 if self.frame is not None:
-                    
+
                     if self.grayscale:
                         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
@@ -113,11 +112,11 @@ class Show_Camera(threading.Thread):
                         if self.do_once:
                             camShifTracker = CAMShiftTracker(self.shared_variables.face_box, self.frame)
                             self.do_once = False
-                            
-                        cv2.imshow('BackImg %s' % self.shared_variables.name, camShifTracker.getBackProjectedImage(self.frame))
-               
 
-                    
+                        cv2.imshow('BackImg %s' % self.shared_variables.name, camShifTracker.getBackProjectedImage(self.frame))
+
+
+
                 # close program
                 if cv2.waitKey(1) == 27:
                     break  # esc to quit
@@ -141,12 +140,12 @@ class Show_Camera(threading.Thread):
         left_eye_pos = [landmarks[0,0], landmarks[0,5]]
        # right_eye_pos = [landmarks[1], landmarks[6]]
 
-        
+
 
         #calculate eye size
         w = abs((nose_pos[0]- left_eye_pos[0])*0.4);
         h = abs((nose_pos[1]- left_eye_pos[1])*0.2);
-        
+
 
         x = int(landmarks[0,0] - w/2)
         y = int(landmarks[0,5] - h/2)
@@ -156,11 +155,9 @@ class Show_Camera(threading.Thread):
 
         x = int(landmarks[0,1] - w/2)
         y = int(landmarks[0,6] - h/2)
-        
+
         left_eye_img = frame[y:y+h, x:x+w]
 
         cv2.imshow('test_eye', left_eye_img)
-        
-        pass
-   
 
+        pass

@@ -15,8 +15,6 @@ def main():
     LOG.log("Starting system", "SYSTEM")
 
     shared_var = shared_variables.Shared_Variables(name="shared_version")
-
-
     controll_thread = controller.parse_controller(shared_var)
     controll_thread.start()
 

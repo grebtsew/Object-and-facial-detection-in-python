@@ -11,21 +11,21 @@ import cv2
 # Start_instance
 # Function that starts an instance of threads for each camera
 def start_instance(instance_name,camera_id,camera_mode='NORMAL'):
-    
-    LOG.log("Capturing Camera %s" % camera_id, instance_name) 
-    
+
+    LOG.log("Capturing Camera %s" % camera_id, instance_name)
+
     # Capture camera
     _camera_capture = cv2.VideoCapture(camera_id)
 
      # initiate shared variables instance
     _shared_variables = shared_variables.Shared_Variables(instance_name,
                                           _camera_capture)
-    # detection Thread  
+    # detection Thread
     _shared_variables.start_detection_thread()
 
     # tracking Thread
     _shared_variables.start_tracking_thread()
-    
+
     # show camera thread
     _shared_variables.start_camera_thread(camera_mode)
 
@@ -53,13 +53,13 @@ def countCameras():
 def start_instances_for_all_cameras():
     # start all cameras
     number_of_cameras =  countCameras()
-    
+
     LOG.log("Found %s cameras" % (number_of_cameras), "SYSTEM")
     for i in range(number_of_cameras):
         start_instance('CAM_%s' % (i), i, 'NORMAL')
 
-   
-    
+
+
 # Main function
 def main():
     LOG.log("Starting system", "SYSTEM")
@@ -69,7 +69,7 @@ def main():
     #start_instances_for_all_cameras();
     start_instance('CAM_%s' % (0), 0, 'NORMAL')
 
-    
-# Starts Program here! 
+
+# Starts Program here!
 if __name__ == '__main__':
     main()

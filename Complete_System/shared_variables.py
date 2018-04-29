@@ -5,7 +5,8 @@
 # CAMERA_STREAM
 
 # Imports
-import detection_dlib as detection
+import detection_dlib as dlib_detection
+import detection_tensorflow as tf_detection
 import tracking
 import show_camera
 import sys
@@ -35,10 +36,10 @@ class Shared_Variables():
     face_found = None
     detection_done = False
     tracking_running = True
-    detection_running = True
     flipp_test_degree = 0
     flipp_test = True
     detection_score = None
+    detection_running = True
 
     # Debugging threads
     debug = False   # debug mode, doesnt do much right now
@@ -55,7 +56,8 @@ class Shared_Variables():
     tracking_and_detection_frame = None # latest tracking or detection frame
 
     # Threads reference
-    detection_thread = None
+    tf_detection_thread = None
+    dlib_detection_thread = None
     tracking_thread = None
     camera_thread = None
     camera_stream_thread = None
@@ -103,10 +105,13 @@ class Shared_Variables():
         self.camera_stream_thread = intern_camera.camera_stream(shared_variables = self)
         self.camera_stream_thread.start()
 
-    def start_detection_thread(self):
-        self.detection_running = True
-        self.detection_thread = detection.Detection(name = "Detection", shared_variables = self)
-        self.detection_thread.start()
+    def start_dlib_detection_thread(self, cam_id):
+        self.dlib_detection_thread = dlib_detection.Detection(name = "Dlib_Detection", shared_variables = self)
+        self.dlib_detection_thread.start()
+
+    def start_tf_detection_thread(self, cam_id):
+        self.tf_detection_thread = tf_detection.Detection(name = "TF_Detection", shared_variables = self)
+        self.tf_detection_thread.start()
 
     def start_tracking_thread(self):
         self.tracking_running = True
