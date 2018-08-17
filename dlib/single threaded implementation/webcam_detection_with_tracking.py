@@ -56,10 +56,10 @@ def init():
 
     # needed for custom tracking
     update_custom_tracker()
-    
+
     pass
 
-    
+
 # Object_CamShift_tracking
 #
 # This function uses CamShiftTracking with OpenCV
@@ -72,9 +72,13 @@ def object_CamShift_tracking():
     # Send box to tracker
     global face_box
     global camShifTracker
+
+    if face_box is None or frame is None:
+        return
+
     camShifTracker = CAMShiftTracker(face_box, frame)
-    
-    # Calculate 
+
+    # Calculate
     camShifTracker.computeNewWindow(frame)
 
     global x
@@ -88,15 +92,15 @@ def object_CamShift_tracking():
 
     #global bkprojectImage
     #bkprojectImage = camShifTracker.getBackProjectedImage(frame)
-    
-    # display the current window 
+
+    # display the current window
     cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 2, cv2.LINE_AA)
 
-    global rotatedWindow 
+    global rotatedWindow
     rotatedWindow = camShifTracker.getRotatedWindow()
-    
+
     #display rotated window
-    
+
     cv2.polylines(frame, [rotatedWindow], True, (0,255,0), 2, cv2.LINE_AA)
 
 # Update_custom_tracker
@@ -118,15 +122,15 @@ def update_custom_tracker():
 #
 def object_custom_tracking():
     #print("Tracking")
-    global frame  
+    global frame
 
     # Send box to tracker
     global face_box
     global tracker
     tracker_test = tracker.init( frame,face_box)
-    
+
     # Calculate
-    tracker_test, face_box = tracker.update(frame) 
+    tracker_test, face_box = tracker.update(frame)
 
     # Display tracker box
     if tracker_test:
@@ -134,7 +138,7 @@ def object_custom_tracking():
         topLeft = (int(face_box[0]), int(face_box[1]))
         bottomRight = (int(face_box[0] + face_box[2]), int(face_box[1] + face_box[3]))
         cv2.rectangle(frame, topLeft,bottomRight, (255,0,0), 2,1 )
-        
+
 
 # Detect_facial_features
 #
@@ -143,7 +147,7 @@ def object_custom_tracking():
 #
 def detect_facial_features():
     global frame
-    
+
      #Add facial landmarks
     global face_landmarks_list
     face_landmarks_list = face_recognition.face_landmarks(frame)
@@ -156,13 +160,13 @@ def detect_facial_features():
         cv2.line(frame, face_landmarks['bottom_lip'][0], face_landmarks['bottom_lip'][4],(68, 54, 39), 5)
         cv2.line(frame, face_landmarks['left_eye'][0], face_landmarks['left_eye'][4],(68, 54, 39), 5)
         cv2.line(frame, face_landmarks['right_eye'][0], face_landmarks['right_eye'][4],(68, 54, 39), 5)
-           
+
 # Object_detection
 # @ returns True if detections successful
 # @ returns False if no face found
 #
 # This function uses dlib to make a face detection.
-# Then transform the result to OpenCV 
+# Then transform the result to OpenCV
 #
 def object_detection():
     #print("Detection")
@@ -189,7 +193,7 @@ def object_detection():
 
     # if running custom tracker this is needed
     update_custom_tracker()
-    
+
     face_found = True
     return True
 
@@ -199,7 +203,7 @@ def object_detection():
 def convert_dlib_box_to_openCV_box(box):
     return (int(box.left()), int(box.top()), int(box.right() - box.left()),
                          int(box.bottom() - box.top()) )
-                
+
 # Run
 # Running loop of program
 def run():
@@ -228,7 +232,7 @@ def run():
                     # Make less detections if not
                     ticks = 0
                     global SLOW_DETECTION_SLEEP_TICKS
-                    DETECTION_SLEEP_TICKS = SLOW_DETECTION_SLEEP_TICKS 
+                    DETECTION_SLEEP_TICKS = SLOW_DETECTION_SLEEP_TICKS
             else:
                 # Do tracking
                 if face_found:
@@ -248,10 +252,10 @@ def run():
 
             frame_listener.set(frame) # notify all
 
-           
-        
+
+
           #  LOG.log(threading.enumerate(), "SYSTEM")
-            
+
 # End Class
 
 # Main function
@@ -260,12 +264,12 @@ def main():
     LOG.log("Setting up system", "SYSTEM")
     init()  # Set up init
 
-    LOG.log("System is running", "SYSTEM") 
+    LOG.log("System is running", "SYSTEM")
     run()   # run loop
 
 
 
-# Starts Program here! 
+# Starts Program here!
 if __name__ == '__main__':
     main()
 

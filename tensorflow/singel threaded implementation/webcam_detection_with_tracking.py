@@ -38,9 +38,9 @@ show_landmarks = True
 show_bb = True
 show_fps = True
 images_placeholder = None
-embeddings = None 
+embeddings = None
 phase_train_placeholder = None
-        
+
 
 
 # Own Implementation Class
@@ -57,7 +57,7 @@ def init():
     # needed for custom tracking
     update_custom_tracker()
 
-    
+
     pass
 
 # Update_custom_tracker
@@ -79,15 +79,15 @@ def update_custom_tracker():
 #
 def object_custom_tracking():
     #print("Tracking")
-    global frame  
+    global frame
 
     # Send box to tracker
     global face_box
     global tracker
     tracker_test = tracker.init( frame,face_box)
-    
+
     # Calculate
-    tracker_test, face_box = tracker.update(frame) 
+    tracker_test, face_box = tracker.update(frame)
 
     # Display tracker box
     if tracker_test:
@@ -95,14 +95,14 @@ def object_custom_tracking():
         topLeft = (int(face_box[0]), int(face_box[1]))
         bottomRight = (int(face_box[0] + face_box[2]), int(face_box[1] + face_box[3]))
         cv2.rectangle(frame, topLeft,bottomRight, (255,0,0), 2,1 )
-        
-    
+
+
 # Convert_tensorflow_box_to_OpenCV_box(box)
 # @param takes in a dlib box
 # @return returns a box for OpenCV
 def convert_tensorflow_box_to_openCV_box(box):
     return (box[0], box[1], box[2] - box[0], box[3] - box[1])
-                
+
 # Run
 # Running loop of program
 def run():
@@ -116,9 +116,9 @@ def run():
         global images_placeholder
         global embeddings
         global phase_train_placeholder
-        
+
         pnet, rnet, onet = detect_and_align.create_mtcnn(sess, None)
-        
+
         model_exp = os.path.expanduser(model_path)
         if (os.path.isfile(model_exp)):
            # print('Model filename: %s' % model_exp)
@@ -126,18 +126,18 @@ def run():
                 graph_def = tf.GraphDef()
                 graph_def.ParseFromString(f.read())
                 tf.import_graph_def(graph_def, name='')
-            
+
         images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
         embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-        phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")            
-    
-    
+        phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
+
+
         # set up tensorflow model
         #load_model(model_path)
 
         LOG.log("Start system","SYSTEM")
         while True:
-         
+
             if cam_cap.isOpened():
                 start = time.time()
                 # Get current frame
@@ -156,11 +156,11 @@ def run():
                  #print("Detection")
                     global face_box
                     global face_found
-                    
+
                     global show_id
                     global show_bb
                     global show_landmarks
-    
+
                     # Do detection
                     face_patches, padded_bounding_boxes, landmarks = detect_and_align.align_image(frame, pnet, rnet, onet)
 
@@ -168,13 +168,13 @@ def run():
                     if len(face_patches) > 0:
                         face_patches = np.stack(face_patches)
                         feed_dict = {images_placeholder: face_patches, phase_train_placeholder: False}
-       
+
                         embs = sess.run(embeddings, feed_dict=feed_dict)
 
                        # print('Matches in frame:')
                         for i in range(len(embs)):
                             bb = padded_bounding_boxes[i]
-            
+
                             if show_bb:
                                 cv2.rectangle(frame, (bb[0], bb[1]), (bb[2], bb[3]), (255, 0, 0), 2)
 
@@ -184,18 +184,18 @@ def run():
                                     top_left = (int(landmarks[i, j]) - size, int(landmarks[i, j + 5]) - size)
                                     bottom_right = (int(landmarks[i, j]) + size, int(landmarks[i, j + 5]) + size)
                                     cv2.rectangle(frame, top_left, bottom_right, (255, 0, 255), 2)
-        
+
                         # Convert box to OpenCV
-                        
+
                         face_box = convert_tensorflow_box_to_openCV_box(padded_bounding_boxes[0])
                        # print (face_box)
-                        
+
                         # if running custom tracker this is needed
                         update_custom_tracker()
 
                         face_found = True
                         #return True
-        
+
 
                     else:
                     # No face
@@ -203,9 +203,9 @@ def run():
                     #return False
 
                     # if face found
-                    
 
-                    
+
+
                     if face_found:
                         ticks = 0
                         global FAST_DETECTION_SLEEP_TICKS
@@ -214,7 +214,7 @@ def run():
                         # Make less detections if not
                         ticks = 0
                         global SLOW_DETECTION_SLEEP_TICKS
-                        DETECTION_SLEEP_TICKS = SLOW_DETECTION_SLEEP_TICKS 
+                        DETECTION_SLEEP_TICKS = SLOW_DETECTION_SLEEP_TICKS
                 else:
                     # Do tracking
                     if face_found:
@@ -231,7 +231,7 @@ def run():
                     font = cv2.FONT_HERSHEY_SIMPLEX
                     cv2.putText(frame, str(fps), (0, 100), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
-                
+
                 #Show Cam
                 cv2.imshow('Detection GUI', frame)
 
@@ -246,7 +246,7 @@ def run():
           #  frame_listener.set(frame) # notify all
 
           #  LOG.log(threading.enumerate(), "SYSTEM")
-            
+
 # End Class
 
 # Main function
@@ -255,12 +255,12 @@ def main():
     LOG.log("Setting up system", "SYSTEM")
     init()  # Set up init
 
-    LOG.log("System is running", "SYSTEM") 
+    LOG.log("System is running", "SYSTEM")
     run()   # run loop
 
 
 
-# Starts Program here! 
+# Starts Program here!
 if __name__ == '__main__':
     main()
 
