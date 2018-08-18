@@ -4,11 +4,11 @@ This repo contains, training material, dlib implementation and tensorflow implem
 Too large files (mostly models) is ignored due to Github limitations, the models can be found in github-repos linked in learning folder readme.
 
 # Training Material
-See folder learning
+See folder learning.
 Here I show my learning process of object detection, facial detection and how to work with tensorflow and dlib. Repos used to develop code in this repo is linked in Learning-folder README.
 
 # Dlib
-See dlib folder
+See dlib folder.
 Here I share a singel and multi threaded dlib solution for facial detection.
 I am using code from several other repos with my code here.
 
@@ -16,7 +16,7 @@ This is how the dlib program look like during execution.
 ![Screenshot](images/tf_demo.png)
 
 # Tensorflow
-See tensorflow folder
+See tensorflow folder.
 Here I share a singel and multi threaded tensorflow solution for facial detection and some functions like skin_color.
 I am using code from several other repos with my code here.
 
