@@ -14,6 +14,7 @@ import listener
 import imutils
 from enum import Enum
 
+from func.expression import expression
 from utils import web_camera
 from utils import ip_camera
 from func.blink_frequency import blink_frequency as blink_frequency
@@ -40,8 +41,9 @@ class SETTINGS(Enum):
     SHOW_BACKPROJECTEDIMAGE = 10
     SHOW_SCORE = 11
     SHOW_GRAYSCALE = 12
-    LOG_DATA = 13
-    DEBUG = 14
+    SHOW_EYES = 13
+    LOG_DATA = 14
+    DEBUG = 15
 
 # Global shared variables
 # an instace of this class share variables between system threads
@@ -69,6 +71,9 @@ class Shared_Variables():
     flipp_test_degree = []
     flipp_test = []
 
+    expression_result = []
+    face_image = []
+
     # Listen to these variables
     landmarks = []
     detection_box = []
@@ -81,8 +86,15 @@ class Shared_Variables():
     tracking_running = []
     setting = []
 
+    # Functions
     gender = []
     age = []
+    eye_state = []
+    blinks = []
+    eye_left = []
+    eye_right = []
+
+
 
     '''
     ----- Status Variables -----
@@ -120,6 +132,7 @@ class Shared_Variables():
                  self.config.getboolean('SHOW', 'BACKPROJECTEDIMAGE'),
                  self.config.getboolean('SHOW', 'SCORE'),
                  self.config.getboolean('SHOW', 'GRAYSCALE'),
+                 self.config.getboolean('SHOW', 'EYES'),
                  self.config.getboolean('LOG', 'LOG_DATA'),
                  self.config.getboolean('DEBUG', 'DEBUG')
             ]
@@ -136,14 +149,19 @@ class Shared_Variables():
         self.detection_score.append(None)
         self.age.append(None)
         self.gender.append(None)
+        self.eye_state.append(None)
+        self.blinks.append(None)
+        self.eye_left.append(None)
+        self.eye_right.append(None)
+        self.expression_result.append(None)
+        self.face_image.append(None)
 
-        self.setting.append(self.set_init_settings())
         # Sets
         self.face_found.append(False)
         self.flipp_test.append(True)
         self.flipp_test_degree.append(0)
         self.tracking_running.append(False)
-
+        self.setting.append(self.set_init_settings())
 
     '''
     ----- CAMERAS -----
@@ -199,7 +217,9 @@ class Shared_Variables():
         age_gender_thread.start()
 
     def start_expression_thread(self, index = 0):
-        pass
+        express = expression.Expression(name = "Expression", shared_variables = self, index = index)
+        express.start()
+
 
     def start_blink_thread(self, index = 0):
         blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self, index = index)

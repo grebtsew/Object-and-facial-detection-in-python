@@ -22,6 +22,7 @@ class Show_Camera(threading.Thread):
     showbackprojectedFrame = False
     show_detection_score = False
     grayscale = False
+    show_eyes = False
 
     frame = None
     do_once = True              # initiate backprojektedframe once
@@ -44,6 +45,8 @@ class Show_Camera(threading.Thread):
         self.showbackprojectedFrame =self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_BACKPROJECTEDIMAGE.value]
         self.show_detection_score = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_SCORE.value]
         self.grayscale = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_GRAYSCALE.value]
+        self.show_eyes = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_EYES.value]
+
 
     #Run
     # Get image, add detections, create and show in window
@@ -61,6 +64,27 @@ class Show_Camera(threading.Thread):
                         bottomRight = (int(self.shared_variables.tracking_box[self.index][0] + self.shared_variables.tracking_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
                         cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
 
+                #show blink data
+                if (self.shared_variables.blinks[self.index] is not None and self.shared_variables.eye_state[self.index] is not None):
+                    self.draw_label(self.frame, (10,50), str(int(self.shared_variables.blinks[self.index])) + " " + str(self.shared_variables.eye_state[self.index]))
+
+                #show face
+                if(self.shared_variables.face_image[self.index] is not None):
+                    cv2.imshow('FACE %s' % self.shared_variables.name+ "_"+ str(self.index),self.shared_variables.face_image[self.index])
+
+                #show expression data
+                if(self.shared_variables.expression_result[self.index] is not None):
+                    for i,sentiment in enumerate(self.shared_variables.expression_result[self.index]):# 0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral
+                        sentiment *= 100
+                        preferred_w,preferred_h = 350,600
+                        sentiment_argmax = 0
+                        font_offset =50
+                        sentiment = round(sentiment,3)
+                        if(sentiment_argmax == i):
+                            self.frame = cv2.putText(self.frame, self.get_emotion_by_index(i) + " " + str(sentiment), (preferred_w - 300, i * font_offset + 100),cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+                        else:
+                            self.frame = cv2.putText(self.frame, self.get_emotion_by_index(i)+" "+str(sentiment),(preferred_w-300,i*font_offset+100),cv2.FONT_HERSHEY_COMPLEX,1,(255,0,0),2)
+
 
                 # Some face detected
                 if self.shared_variables.face_found[self.index]:
@@ -69,6 +93,13 @@ class Show_Camera(threading.Thread):
                     #if self.show_detection_score:
                     #    if self.shared_variables.detection_score[self.index] is not None:
                     #        print(self.shared_variables.detection_score[self.index])
+
+                    if(self.show_eyes):
+                        if(self.shared_variables.eye_left[self.index] is not None):
+                            cv2.imshow('LeftEYE %s' % self.shared_variables.name+ "_"+ str(self.index),self.shared_variables.eye_left[self.index])
+
+                        if(self.shared_variables.eye_right[self.index] is not None):
+                            cv2.imshow('RightEYE %s' % self.shared_variables.name+ "_"+ str(self.index),self.shared_variables.eye_right[self.index])
 
                     # Show detections BLUE
                     if self.shared_variables.detection_box[self.index] is not None:
@@ -85,6 +116,7 @@ class Show_Camera(threading.Thread):
                             #show age and gender
                             if self.shared_variables.age[self.index] is not None and self.shared_variables.gender[self.index] is not None:
                                 self.draw_label(self.frame, topLeft, str(int(self.shared_variables.age[self.index])) + " " + str(self.shared_variables.gender[self.index]))
+
 
 
                     # Show Landmarks RED
@@ -120,6 +152,24 @@ class Show_Camera(threading.Thread):
         # stop camera
         cv2.destroyAllWindows()
 
+    def get_emotion_by_index(self,index):
+        # 0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral
+        if index ==0:
+            return "Angry"
+        elif index ==1:
+            return "Disgust"
+        elif index ==2:
+            return "Fear"
+        elif index ==3:
+            return "Happy"
+        elif index ==4:
+            return "Sad"
+        elif index ==5:
+            return "Surprise"
+        elif index ==6:
+            return "Neutral"
+        else:
+            return "Unregistered emotion"
 
     def draw_label(self, image, point, label, font=cv2.FONT_HERSHEY_SIMPLEX, font_scale=1, thickness=2):
         size = cv2.getTextSize(label, font, font_scale, thickness)[0]

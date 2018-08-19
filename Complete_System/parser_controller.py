@@ -18,20 +18,15 @@ class parse_controller(threading.Thread):
     status_array = list() # list threads
     func_info = (('help, h', 'show how to use all commands'),
                  ('helpsh', 'open python help shell'),
-                 ('start', 'start function in system. Syntax Start -func -sort id. Ex start -read -web 0'),
-                 ('autostart', 'starts system with default values, functions and cameras.'),
-                 ('camera', 'see cameras in system and if active'),
-                 ('imshow', 'see -web 0-camnr., -gige, -ip'),
-                 ('set', 'Set current working instance. A way to work for shorter commands.'),
-                 ('activate', '-r results to show -skincolor 0/1, -skintemp 0/1, -breath 0/1, -s system reference'),
-                 ('showall', 'show all cameras and results'),
-                 ('showdb', 'show total database'),
-                 ('stop', 'stop a system, send with reference'),
-                 ('close', 'close instances for -web 0-camnr., -gige, -ip : -all close all threads'),
-                 ('status', 'show system status: Active Cameras, System Count, Syatem Reference'),
-                 ('kill', 'Stop running system with threads'),
+                 ('start -sys/sysid -camid', 'start instance in system or system. Ex: start -sys , start -000 -0 -SKIN_COLOR (anything func, cam or thread)'),
+                 ('stop -sys/sysid -camid', 'stop instance in system or system. Ex: stop -sys , stop -000 -0 -SKIN_COLOR -WEBCAM'),
+                 ('autostart', 'starts system with default values from config file.'),
+                 ('imshow -sysid', 'start imshow thread in system'),
+                 ('status', 'show system status'),
+                 ('kill -sysid', 'Stop running system with threads'),
                  ('killall', 'Stop all running system with threads'),
-                ('clear', 'clear terminal'),
+                 ('log', 'Show log, make sure to activate logging in config to see anything'),
+                 ('clear', 'clear terminal'),
                 ('exit', 'exit program and all threads.'))
 
     def __init__(self):
@@ -62,8 +57,28 @@ class parse_controller(threading.Thread):
         temp_Config.add_section('DEFAULT')
         temp_Config.set('DEFAULT','WEBCAMERA', 0)
         temp_Config.set('DEFAULT','IPCAMERA', "192.168.0.200")
-        temp_Config.set('DEFAULT','GIGECAMERA', "192.168.0.20")
         temp_Config.set('DEFAULT','AUTOSTART', True)
+        temp_Config.set('DEFAULT','START_WEBCAMERA', True)
+        temp_Config.set('DEFAULT','START_IPCAMERA', False)
+        temp_Config.set('DEFAULT','TENSORFLOW_DETECTION', False)
+        temp_Config.set('DEFAULT','DLIB_DETECTION', True)
+        temp_Config.set('DEFAULT','TRACKING', True)
+        temp_Config.set('DEFAULT','AGE_GENDER_ESTIMATION', False)
+        temp_Config.set('DEFAULT','EXPRESSION', False)
+        temp_Config.set('DEFAULT','SKIN_COLOR', False)
+        temp_Config.set('DEFAULT','BLINK_FREQUENCY', False)
+        temp_Config.add_section('SHOW')
+        temp_Config.set('SHOW','LANDMARKS', True)
+        temp_Config.set('SHOW','DETECTION', True)
+        temp_Config.set('SHOW','TRACKING', True)
+        temp_Config.set('SHOW','BACKPROJECTEDIMAGE', False)
+        temp_Config.set('SHOW','SCORE', False)
+        temp_Config.set('SHOW','GRAYSCALE', False)
+        temp_Config.set('SHOW','EYES', False)
+        temp_Config.add_section('LOG')
+        temp_Config.set('LOG','LOG_DATA', True)
+        temp_Config.add_section('DEBUG')
+        temp_Config.set('DEBUG','DEBUG', True)
         temp_Config.write(cfgfile)
         cfgfile.close()
 
@@ -124,6 +139,9 @@ class parse_controller(threading.Thread):
         elif s == "clear":
             self.call_clear()
             return True
+        elif s == "log":
+            self.call_log()
+            return True
         elif s == "status":
             self.call_status()
             return True
@@ -136,11 +154,14 @@ class parse_controller(threading.Thread):
         elif s == "imshow":
             self.call_show(arg_arr)
             return True
-        elif s == "close":
-            self.call_close(arg_arr)
+        elif s == "stop":
+            self.call_stop(arg_arr)
             return True
-        elif s == "set":
-            self.call_set(arg_arr)
+        elif s == "kill":
+            self.call_kill(arg_arr)
+            return True
+        elif s == "killall":
+            self.call_killall(arg_arr)
             return True
         elif s == "exit":
             self.call_exit()
@@ -152,7 +173,13 @@ class parse_controller(threading.Thread):
 # --------- CALL FUNCTION DOWN HERE -----------
 #
 
-    def call_set(self,args = None):
+    def call_log(self):
+        pass
+
+    def call_kill(self,args = None):
+        pass
+
+    def call_killall(self,args = None):
         pass
 
     def call_autostart(self):
@@ -192,11 +219,14 @@ class parse_controller(threading.Thread):
             if(self.config.getboolean('DEFAULT','TENSORFLOW_DETECTION')):
                 self.shared_variables.start_tf_detection_thread(i)
 
+
             # Start default functions
             if(self.config.getboolean('DEFAULT','AGE_GENDER_ESTIMATION')):
                 self.shared_variables.start_age_gender_thread(i)
+
             if(self.config.getboolean('DEFAULT','BLINK_FREQUENCY')):
                 self.shared_variables.start_blink_thread(i)
+
             if(self.config.getboolean('DEFAULT','EXPRESSION')):
                 self.shared_variables.start_expression_thread(i)
 
@@ -204,8 +234,6 @@ class parse_controller(threading.Thread):
             # Tracking
             if(self.config.getboolean('DEFAULT','TRACKING')):
                 self.shared_variables.start_tracking_thread(i)
-
-
 
     def call_start(self, args = None):
 
@@ -240,7 +268,7 @@ class parse_controller(threading.Thread):
 
         pass
 
-    def call_close(self, args):
+    def call_stop(self, args):
          if args is not None:
             if len(args) > 2:
 
@@ -289,7 +317,7 @@ class parse_controller(threading.Thread):
         pass
 
     def call_exit(self):
-        exit(0)
+        os._exit(1)
 
     def call_status(self):
 
@@ -324,9 +352,3 @@ class parse_controller(threading.Thread):
     def call_clear(self):
         os.system('cls' if os.name=='nt' else 'clear')
         pass
-
-
-
-# test
-#thread = parse_controller()
-#thread.start()

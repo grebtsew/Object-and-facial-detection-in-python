@@ -140,4 +140,3 @@ class WideResNet:
         model = Model(inputs=inputs, outputs=[predictions_g, predictions_a])
 
         return model
-

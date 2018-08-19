@@ -6,6 +6,10 @@ from keras.models import load_model
 from scipy.spatial import distance as dist
 from imutils import face_utils
 import sys
+from tensorflow import Graph, Session
+
+
+from keras import backend as K
 
 
 # Blink detector
@@ -26,8 +30,13 @@ class Blink_frequency(threading.Thread):
     # make this run at correct time
     def run(self):
 
-        print("loading model")
-        model = load_model('model/blinkModel.hdf5')
+        print("loading blink model")
+        # load model
+
+
+        model = load_model('../../model/blinkModel.hdf5')
+
+
         print("model loaded")
         print("start detection")
 
@@ -35,23 +44,24 @@ class Blink_frequency(threading.Thread):
         state = ''
 
         #Wait for detection
-        while self.shared_variables.detection_frame is None:
+        while self.shared_variables.frame[self.index] is None:
             pass
 
 
 
-        while self.shared_variables.detection_frame is not None:
+        while self.shared_variables.system_running is not None:
 
-            if self.shared_variables.tracking_running:
+            if self.shared_variables.frame[self.index] is not None:
 
-                frame = self.shared_variables.detection_frame
+                frame = self.shared_variables.frame[self.index]
+
 
                 eyes = self.cropEyes(frame)
                 if eyes is None:
                     continue
                 else:
                     left_eye,right_eye = eyes
-                    #cv2.imshow('sd',left_eye)
+
 
                 prediction = (model.predict(self.cnnPreprocess(left_eye)) + model.predict(self.cnnPreprocess(right_eye)))/2.0
 
@@ -68,14 +78,15 @@ class Blink_frequency(threading.Thread):
                 mem_counter = close_counter
 
                 #save blinking
-
+                #eye_state
+                self.shared_variables.eye_state[self.index] = state
                 #blinks
-                #state
-                #print (state)
-                #print (blinks)
+                self.shared_variables.blinks[self.index] = blinks
+                #eye_left
+                self.shared_variables.eye_left[self.index] = left_eye
+                #eye_right
+                self.shared_variables.eye_right[self.index] = right_eye
 
-
-        pass
 
     # make the image to have the same format as at training
     def cnnPreprocess(self,img):
@@ -88,7 +99,11 @@ class Blink_frequency(threading.Thread):
 
     def cropEyes(self,frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        shape = self.shared_variables.landmarks
+        shape = self.shared_variables.landmarks[self.index]
+
+        #Only for dlib
+        if len(shape) < 10 :
+            return
 
         (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
         (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]

@@ -5,9 +5,11 @@ import numpy as np
 import argparse
 import threading
 
+from tensorflow import Graph, Session
 from contextlib import contextmanager
 from func.age_gender_estimation.wide_resnet import WideResNet
 from keras.utils.data_utils import get_file
+
 
 # Age Gender Estimation
 # Class that calcualte Age and gender
@@ -29,12 +31,13 @@ class Age_gender_estimation(threading.Thread):
 
     def run(self):
 
-        print("Load models")
+        print("Load age and gender models")
         # load model and weights
         img_size = 64
         model = WideResNet(img_size, depth=16, k=8)()
+
         model.load_weights(self.pretrained_model_path)
-        print("Models loaded")
+
 
         #wait for detection
         while self.shared_variables.frame[self.index] is None:

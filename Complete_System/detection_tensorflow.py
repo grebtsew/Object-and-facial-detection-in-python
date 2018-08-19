@@ -95,7 +95,7 @@ class Detection(threading.Thread):
     #Detection function
     def run(self):
         with tf.Session() as sess:
-            LOG.log("Loading modell",self.shared_variables.name)
+            LOG.log("Loading Tensorflow modell",self.shared_variables.name)
 
             # Load model
             self.pnet, self.rnet, self.onet = detect_and_align.create_mtcnn(sess, None)

@@ -106,7 +106,7 @@ class Detection(threading.Thread):
     #Detection function
     def run(self):
         if not self.Loaded_model:
-            LOG.log("Loading modell",self.shared_variables.name)
+            LOG.log("Loading Dlib modell",self.shared_variables.name)
 
                 # Load model
             self.face_detector = dlib.get_frontal_face_detector()
