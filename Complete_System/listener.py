@@ -3,22 +3,22 @@
 
 # Add import to function files here
 from func.skin_color import tensorflow_skin_color as skin_color
+import shared_variables
 
 # Add thread reference here
 skin_color_thread = None
 
-
-
 # Add new function call here that need box
-def box_notify(frame, box):
-   
-    pass    
+def box_notify(frame,settings, box):
 
+    pass
 
 # Add new function call here that need landmarks
-def landmarks_notify(frame, landmarks):
-    start_skin_color_thread(frame, landmarks)
-    
+def landmarks_notify(frame,settings, landmarks):
+
+    if(settings[shared_variables.SETTINGS.SKIN_COLOR.value]):
+        start_skin_color_thread(frame, landmarks)
+
     pass
 
 
@@ -39,5 +39,3 @@ def start_skin_color_thread(frame, landmarks):
     else:
         skin_color_thread = skin_color.skin_color(name = "Skin Color", frame = frame, landmarks = landmarks)
         skin_color_thread.start()
-
-

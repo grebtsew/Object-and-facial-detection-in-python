@@ -129,14 +129,17 @@ class Detection(threading.Thread):
                     #self.shared_variables.tracking_and_detection_frame[self.index] = frame
 
                     # Save landmark
-                    self.shared_variables.landmarks[self.index] = self.convert_to_dlib_landmarks(landmarks)
+                    #self.shared_variables.landmarks[self.index] = self.convert_to_dlib_landmarks(landmarks)
+                    self.shared_variables.set_landmarks(self.convert_to_dlib_landmarks(landmarks), self.index)
 
                     # Convert box from Tensorflow to OpenCV
                     face_box = self.convert_tensorflow_box_to_openCV_box(padded_bounding_boxes[0])
 
                     # Save boxes
                     self.shared_variables.face_box[self.index] = face_box
-                    self.shared_variables.detection_box[self.index] = face_box
+
+                    self.shared_variables.set_detection_box(face_box, self.index)
+                    #self.shared_variables.detection_box[self.index] = face_box
 
                     self.shared_variables.face_found[self.index] = True
 
@@ -159,8 +162,8 @@ class Detection(threading.Thread):
 
 
                     # Wake tracking thread
-                    if not self.shared_variables.tracking_running:
-                        self.sleep_time = self.SHORT_SLEEP
+                #    if not self.shared_variables.tracking_running:
+                    #    self.sleep_time = self.SHORT_SLEEP
 
                 else:
                     # No face
@@ -202,7 +205,7 @@ class Detection(threading.Thread):
             self.end_time = datetime.datetime.now()
 
             # Debug detection time
-            if self.shared_variables.debug_detection or self.shared_variables.debug:
+            if self.shared_variables.debug:
                 LOG.log('Detection time:' + str(self.end_time - self.start_time),self.shared_variables.name)
 
             time.sleep(self.sleep_time) # sleep if wanted

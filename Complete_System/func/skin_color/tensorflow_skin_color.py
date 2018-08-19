@@ -24,28 +24,12 @@ class skin_color(threading.Thread):
 
         color_array = []
 
-        # Get 9 pixels on nose
-        x, y = self.get_facial(2)
-
-        nose_points = self.get_approx_positions( x, y, -1, 1) # list of point round nose
-
-        # left cheek
-        x, y = self.get_more_facial(i1 = 0, i2 = 3) # point between
-
-        left_cheek = self.get_approx_positions( x, y, -1, 1)
-
-        # right cheek
-        x, y = self.get_more_facial(i1 = 1, i2 = 4)
-
-        right_cheek = self.get_approx_positions( x, y, -1, 1)
-
-        # put them in an array
-        color_array.append(nose_points)
-        color_array.append(left_cheek)
-        color_array.append(right_cheek)
+        # take color of each landmark
+        for (x, y) in self.landmarks:
+            color_array.append(self.get_color(x,y))
 
         # calculate median rgb
-        mean_RGB = self.calculate_medium_color(color_array)
+        mean_RGB = self.calculate_medium(color_array)
 
         LOG.log( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
 
@@ -69,6 +53,16 @@ class skin_color(threading.Thread):
 
         return (median(r), median(g), median(b))
 
+    def calculate_medium(self, arr):
+        r = []
+        b = []
+        g = []
+        for color in arr:
+            r.append(color[2])
+            g.append(color[1])
+            b.append(color[0])
+
+        return (median(r), median(g), median(b))
 
     def get_color(self, x, y):
         return self.frame[y][x]

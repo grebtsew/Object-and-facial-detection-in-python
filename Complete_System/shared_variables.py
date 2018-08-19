@@ -12,6 +12,7 @@ import threading
 import cv2
 import listener
 import imutils
+from enum import Enum
 
 from utils import web_camera
 from utils import ip_camera
@@ -19,25 +20,41 @@ from func.blink_frequency import dlib_blink_frequency as blink_frequency
 from func.age_gender_estimation import dlib_age_gender_estimation as age_gender_estimation
 
 # Create Enums with this class
-class Enum(set):
-    def __getattr__(self, name):
-        if name in self:
-            return name
-        raise AttributeError
+#class Enum(set):
+#    def __getattr__(self, name):
+#        if name in self:
+#            return name
+#        raise AttributeError
+
+class SETTINGS(Enum):
+    SKIN_COLOR = 0
+    EXPRESSION = 1
+    BLINK_FREQUENCY = 2
+    AGE_GENDER_ESTIMATION = 3
+    TENSORFLOW_DETECTION = 4
+    DLIB_DETECTION = 5
+    TRACKING = 6
+    SHOW_DETECTION = 7
+    SHOW_TRACKING = 8
+    SHOW_LANDMARKS = 9
+    SHOW_BACKPROJECTEDIMAGE = 10
+    SHOW_SCORE = 11
+    SHOW_GRAYSCALE = 12
+    LOG_DATA = 13
+    DEBUG = 14
 
 # Global shared variables
 # an instace of this class share variables between system threads
 class Shared_Variables():
+# Enum
+
 
     '''
     ----- Setting Variables -----
     '''
-    flipp_test_degree = []
-    flipp_test = []
+
     # Debugging threads
     debug = False   # debug mode, doesnt do much right now
-    debug_detection = False
-    debug_tracking = False
 
     '''
     ----- Shared Variables -----
@@ -48,9 +65,13 @@ class Shared_Variables():
     face_box = []
     tracking_box = []
 
+    # Flipp test
+    flipp_test_degree = []
+    flipp_test = []
+
     # Listen to these variables
-    _landmarks = []
-    _detection_box = []
+    landmarks = []
+    detection_box = []
 
     # Frames, can be showed in show_camera
     frame = []                        # current camera frame
@@ -58,16 +79,48 @@ class Shared_Variables():
     # booleans
     face_found = []
     tracking_running = []
+    setting = []
 
     '''
     ----- Status Variables -----
     '''
     system_running = True
+    config = None
 
-
-    def __init__(self, name=None):
+    def __init__(self, name=None, config=None):
         threading.Thread.__init__(self)
         self.name = name
+
+        self.config = config
+        if config is None:
+            self.initiate_configfile()
+
+
+    def initiate_configfile(self):
+        try:
+            self.config = configparser.ConfigParser()
+            self.config.read("config.ini")
+        except Exception as e:
+            print("No config file found!")
+
+
+    def set_init_settings(self):
+        return [self.config.getboolean('DEFAULT', 'SKIN_COLOR'),
+                self.config.getboolean('DEFAULT', 'EXPRESSION'),
+                self.config.getboolean('DEFAULT', 'BLINK_FREQUENCY'),
+                self.config.getboolean('DEFAULT', 'AGE_GENDER_ESTIMATION'),
+                self.config.getboolean('DEFAULT', 'TENSORFLOW_DETECTION'),
+                self.config.getboolean('DEFAULT', 'DLIB_DETECTION'),
+                self.config.getboolean('DEFAULT', 'TRACKING'),
+                 self.config.getboolean('SHOW', 'DETECTION'),
+                 self.config.getboolean('SHOW', 'TRACKING'),
+                 self.config.getboolean('SHOW', 'LANDMARKS'),
+                 self.config.getboolean('SHOW', 'BACKPROJECTEDIMAGE'),
+                 self.config.getboolean('SHOW', 'SCORE'),
+                 self.config.getboolean('SHOW', 'GRAYSCALE'),
+                 self.config.getboolean('LOG', 'LOG_DATA'),
+                 self.config.getboolean('DEBUG', 'DEBUG')
+            ]
 
     def add_camera(self):
         '''
@@ -76,10 +129,11 @@ class Shared_Variables():
         self.frame.append(None)
         self.face_box.append(None)
         self.tracking_box.append(None)
-        self._landmarks.append(None)
-        self._detection_box.append(None)
+        self.landmarks.append(None)
+        self.detection_box.append(None)
         self.detection_score.append(None)
 
+        self.setting.append(self.set_init_settings())
         # Sets
         self.face_found.append(False)
         self.flipp_test.append(True)
@@ -139,11 +193,7 @@ class Shared_Variables():
         age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self, index = 0)
         age_gender_thread.start()
 
-
     def start_expression_thread(self, index = 0):
-        pass
-
-    def start_skin_color(self, index = 0):
         pass
 
     def start_blink_thread(self, index = 0):
@@ -152,46 +202,23 @@ class Shared_Variables():
 
 
     '''
-    ----- Overides of getters and setters -----
+    ----- Listener -----
     '''
 
-    # Listen at variables
-    # Detection variable
-    @property
-    def detection_box(self):
-        return self._detection_box
-
-    @detection_box.setter
-    def detection_box(self, box):
-        self._detection_box = box
+    def set_detection_box(self, box, index):
+        self.detection_box[index] = box
 
         # Send to listener when variable set
-        #listener.box_notify(self.detection_frame, box)
+        listener.box_notify(self.frame[index], self.setting[index], box)
 
         # Notify detection
-        self.face_found = True
-        self.detection_done = True
+        self.face_found[index] = True
 
-    @detection_box.getter
-    def detection_box(self):
-        return self._detection_box
-
-    # Landmarks variable
-    @property
-    def landmarks(self):
-        return self._landmarks
-
-    @landmarks.setter
-    def landmarks(self, landmark):
-        self._landmarks = landmark
+    def set_landmarks(self, landmark, index):
+        self.landmarks[index] = landmark
 
         # Send to listener when variable set
-        #listener.landmarks_notify(self.detection_frame, landmark)
-
-    @landmarks.getter
-    def landmarks(self):
-        return self._landmarks
-
+        listener.landmarks_notify(self.frame[index], self.setting[index], landmark)
 
     '''
     ----- OLD CODE -----

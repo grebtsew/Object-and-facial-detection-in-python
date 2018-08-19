@@ -56,7 +56,7 @@ class Tracking(threading.Thread):
             self.object_custom_tracking()
             self.end_time = datetime.datetime.now()
 
-            if self.shared_variables.debug or self.shared_variables.debug_tracking:
+            if self.shared_variables.debug :
                 LOG.log("Tracking time : " + str(self.end_time - self.start_time),self.shared_variables.name)
 
 

@@ -3,7 +3,7 @@
 # imports
 import utils.logging_data as LOG
 from trackers.camshifttracker import CAMShiftTracker
-
+import shared_variables
 import numpy
 import cv2
 import sys
@@ -23,7 +23,6 @@ class Show_Camera(threading.Thread):
     show_detection_score = False
     grayscale = False
 
-
     frame = None
     do_once = True              # initiate backprojektedframe once
 
@@ -36,24 +35,16 @@ class Show_Camera(threading.Thread):
         self.name = name
         self.shared_variables = shared_variables
         self.index = index
-        self.initiate_configfile()
         self.initiate_variables()
 
 
-    def initiate_configfile(self):
-        try:
-            self.config = configparser.ConfigParser()
-            self.config.read("config.ini")
-        except Exception as e:
-            print("No config file found!")
-
     def initiate_variables(self):
-        self.show_detection = self.config.getboolean('SHOW', 'DETECTION')
-        self.show_tracking = self.config.getboolean('SHOW', 'TRACKING')
-        self.show_landmarks = self.config.getboolean('SHOW', 'LANDMARKS')
-        self.showbackprojectedFrame = self.config.getboolean('SHOW', 'BACKPROJECTEDIMAGE')
-        self.show_detection_score = self.config.getboolean('SHOW', 'SCORE')
-        self.grayscale = self.config.getboolean('SHOW', 'GRAYSCALE')
+        self.show_detection = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_DETECTION.value]
+        self.show_tracking = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_TRACKING.value]
+        self.show_landmarks =self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_LANDMARKS.value]
+        self.showbackprojectedFrame =self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_BACKPROJECTEDIMAGE.value]
+        self.show_detection_score = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_SCORE.value]
+        self.grayscale = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_GRAYSCALE.value]
 
 
     #Run
@@ -65,6 +56,14 @@ class Show_Camera(threading.Thread):
 
                 self.frame = self.shared_variables.frame[self.index]
 
+                 # Show tracking GREEN
+                if self.shared_variables.tracking_box[self.index] is not None:
+                    if self.show_tracking:
+                        topLeft = (int(self.shared_variables.tracking_box[self.index][0]), int(self.shared_variables.tracking_box[self.index][1]))
+                        bottomRight = (int(self.shared_variables.tracking_box[self.index][0] + self.shared_variables.tracking_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
+                        cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
+
+
                 # Some face detected
                 if self.shared_variables.face_found[self.index]:
 
@@ -73,12 +72,6 @@ class Show_Camera(threading.Thread):
                         if self.shared_variables.detection_score[self.index] is not None:
                             print(self.shared_variables.detection_score[self.index])
 
-                     # Show tracking GREEN
-                    if self.shared_variables.tracking_box[self.index] is not None:
-                        if self.show_tracking:
-                            topLeft = (int(self.shared_variables.tracking_box[self.index][0]), int(self.shared_variables.tracking_box[self.index][1]))
-                            bottomRight = (int(self.shared_variables.tracking_box[self.index][0] + self.shared_variables.tracking_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
-                            cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
 
 
                     # Show detections BLUE

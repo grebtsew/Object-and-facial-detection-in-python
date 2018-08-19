@@ -73,7 +73,7 @@ class parse_controller(threading.Thread):
     def create_new_system_instance(self):
         # Generate system id and add new system instance
         instance_name =  "System_" + str(threading.get_ident())
-        self.system_reference_array.append(shared_variables.Shared_Variables(name=instance_name))
+        self.system_reference_array.append(shared_variables.Shared_Variables(name=instance_name, config=self.config))
 
     def run(self):
         args = None
@@ -172,6 +172,7 @@ class parse_controller(threading.Thread):
             self.shared_variables.start_webcamera_stream(camera, index = camera_amount)
             camera_amount += 1
 
+        time.sleep(1) # sleep between captures!
 
         if(self.config.getboolean('DEFAULT','START_IPCAMERA')):
             camera = self.config.getint('DEFAULT', 'IPCAMERA')
@@ -198,8 +199,7 @@ class parse_controller(threading.Thread):
                 self.shared_variables.start_blink_thread(i)
             if(self.config.getboolean('DEFAULT','EXPRESSION')):
                 self.shared_variables.start_expression_thread(i)
-            if(self.config.getboolean('DEFAULT','SKIN_COLOR')):
-                self.shared_variables.start_skin_color(i)
+
 
             # Tracking
             if(self.config.getboolean('DEFAULT','TRACKING')):
