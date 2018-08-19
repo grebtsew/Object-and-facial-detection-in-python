@@ -16,8 +16,7 @@ import imutils
 
 from utils import intern_camera
 from utils import ip_camera
-from func.blink_frequency import dlib_blink_frequency as blink_frequency
-from func.age_gender_estimation import dlib_age_gender_estimation as age_gender_estimation
+
 
 # Create Enums with this class
 class Enum(set):
@@ -43,7 +42,7 @@ class Shared_Variables():
     debug = False   # debug mode, doesnt do much right now
     debug_detection = False
     debug_tracking = False
-    
+
     # Listen to these variables
     _landmarks = None
     _detection_box = None
@@ -58,7 +57,7 @@ class Shared_Variables():
     tracking_thread = None
     camera_thread = None
     camera_stream_thread = None
-    
+
     # Enum
     Display_enum = Enum(["NORMAL", "DETECTION", "TRACKING_AND_DETECTION"])
 
@@ -70,7 +69,7 @@ class Shared_Variables():
        # start camera read thread
         #self.start_ip_camera_stream()
         self.start_intern_camera_stream()
-       
+
         # start blink function thread
         #self.start_blink_thread()
 
@@ -87,14 +86,6 @@ class Shared_Variables():
         self.camera_stream_thread = ip_camera.ip_camera_stream(shared_variables = self)
         self.camera_stream_thread.start()
 
-    def start_age_gender_thread(self):
-        age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self)
-        age_gender_thread.start()
-        
-    def start_blink_thread(self):
-        blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self)
-        blink_thread.start()
-
     def start_intern_camera_stream(self):
         self.camera_stream_running = True
         self.camera_stream_thread = intern_camera.camera_stream(shared_variables = self)
@@ -104,17 +95,17 @@ class Shared_Variables():
         self.detection_running = True
         self.detection_thread = detection.Detection(name = "Detection", shared_variables = self)
         self.detection_thread.start()
-        
+
     def start_tracking_thread(self):
         self.tracking_running = True
         self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self)
         self.tracking_thread.start()
-        
+
     def start_camera_thread(self, mode = Display_enum.NORMAL):
         self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, mode = mode)
         self.camera_thread.start()
 
-    
+
 
 
     # Listen at variables
@@ -126,14 +117,14 @@ class Shared_Variables():
     @detection_box.setter
     def detection_box(self, box):
         self._detection_box = box
-        
+
         # Send to listener when variable set
         listener.box_notify(self.detection_frame, box)
-        
+
         # Notify detection
         self.face_found = True
         self.detection_done = True
-        
+
     @detection_box.getter
     def detection_box(self):
         return self._detection_box

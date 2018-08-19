@@ -14,7 +14,7 @@ from keras.utils.data_utils import get_file
 #
 class Age_gender_estimation(threading.Thread):
 
-    pretrained_model_path = "model/weights.18-4.06.hdf5"
+    pretrained_model_path = "../../model/weights.18-4.06.hdf5"
     index = 0
 
     # Initiate thread
@@ -37,24 +37,24 @@ class Age_gender_estimation(threading.Thread):
         print("Models loaded")
 
         #wait for detection
-        while self.shared_variables.detection_frame is None:
+        while self.shared_variables.frame[self.index] is None:
             pass
 
         img_size = 64
 
         while True:
-            if self.shared_variables.tracking_running:
-                input_img = cv2.cvtColor(self.shared_variables.detection_frame, cv2.COLOR_BGR2RGB)
+            if self.shared_variables.system_running:
+                input_img = cv2.cvtColor(self.shared_variables.frame[self.index], cv2.COLOR_BGR2RGB)
                 img_h, img_w, _ = np.shape(input_img)
 
-                faces = np.empty((len([self.shared_variables.face_box]), img_size, img_size, 3))
+                faces = np.empty((len([self.shared_variables.face_box[self.index]]), img_size, img_size, 3))
 
-        #print(self.face_box)
 
-                w = self.shared_variables.face_box[0]
-                h = self.shared_variables.face_box[1]
-                x1 = self.shared_variables.face_box[2]
-                y1 = self.shared_variables.face_box[3]
+
+                w = self.shared_variables.face_box[self.index][0]
+                h = self.shared_variables.face_box[self.index][1]
+                x1 = self.shared_variables.face_box[self.index][2]
+                y1 = self.shared_variables.face_box[self.index][3]
                 x2 = w + x1
                 y2 = h + y1
 
@@ -63,7 +63,7 @@ class Age_gender_estimation(threading.Thread):
                 xw2 = min(int(x2 + 0.4 * w), img_w - 1)
                 yw2 = min(int(y2 + 0.4 * h), img_h - 1)
 
-                faces[0, :, :, :] = cv2.resize(self.shared_variables.frame[yw1:yw2 + 1, xw1:xw2 + 1, :], (img_size, img_size))
+                faces[0, :, :, :] = cv2.resize(self.shared_variables.frame[self.index][yw1:yw2 + 1, xw1:xw2 + 1, :], (img_size, img_size))
 
 
 
@@ -75,18 +75,26 @@ class Age_gender_estimation(threading.Thread):
 
 
         # Show
+                if(self.shared_variables.debug):
+                    print("Predicted age: " + str(predicted_ages[0]))
 
-                print("Predicted age: " + str(predicted_ages[0]))
+                gender = ""
 
                 if predicted_genders[0][0] > 0.5:
-
-                    print("Predicted gender: " + "Female")
+                    gender = "Female"
                 else:
-                    print("Predicted gender: " + "Male")
+                    gender = "Male"
+
+                if(self.shared_variables.debug):
+                    print("Predicted gender: " + gender)
+
+                self.shared_variables.gender[self.index] = gender
+                self.shared_variables.age[self.index] = predicted_ages[0]
 
 
         #Short version
 
-                label = "{}, {}".format(int(predicted_ages[0]),
+                if(self.shared_variables.debug):
+                    label = "{}, {}".format(int(predicted_ages[0]),
                                         "F" if predicted_genders[0][0] > 0.5 else "M")
-                print(label)
+                    print(label)

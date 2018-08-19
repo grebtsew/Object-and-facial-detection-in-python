@@ -16,8 +16,8 @@ from enum import Enum
 
 from utils import web_camera
 from utils import ip_camera
-from func.blink_frequency import dlib_blink_frequency as blink_frequency
-from func.age_gender_estimation import dlib_age_gender_estimation as age_gender_estimation
+from func.blink_frequency import blink_frequency as blink_frequency
+from func.age_gender_estimation import age_gender_estimation as age_gender_estimation
 
 # Create Enums with this class
 #class Enum(set):
@@ -81,6 +81,9 @@ class Shared_Variables():
     tracking_running = []
     setting = []
 
+    gender = []
+    age = []
+
     '''
     ----- Status Variables -----
     '''
@@ -90,9 +93,8 @@ class Shared_Variables():
     def __init__(self, name=None, config=None):
         threading.Thread.__init__(self)
         self.name = name
-
         self.config = config
-        if config is None:
+        if self.config is None:
             self.initiate_configfile()
 
 
@@ -132,6 +134,8 @@ class Shared_Variables():
         self.landmarks.append(None)
         self.detection_box.append(None)
         self.detection_score.append(None)
+        self.age.append(None)
+        self.gender.append(None)
 
         self.setting.append(self.set_init_settings())
         # Sets
@@ -139,6 +143,7 @@ class Shared_Variables():
         self.flipp_test.append(True)
         self.flipp_test_degree.append(0)
         self.tracking_running.append(False)
+
 
     '''
     ----- CAMERAS -----
@@ -190,14 +195,14 @@ class Shared_Variables():
     '''
 
     def start_age_gender_thread(self, index = 0):
-        age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self, index = 0)
+        age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self, index = index)
         age_gender_thread.start()
 
     def start_expression_thread(self, index = 0):
         pass
 
     def start_blink_thread(self, index = 0):
-        blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self, index = 0)
+        blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self, index = index)
         blink_thread.start()
 
 

@@ -30,13 +30,12 @@ class Show_Camera(threading.Thread):
 
     # Initiate function
     # Parameters CameraName, Shared_variables reference, show_mode
-    def __init__(self, name=None,  shared_variables = None, index  = 0):
+    def __init__(self, name=None,  shared_variables = None, index = 0):
         threading.Thread.__init__(self)
         self.name = name
         self.shared_variables = shared_variables
         self.index = index
         self.initiate_variables()
-
 
     def initiate_variables(self):
         self.show_detection = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_DETECTION.value]
@@ -45,7 +44,6 @@ class Show_Camera(threading.Thread):
         self.showbackprojectedFrame =self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_BACKPROJECTEDIMAGE.value]
         self.show_detection_score = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_SCORE.value]
         self.grayscale = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_GRAYSCALE.value]
-
 
     #Run
     # Get image, add detections, create and show in window
@@ -68,11 +66,9 @@ class Show_Camera(threading.Thread):
                 if self.shared_variables.face_found[self.index]:
 
                     #show score in terminal
-                    if self.show_detection_score:
-                        if self.shared_variables.detection_score[self.index] is not None:
-                            print(self.shared_variables.detection_score[self.index])
-
-
+                    #if self.show_detection_score:
+                    #    if self.shared_variables.detection_score[self.index] is not None:
+                    #        print(self.shared_variables.detection_score[self.index])
 
                     # Show detections BLUE
                     if self.shared_variables.detection_box[self.index] is not None:
@@ -80,6 +76,16 @@ class Show_Camera(threading.Thread):
                             topLeft = (int(self.shared_variables.detection_box[self.index][0]), int(self.shared_variables.detection_box[self.index][1]))
                             bottomRight = (int(self.shared_variables.detection_box[self.index][0] + self.shared_variables.detection_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
+
+                            #show score in image
+                            if self.show_detection_score:
+                                if self.shared_variables.detection_score[self.index] is not None:
+                                    self.draw_label(self.frame, bottomRight, str(self.shared_variables.detection_score[self.index]))
+
+                            #show age and gender
+                            if self.shared_variables.age[self.index] is not None and self.shared_variables.gender[self.index] is not None:
+                                self.draw_label(self.frame, topLeft, str(int(self.shared_variables.age[self.index])) + " " + str(self.shared_variables.gender[self.index]))
+
 
                     # Show Landmarks RED
                     if self.show_landmarks:
@@ -113,3 +119,10 @@ class Show_Camera(threading.Thread):
 
         # stop camera
         cv2.destroyAllWindows()
+
+
+    def draw_label(self, image, point, label, font=cv2.FONT_HERSHEY_SIMPLEX, font_scale=1, thickness=2):
+        size = cv2.getTextSize(label, font, font_scale, thickness)[0]
+        x, y = point
+        cv2.rectangle(image, (x, y - size[1]), (x + size[0], y), (255, 0, 0), cv2.FILLED)
+        cv2.putText(image, label, point, font, font_scale, (255, 255, 255), thickness)
