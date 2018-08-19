@@ -15,18 +15,20 @@ from keras.utils.data_utils import get_file
 class Age_gender_estimation(threading.Thread):
 
     pretrained_model_path = "model/weights.18-4.06.hdf5"
-    
+    index = 0
+
     # Initiate thread
     # parameters name , shared_variables reference
     #
-    def __init__(self, name = None,  shared_variables = None):
+    def __init__(self, name = None,  shared_variables = None, index = 0):
         threading.Thread.__init__(self)
         self.name = name
         self.shared_variables = shared_variables
-        
+        self.index = index
+
 
     def run(self):
-        
+
         print("Load models")
         # load model and weights
         img_size = 64
@@ -55,7 +57,7 @@ class Age_gender_estimation(threading.Thread):
                 y1 = self.shared_variables.face_box[3]
                 x2 = w + x1
                 y2 = h + y1
-        
+
                 xw1 = max(int(x1 - 0.4 * w), 0)
                 yw1 = max(int(y1 - 0.4 * h), 0)
                 xw2 = min(int(x2 + 0.4 * w), img_w - 1)
@@ -63,7 +65,7 @@ class Age_gender_estimation(threading.Thread):
 
                 faces[0, :, :, :] = cv2.resize(self.shared_variables.frame[yw1:yw2 + 1, xw1:xw2 + 1, :], (img_size, img_size))
 
-        
+
 
         # predict ages and genders of the detected faces
                 results = model.predict(faces)
@@ -77,16 +79,14 @@ class Age_gender_estimation(threading.Thread):
                 print("Predicted age: " + str(predicted_ages[0]))
 
                 if predicted_genders[0][0] > 0.5:
-            
+
                     print("Predicted gender: " + "Female")
                 else:
                     print("Predicted gender: " + "Male")
 
-        
+
         #Short version
-        
+
                 label = "{}, {}".format(int(predicted_ages[0]),
                                         "F" if predicted_genders[0][0] > 0.5 else "M")
                 print(label)
-
-            

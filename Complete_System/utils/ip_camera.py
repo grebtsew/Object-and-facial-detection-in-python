@@ -18,7 +18,7 @@ def get_number_connected_cameras():
                 c = c + 1
         except:
             pass
-    
+
     return c
 
 def get_connected_cameras():
@@ -32,30 +32,48 @@ def get_connected_cameras():
                 c.append(ip)
         except:
             pass
-    
+
     return c
-
-
-
 
 class ip_camera_stream(threading.Thread):
 
-        
-    def __init__(self, shared_variables = None):
+    capture = None
+
+    def __init__(self, shared_variables = None, address = "", index = 0):
         threading.Thread.__init__(self)
         self.shared_variables = shared_variables
 
-    def status(self):
-        #Connected?
-        #Correct angel?
-        #Hidden?
-        pass
-    
-   
+
+    '''
+    ----- RTSP solution -----
+    '''
     def run(self):
+        try:
+            self.capture = cv2.VideoCapture("rtsp://admin:admin@192.168.0.10:554/live.sdp")
+        except Exception as e:
+            print("Could not open ip camera")
+            return
+
+
+        while self.shared_variables.system_running:
+            if self.capture.isOpened():
+                temp, frame = self.capture.read()
+
+                # flipp if needed
+                if self.shared_variables.flipp_test[self.index]:
+                    self.shared_variables.frame[self.index] = imutils.rotate(frame, self.shared_variables.flipp_test_degree[self.index])
+                else:
+                    self.shared_variables.frame[self.index] = frame
+
+
+    '''
+    ----- HTTP solution -----
+    '''
+
+    def run_http(self):
 
         # get ip adress
-    
+
         #r = requests.get('http://192.168.0.200:8080/video2.mjpg', auth=('admin', ''), stream=True)
         r = requests.get('http://192.168.0.3:8080/video', auth=('admin', ''), stream=True)
 
@@ -71,8 +89,7 @@ class ip_camera_stream(threading.Thread):
                     jpg = byte[a:b+2]
                     byte = byte[b+2:]
                     i = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
-                    self.shared_variables.frame = i
+                    self.shared_variables.frame[index] = i
 
         else:
             print("Received unexpected status code {}".format(r.status_code))
-

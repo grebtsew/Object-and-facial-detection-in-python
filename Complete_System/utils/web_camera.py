@@ -28,27 +28,32 @@ class camera_stream(threading.Thread):
     start_time = None
     end_time = None
     grayscale = False
-    
-    def __init__(self, shared_variables = None):
-        threading.Thread.__init__(self)
-        self.shared_variables = shared_variables
-        
-        
-    def run(self):
-        while self.shared_variables.detection_running:
-            if self.shared_variables.camera_capture.isOpened():
-                temp, frame = self.shared_variables.camera_capture.read() 
+    capture = None
 
-               
+    def __init__(self, shared_variables = None, id = 0, index = 0):
+        threading.Thread.__init__(self)
+        self.id = id
+        self.index = index
+        self.shared_variables = shared_variables
+
+    def capture(self):
+        try:
+
+            self.capture = cv2.VideoCapture(self.id)
+
+        except Exception as e:
+            print('Failed to capture camera')
+
+    def run(self):
+
+        self.capture()
+
+        while self.shared_variables.system_running:
+            if self.capture.isOpened():
+                temp, frame = self.capture.read()
 
                 # flipp if needed
-                if self.shared_variables.flipp_test:
-                    self.shared_variables.frame = imutils.rotate(frame, self.shared_variables.flipp_test_degree)
-                else: 
-                    self.shared_variables.frame = frame
-                
-
-
-
-
-
+                if self.shared_variables.flipp_test[self.index]:
+                    self.shared_variables.frame[self.index] = imutils.rotate(frame, self.shared_variables.flipp_test_degree[self.index])
+                else:
+                    self.shared_variables.frame[self.index] = frame

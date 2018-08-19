@@ -73,5 +73,11 @@ As mentioned above it can be a preformance boost. Another great advantage of sel
 # Dlib or Tensorflow or something else?
 A great amount of different machine learning projects exist today some of the more common would be caffe, Dlib, tensorflow, opencv, darknet and so on. Each project have its own advantages and disadvantages. Tensorflow is often ranked the best because of its scalability and huge application scope. Tensorflow also support machine learning and training of own models. My favorite advantage of tensorflow would be the production capability that tensorflow serving model server supports. Dlib is more strict to preinstalled models just like opencv and not as easy to implement in huge scales. My opinion is therefore that Tensorflow at current stage is the most complete ai project, but this can change rapidly.
 
+# Other functions
+I have looked closer at some extra functions used with facial detections, here are some great repos:
+* Blink detector : https://github.com/iparaskev/simple-blink-detector
+* Expression detector : https://github.com/JostineHo/mememoji
+* age/gender estimation : https://github.com/yu4u/age-gender-estimation
+
 # Own implementation
 In folders "tensorflow"/"dlib" (in root folder) I have combinated some code from the repos linked above to create a customable python script using face-detection, face-recognition and object-tracking. The result is realtime facial features detection with OpenCV tracking to boost preformance. One solution for Tensorflow detection and one solution for dlib detection. The tracking models can be easily changed.

@@ -12,13 +12,13 @@ from utils import logging_data as LOG
 
 
 class skin_color(threading.Thread):
- 
+
     def __init__(self, name, frame, landmarks):
         threading.Thread.__init__(self)
         self.name = name
         self.frame = frame
         self.landmarks = landmarks
-        
+
 
     def run(self):
 
@@ -46,7 +46,7 @@ class skin_color(threading.Thread):
 
         # calculate median rgb
         mean_RGB = self.calculate_medium_color(color_array)
-        
+
         LOG.log( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
 
 
@@ -57,8 +57,8 @@ class skin_color(threading.Thread):
         # get all bgr in a list
         for points in arr:
             for point in points:
-                list_of_bgr.append(self.get_color(point[0], point[1]))      
- 
+                list_of_bgr.append(self.get_color(point[0], point[1]))
+
         r = []
         b = []
         g = []
@@ -68,7 +68,7 @@ class skin_color(threading.Thread):
             b.append(color[0])
 
         return (median(r), median(g), median(b))
-        
+
 
     def get_color(self, x, y):
         return self.frame[y][x]
@@ -86,7 +86,7 @@ class skin_color(threading.Thread):
     def get_facial(self, i = 0):
         x = int(self.landmarks[0, i])
         y = int(self.landmarks[0, i + 5])
-        return x, y        
+        return x, y
 
     # Get more facial
     # uses nose position to add more positions
@@ -109,12 +109,12 @@ class skin_color(threading.Thread):
             x = x_multi*abs(x1 - x2) + x1
             y = y_multi*abs(y1 - y2) + y1
         else:
-            x = x1 - x_multi*abs(x1 - x2) 
+            x = x1 - x_multi*abs(x1 - x2)
             y = y1 - y_multi*abs(y1 - y2)
 
-            
+
         return x,y
-    
+
 
 
     # get approx positions
@@ -125,4 +125,3 @@ class skin_color(threading.Thread):
         for i in range(f,t):
             result.append([i + x,i + y])
         return result
- 

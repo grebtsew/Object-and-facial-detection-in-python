@@ -27,68 +27,70 @@ class Show_Camera(threading.Thread):
     frame = None
     do_once = True              # initiate backprojektedframe once
 
+    index = 0
+
     # Initiate function
     # Parameters CameraName, Shared_variables reference, show_mode
-    def __init__(self, name=None,  shared_variables = None, mode = 'NORMAL'):
+    def __init__(self, name=None,  shared_variables = None, mode = 'NORMAL', index  = 0):
         threading.Thread.__init__(self)
         self.name = name
         self.shared_variables = shared_variables
         self.mode = mode
+        self.index = index
 
     #Run
     # Get image, add detections, create and show in window
     def run(self):
+
         while True:
-            if self.shared_variables.camera_capture.isOpened():
+            if self.shared_variables.system_running:
 
                 # Display mode
                 if self.mode == self.shared_variables.Display_enum.NORMAL:
                    # ret_val, self.frame = self.shared_variables.camera_capture.read()
-                    self.frame = self.shared_variables.frame
+                    self.frame = self.shared_variables.frame[self.index]
                 elif self.mode == self.shared_variables.Display_enum.DETECTION:
-                    self.frame = self.shared_variables.detection_frame
+                    self.frame = self.shared_variables.detection_frame[self.index]
                 elif self.mode == self.shared_variables.Display_enum.TRACKING_AND_DETECTION:
-                    self.frame = self.shared_variables.tracking_and_detection_frame
+                    self.frame = self.shared_variables.tracking_and_detection_frame[self.index]
 
                 # Some face detected
-                if self.shared_variables.face_found:
+                if self.shared_variables.face_found[self.index]:
 
                     #show score in terminal
                     if self.show_detection_score:
-                        if self.shared_variables.detection_score is not None:
-                            print(self.shared_variables.detection_score)
+                        if self.shared_variables.detection_score[self.index] is not None:
+                            print(self.shared_variables.detection_score[self.index])
 
 
                     # Show combination of tracking and detection, BLUE
-                    if self.shared_variables.face_box is not None:
-
-
+                    if self.shared_variables.face_box[self.index] is not None:
 
                         if self.show_combo:
-                            topLeft = (int(self.shared_variables.face_box[0]), int(self.shared_variables.face_box[1]))
-                            bottomRight = (int(self.shared_variables.face_box[0] + self.shared_variables.face_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
+                            topLeft = (int(self.shared_variables.face_box[self.index][0]), int(self.shared_variables.face_box[self.index][1]))
+                            bottomRight = (int(self.shared_variables.face_box[self.index][0] + self.shared_variables.face_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
 
                      # Show tracking GREEN
-                    if self.shared_variables.tracking_box is not None:
+                    if self.shared_variables.tracking_box[self.index] is not None:
                         if self.show_tracking:
-                            topLeft = (int(self.shared_variables.tracking_box[0]), int(self.shared_variables.tracking_box[1]))
-                            bottomRight = (int(self.shared_variables.tracking_box[0] + self.shared_variables.tracking_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
+                            topLeft = (int(self.shared_variables.tracking_box[self.index][0]), int(self.shared_variables.tracking_box[self.index][1]))
+                            bottomRight = (int(self.shared_variables.tracking_box[self.index][0] + self.shared_variables.tracking_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
 
 
                     # Show detections RED
-                    if self.shared_variables.detection_box is not None:
+                    if self.shared_variables.detection_box[self.index] is not None:
                         if self.show_detection:
-                            topLeft = (int(self.shared_variables.detection_box[0]), int(self.shared_variables.detection_box[1]))
-                            bottomRight = (int(self.shared_variables.detection_box[0] + self.shared_variables.detection_box[2]), int(self.shared_variables.face_box[1] + self.shared_variables.face_box[3]))
+                            topLeft = (int(self.shared_variables.detection_box[self.index][0]), int(self.shared_variables.detection_box[self.index][1]))
+                            bottomRight = (int(self.shared_variables.detection_box[self.index][0] + self.shared_variables.detection_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
                             cv2.rectangle(self.frame, topLeft,bottomRight, (0,0,255), 2,1 )
 
                     # Show Landmarks
                     if self.show_landmarks:
                         # loop over the (x, y)-coordinates for the facial landmarks
                         # and draw them on the image
-                        for (x, y) in self.shared_variables.landmarks:
+                        for (x, y) in self.shared_variables.landmarks[self.index]:
                             cv2.circle(self.frame, (x, y), 1, (0, 0, 255), -1)
 
 
@@ -98,16 +100,16 @@ class Show_Camera(threading.Thread):
                     if self.grayscale:
                         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
-                    cv2.imshow(self.shared_variables.name, self.frame)
+                    cv2.imshow(self.shared_variables.name + "_"+ str(self.index), self.frame)
 
                 # Create and show backproject frames
                 if self.showbackprojectedFrame:
                     if self.shared_variables.face_box is not None:
                         if self.do_once:
-                            camShifTracker = CAMShiftTracker(self.shared_variables.face_box, self.frame)
+                            camShifTracker = CAMShiftTracker(self.shared_variables.face_box[self.index], self.frame)
                             self.do_once = False
 
-                        cv2.imshow('BackImg %s' % self.shared_variables.name, camShifTracker.getBackProjectedImage(self.frame))
+                        cv2.imshow('BackImg %s' % self.shared_variables.name+ "_"+ str(self.index), camShifTracker.getBackProjectedImage(self.frame))
 
 
 
@@ -123,5 +125,4 @@ class Show_Camera(threading.Thread):
         self.shared_variables.detection_running = False
 
         # stop camera
-        self.shared_variables.camera_capture.release()
         cv2.destroyAllWindows()

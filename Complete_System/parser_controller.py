@@ -29,7 +29,8 @@ class parse_controller(threading.Thread):
                  ('stop', 'stop a system, send with reference'),
                  ('close', 'close instances for -web 0-camnr., -gige, -ip : -all close all threads'),
                  ('status', 'show system status: Active Cameras, System Count, Syatem Reference'),
-                 ('kill', 'Stop running thread'),
+                 ('kill', 'Stop running system with threads'),
+                 ('killall', 'Stop all running system with threads'),
                 ('clear', 'clear terminal'),
                 ('exit', 'exit program and all threads.'))
 
@@ -158,19 +159,58 @@ class parse_controller(threading.Thread):
         # New Shared_Variables
         self.create_new_system_instance()
 
-        camera = self.config.getint('DEFAULT', 'WEBCAMERA')
-
         # Set reference current
         self.shared_variables_index = len(self.system_reference_array)-1
 
         # set reference
         self.shared_variables = self.system_reference_array[self.shared_variables_index]
 
-        # Start default camera
-        self.shared_variables.start_intern_camera_stream(camera)
+        camera_amount = 0;
+        # Start default cameras
+        if(self.config.getboolean('DEFAULT','START_WEBCAMERA')):
+            camera = self.config.getint('DEFAULT', 'WEBCAMERA')
+            self.shared_variables.start_webcamera_stream(camera, index = camera_amount)
+            camera_amount += 1
 
-        # Show camera
-        self.shared_variables.start_camera_thread()
+        time.sleep(1)
+
+        if(self.config.getboolean('DEFAULT','START_WEBCAMERA')):
+            camera = self.config.getint('DEFAULT', 'WEBCAMERA')
+            self.shared_variables.start_webcamera_stream(camera, index = camera_amount)
+            camera_amount += 1
+
+        if(self.config.getboolean('DEFAULT','START_IPCAMERA')):
+            camera = self.config.getint('DEFAULT', 'IPCAMERA')
+            self.shared_variables.start_ip_camera_stream(index = camera_amount)
+            camera_amount += 1
+
+
+        # For each camera
+        for i in range(0, camera_amount):
+
+            # Show cameras
+            self.shared_variables.start_show_camera(index = i)
+
+            # Start default detection
+            if(self.config.getboolean('DEFAULT','DLIB_DETECTION')):
+                self.shared_variables.start_dlib_detection_thread(i)
+            if(self.config.getboolean('DEFAULT','TENSORFLOW_DETECTION')):
+                self.shared_variables.start_tf_detection_thread(i)
+
+            # Start default functions
+            if(self.config.getboolean('DEFAULT','AGE_GENDER_ESTIMATION')):
+                self.shared_variables.start_age_gender_thread(i)
+            if(self.config.getboolean('DEFAULT','BLINK_FREQUENCY')):
+                self.shared_variables.start_blink_thread(i)
+            if(self.config.getboolean('DEFAULT','EXPRESSION')):
+                self.shared_variables.start_expression_thread(i)
+            if(self.config.getboolean('DEFAULT','SKIN_COLOR')):
+                self.shared_variables.start_skin_color(i)
+
+            # Tracking
+            if(self.config.getboolean('DEFAULT','TRACKING')):
+                self.shared_variables.start_tracking_thread(i)
+            
 
 
     def call_start(self, args = None):

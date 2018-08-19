@@ -12,15 +12,16 @@ import sys
 # Class that calcualte blink frequence
 #
 class Blink_frequency(threading.Thread):
-    
-    
+
+    index = 0
     # Initiate thread
     # parameters name , shared_variables reference
     #
-    def __init__(self, name = None,  shared_variables = None):
+    def __init__(self, name = None,  shared_variables = None, index = 0 ):
         threading.Thread.__init__(self)
         self.name = name
         self.shared_variables = shared_variables
+        self.index = index
 
     # make this run at correct time
     def run(self):
@@ -37,12 +38,12 @@ class Blink_frequency(threading.Thread):
         while self.shared_variables.detection_frame is None:
             pass
 
-        
-        
+
+
         while self.shared_variables.detection_frame is not None:
 
             if self.shared_variables.tracking_running:
-                
+
                 frame = self.shared_variables.detection_frame
 
                 eyes = self.cropEyes(frame)
@@ -51,7 +52,7 @@ class Blink_frequency(threading.Thread):
                 else:
                     left_eye,right_eye = eyes
                     #cv2.imshow('sd',left_eye)
-                
+
                 prediction = (model.predict(self.cnnPreprocess(left_eye)) + model.predict(self.cnnPreprocess(right_eye)))/2.0
 
                 if prediction > 0.5 :
@@ -64,7 +65,7 @@ class Blink_frequency(threading.Thread):
                 if state == 'open' and mem_counter > 1:
                     blinks += 1
 
-                mem_counter = close_counter 
+                mem_counter = close_counter
 
                 #save blinking
 
@@ -72,18 +73,18 @@ class Blink_frequency(threading.Thread):
                 #state
                 #print (state)
                 #print (blinks)
-           
+
 
         pass
 
-    # make the image to have the same format as at training 
+    # make the image to have the same format as at training
     def cnnPreprocess(self,img):
         img = img.astype('float32')
         img /= 255
         img = np.expand_dims(img, axis=2)
         img = np.expand_dims(img, axis=0)
         return img
-    
+
 
     def cropEyes(self,frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -91,7 +92,7 @@ class Blink_frequency(threading.Thread):
 
         (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
         (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
-        
+
         leftEye = shape[lStart:lEnd]
         rightEye = shape[rStart:rEnd]
 
@@ -128,7 +129,4 @@ class Blink_frequency(threading.Thread):
         left_eye_image = cv2.resize(left_eye_image, (34, 26))
         right_eye_image = cv2.resize(right_eye_image, (34, 26))
         right_eye_image = cv2.flip(right_eye_image, 1)
-        return left_eye_image, right_eye_image 
-
-    
-
+        return left_eye_image, right_eye_image

@@ -8,12 +8,10 @@ import threading
 import cv2
 import parser_controller as controller
 
-import utils.intern_camera as i_cam
 
 # Main function
 def main():
     LOG.log("Starting system", "SYSTEM")
-
 
     controll_thread = controller.parse_controller()
     controll_thread.start()

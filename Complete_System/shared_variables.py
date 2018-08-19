@@ -1,8 +1,6 @@
-# Shared variables between threads
-# contains:
-# ENUM
-# SHARED_VARIABLES
-# CAMERA_STREAM
+'''
+This is Shared variables class. This is the center Node of the system where alot of threads share variables.
+'''
 
 # Imports
 import detection_dlib as dlib_detection
@@ -15,8 +13,7 @@ import cv2
 import listener
 import imutils
 
-from utils import gige_camera
-from utils import intern_camera
+from utils import web_camera
 from utils import ip_camera
 from func.blink_frequency import dlib_blink_frequency as blink_frequency
 from func.age_gender_estimation import dlib_age_gender_estimation as age_gender_estimation
@@ -31,36 +28,48 @@ class Enum(set):
 # Global shared variables
 # an instace of this class share variables between system threads
 class Shared_Variables():
-    face_box = None
-    tracking_box = None
-    face_found = None
-    detection_done = False
-    tracking_running = True
-    flipp_test_degree = 0
-    flipp_test = True
-    detection_score = None
-    detection_running = True
 
+    '''
+    ----- Setting Variables -----
+    '''
+    flipp_test_degree = []
+    flipp_test = []
     # Debugging threads
     debug = False   # debug mode, doesnt do much right now
     debug_detection = False
     debug_tracking = False
 
+    '''
+    ----- Shared Variables -----
+    These variables are shared between threads fast
+    '''
+    # score and boxes
+    detection_score = []
+    face_box = []
+    tracking_box = []
+
     # Listen to these variables
-    _landmarks = None
-    _detection_box = None
+    _landmarks = []
+    _detection_box = []
 
     # Frames, can be showed in show_camera
-    frame = None                        # current camera frame
-    detection_frame = None              # latest detection frame
-    tracking_and_detection_frame = None # latest tracking or detection frame
+    frame = []                        # current camera frame
+    detection_frame = []              # latest detection frame
+    tracking_and_detection_frame = [] # latest tracking or detection frame
 
-    # Threads reference
-    tf_detection_thread = None
-    dlib_detection_thread = None
-    tracking_thread = None
-    camera_thread = None
-    camera_stream_thread = None
+    # booleans
+    face_found = []
+    tracking_running = []
+
+    '''
+    ----- Status Variables -----
+    '''
+    system_running = True
+
+
+    '''
+    ----- ENUMS -----
+    '''
 
     # Enum
     Display_enum = Enum(["NORMAL", "DETECTION", "TRACKING_AND_DETECTION"])
@@ -68,95 +77,95 @@ class Shared_Variables():
     def __init__(self, name=None):
         threading.Thread.__init__(self)
         self.name = name
-        self.camera_capture = None
 
-        #start camera read thread
-        #self.start_ip_camera_stream()
-        #self.start_intern_camera_stream()
-        #self.start_gige_camera_stream()
-        # start blink function thread
-        #self.start_blink_thread()
+    def add_camera(self):
+        '''
+        Instantiate a new slot for a new camera (allocation!)
+        '''
+        self.frame.append(None)
+        self.detection_frame.append(None)
+        self.tracking_and_detection_frame.append(None)
+        self.face_box.append(None)
+        self.tracking_box.append(None)
+        self._landmarks.append(None)
+        self._detection_box.append(None)
+        self.detection_score.append(None)
 
-        # start age gender function thread
-        #self.start_age_gender_thread()
+        # Sets
+        self.face_found.append(False)
+        self.flipp_test.append(True)
+        self.flipp_test_degree.append(0)
+        self.tracking_running.append(False)
 
-    def start_gige_camera_stream(self):
-        self.camera_stream_running = True
-        self.camera_stream_thread = gige_camera.camera_stream(shared_variables = self)
+    '''
+    ----- CAMERAS -----
+    '''
+
+    def start_ip_camera_stream(self, address = "", index = 0):
+        self.add_camera()
+        self.camera_stream_thread = ip_camera.ip_camera_stream(shared_variables = self, address = address , index = index)
         self.camera_stream_thread.start()
 
 
-    def start_ip_camera_stream(self):
-        self.camera_stream_running = True
-        self.camera_stream_thread = ip_camera.ip_camera_stream(shared_variables = self)
+    def start_webcamera_stream(self, cam_id=0, index = 0):
+        self.add_camera()
+        self.camera_stream_thread = web_camera.camera_stream(shared_variables = self, id = cam_id, index = index)
         self.camera_stream_thread.start()
 
-    def start_age_gender_thread(self):
-        age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self)
-        age_gender_thread.start()
-
-    def start_blink_thread(self):
-        blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self)
-        blink_thread.start()
-
-    def start_intern_camera_stream(self, name=0):
-        self.camera_capture = cv2.VideoCapture(name)
-        self.camera_stream_running = True
-        self.camera_stream_thread = intern_camera.camera_stream(shared_variables = self)
-        self.camera_stream_thread.start()
+    '''
+    ----- DETECTION -----
+    '''
 
     def start_dlib_detection_thread(self, cam_id):
-        self.dlib_detection_thread = dlib_detection.Detection(name = "Dlib_Detection", shared_variables = self)
+        self.dlib_detection_thread = dlib_detection.Detection(name = cam_id, shared_variables = self)
         self.dlib_detection_thread.start()
 
     def start_tf_detection_thread(self, cam_id):
-        self.tf_detection_thread = tf_detection.Detection(name = "TF_Detection", shared_variables = self)
+        self.tf_detection_thread = tf_detection.Detection(name = cam_id, shared_variables = self)
         self.tf_detection_thread.start()
 
-    def start_tracking_thread(self):
+
+    '''
+    ----- TRACKING -----
+    '''
+
+    def start_tracking_thread(self, index = 0):
         self.tracking_running = True
-        self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self)
+        self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self, index = index)
         self.tracking_thread.start()
 
-    def start_camera_thread(self, mode = Display_enum.NORMAL):
-        self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, mode = mode)
+    '''
+    ----- SHOW CAMERA -----
+    '''
+
+    def start_show_camera(self, mode = Display_enum.NORMAL, index = 0):
+        self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, mode = mode, index = index)
         self.camera_thread.start()
 
-    # Start_instance
-    # Function that starts an instance of threads for each camera
-    def start_instance(instance_name,camera_id,camera_mode='NORMAL'):
 
-        LOG.log("Capturing Camera %s" % camera_id, instance_name)
+    '''
+    ----- FUNCTIONS -----
+    '''
 
-        # Capture camera
-        #_camera_capture = cv2.VideoCapture(camera_id)
-
-         # initiate shared variables instance
-        #_shared_variables = shared_variables.Shared_Variables(instance_name,
-         #                                 _camera_capture)
-
-        # detection Thread
-        #_shared_variables.start_detection_thread()
-
-        # tracking Thread
-        #_shared_variables.start_tracking_thread()
-
-        # show camera thread
-        #_shared_variables.start_camera_thread(camera_mode)
+    def start_age_gender_thread(self, index = 0):
+        age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self, index = 0)
+        age_gender_thread.start()
 
 
+    def start_expression_thread(self, index = 0):
+        pass
+
+    def start_skin_color(self, index = 0):
+        pass
+
+    def start_blink_thread(self, index = 0):
+        blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self, index = 0)
+        blink_thread.start()
 
 
-    # Start a system instance for each camera in computer
-    def start_instances_for_all_cameras():
-    # start all cameras
-        number_of_cameras =  i_cam.countCameras()
-
-        LOG.log("Found %s cameras" % (number_of_cameras), "SYSTEM")
-        for i in range(number_of_cameras):
-            start_instance('CAM_%s' % (i), i, 'NORMAL')
-
-
+    '''
+    ----- Overides of getters and setters -----
+    '''
 
     # Listen at variables
     # Detection variable
@@ -169,7 +178,7 @@ class Shared_Variables():
         self._detection_box = box
 
         # Send to listener when variable set
-        listener.box_notify(self.detection_frame, box)
+        #listener.box_notify(self.detection_frame, box)
 
         # Notify detection
         self.face_found = True
@@ -194,3 +203,18 @@ class Shared_Variables():
     @landmarks.getter
     def landmarks(self):
         return self._landmarks
+
+
+    '''
+    ----- OLD CODE -----
+    '''
+
+    # Start a system instance for each camera in computer
+    def start_instances_for_all_cameras():
+    # restcode
+    # start all cameras
+        number_of_cameras =  i_cam.countCameras()
+
+        LOG.log("Found %s cameras" % (number_of_cameras), "SYSTEM")
+        for i in range(number_of_cameras):
+            start_instance('CAM_%s' % (i), i, 'NORMAL')

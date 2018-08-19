@@ -4,8 +4,8 @@ This repo contains, training material, dlib implementation and tensorflow implem
 Too large files (mostly models) is ignored due to Github limitations, the models can be found in github-repos linked in learning folder readme.
 
 # Training Material
-See folder learning.
-Here I show my learning process of object detection, facial detection and how to work with tensorflow and dlib. Repos used to develop code in this repo is linked in Learning-folder README.
+See folder Learning & Documentation.
+In the folder Learning & Documentation show my learning process of object detection, facial detection and how to work with tensorflow and dlib. Repos used to develop code in this repo is linked in Learning-folder README.
 
 # Dlib
 See dlib folder.
@@ -29,7 +29,7 @@ This is my own implementation if a test system with a parse-controller. The syst
 ![Screenshot](images/arkitektur.png)
 
 
-As seen in the arkitektur several extra functions has been added, those are :
+As seen in the architecture several extra functions has been added, those are :
 
 
 * blink frequency - intresting to know if someone is tierd
