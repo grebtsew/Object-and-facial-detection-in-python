@@ -172,12 +172,6 @@ class parse_controller(threading.Thread):
             self.shared_variables.start_webcamera_stream(camera, index = camera_amount)
             camera_amount += 1
 
-        time.sleep(1)
-
-        if(self.config.getboolean('DEFAULT','START_WEBCAMERA')):
-            camera = self.config.getint('DEFAULT', 'WEBCAMERA')
-            self.shared_variables.start_webcamera_stream(camera, index = camera_amount)
-            camera_amount += 1
 
         if(self.config.getboolean('DEFAULT','START_IPCAMERA')):
             camera = self.config.getint('DEFAULT', 'IPCAMERA')
@@ -210,7 +204,7 @@ class parse_controller(threading.Thread):
             # Tracking
             if(self.config.getboolean('DEFAULT','TRACKING')):
                 self.shared_variables.start_tracking_thread(i)
-            
+
 
 
     def call_start(self, args = None):

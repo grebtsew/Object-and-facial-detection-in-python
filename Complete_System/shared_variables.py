@@ -54,8 +54,6 @@ class Shared_Variables():
 
     # Frames, can be showed in show_camera
     frame = []                        # current camera frame
-    detection_frame = []              # latest detection frame
-    tracking_and_detection_frame = [] # latest tracking or detection frame
 
     # booleans
     face_found = []
@@ -67,13 +65,6 @@ class Shared_Variables():
     system_running = True
 
 
-    '''
-    ----- ENUMS -----
-    '''
-
-    # Enum
-    Display_enum = Enum(["NORMAL", "DETECTION", "TRACKING_AND_DETECTION"])
-
     def __init__(self, name=None):
         threading.Thread.__init__(self)
         self.name = name
@@ -83,8 +74,6 @@ class Shared_Variables():
         Instantiate a new slot for a new camera (allocation!)
         '''
         self.frame.append(None)
-        self.detection_frame.append(None)
-        self.tracking_and_detection_frame.append(None)
         self.face_box.append(None)
         self.tracking_box.append(None)
         self._landmarks.append(None)
@@ -130,7 +119,6 @@ class Shared_Variables():
     '''
 
     def start_tracking_thread(self, index = 0):
-        self.tracking_running = True
         self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self, index = index)
         self.tracking_thread.start()
 
@@ -138,8 +126,8 @@ class Shared_Variables():
     ----- SHOW CAMERA -----
     '''
 
-    def start_show_camera(self, mode = Display_enum.NORMAL, index = 0):
-        self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, mode = mode, index = index)
+    def start_show_camera(self, index = 0):
+        self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, index = index)
         self.camera_thread.start()
 
 

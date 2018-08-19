@@ -18,6 +18,9 @@ class Tracking(threading.Thread):
     tracker = None
     frame = None
 
+    UPDATE_TIME = 25
+    update_timer = 0
+
     start_time = None
     end_time = None
     index = 0
@@ -31,31 +34,30 @@ class Tracking(threading.Thread):
         self.shared_variables = shared_variables
         self.index = index
 
+
     # Run
     # Thread run function
     #
     def run(self):
 
         #  wait for initial detection
-        while not self.shared_variables.detection_done:
+        while self.shared_variables.detection_box[self.index] is None:
             pass
 
         # initiate tracker
         self.create_custom_tracker()
 
         # tracking loop
-        while self.shared_variables.tracking_running:
+        while self.shared_variables.system_running:
 
-            if self.shared_variables.camera_capture.isOpened():
-                self.start_time = datetime.datetime.now()
+            self.start_time = datetime.datetime.now()
 
-                #ret_val, self.frame = self.shared_variables.camera_capture.read()
-                self.frame = self.shared_variables.frame
-                self.object_custom_tracking()
-                self.end_time = datetime.datetime.now()
+            self.frame = self.shared_variables.frame[self.index]
+            self.object_custom_tracking()
+            self.end_time = datetime.datetime.now()
 
-                if self.shared_variables.debug or self.shared_variables.debug_tracking:
-                    LOG.log("Tracking time : " + str(self.end_time - self.start_time),self.shared_variables.name)
+            if self.shared_variables.debug or self.shared_variables.debug_tracking:
+                LOG.log("Tracking time : " + str(self.end_time - self.start_time),self.shared_variables.name)
 
 
 
@@ -79,7 +81,7 @@ class Tracking(threading.Thread):
 
         self.create_custom_tracker()
 
-        self.tracker_test = self.tracker.init( self.frame, self.shared_variables.detection_box)
+        self.tracker_test = self.tracker.init( self.frame, self.shared_variables.detection_box[self.index])
 
     def distance_between_boxes(self, box1, box2):
         #print (int(abs(math.hypot(box2[0]-box1[0], box2[1]-box1[1]))))
@@ -94,19 +96,19 @@ class Tracking(threading.Thread):
 
 
     # See if detection is done
-        if self.shared_variables.detection_done:
+        if self.shared_variables.face_found[self.index] and self.update_timer > self.UPDATE_TIME:
             self.update_custom_tracker()
-            self.shared_variables.detection_done = False
+            self.update_timer = 0
+
+        # When to check for new detections
+        self.update_timer += 1
 
     # Calculate
         self.tracker_test, face_box = self.tracker.update(self.frame)
 
     # Display tracker box
         if self.tracker_test:
-            self.shared_variables.face_box = face_box
-            self.shared_variables.tracking_box = face_box
-            self.shared_variables.tracking_and_detection_frame = self.frame
+            self.shared_variables.tracking_box[self.index] = face_box
 
-         #   print ("tracked s%s" % (threading.get_ident()))
         else:
             pass

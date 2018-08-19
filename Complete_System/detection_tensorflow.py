@@ -124,9 +124,9 @@ class Detection(threading.Thread):
 
                     self.no_face_count = 0
 
-                    # Save frames
-                    self.shared_variables.detection_frame[self.index] = frame
-                    self.shared_variables.tracking_and_detection_frame[self.index] = frame
+                    # Save frames (Deprecated)
+                    #self.shared_variables.detection_frame[self.index] = frame
+                    #self.shared_variables.tracking_and_detection_frame[self.index] = frame
 
                     # Save landmark
                     self.shared_variables.landmarks[self.index] = self.convert_to_dlib_landmarks(landmarks)
