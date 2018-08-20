@@ -15,13 +15,13 @@ class parse_controller(threading.Thread):
     shared_variables_index = 0
     shared_variables = None
     system_reference_array = []
-    status_array = list() # list threads
     func_info = (('help, h', 'show how to use all commands'),
                  ('helpsh', 'open python help shell'),
                  ('start -sys/sysid -camid', 'start instance in system or system. Ex: start -sys , start -000 -0 -SKIN_COLOR (anything func, cam or thread)'),
                  ('stop -sys/sysid -camid', 'stop instance in system or system. Ex: stop -sys , stop -000 -0 -SKIN_COLOR -WEBCAM'),
                  ('autostart', 'starts system with default values from config file.'),
                  ('imshow -sysid', 'start imshow thread in system'),
+                 ('show -Func -camid', 'show function of camera. Ex, show -LANDMARKS -0'),
                  ('status', 'show system status'),
                  ('kill -sysid', 'Stop running system with threads'),
                  ('killall', 'Stop all running system with threads'),
@@ -87,8 +87,9 @@ class parse_controller(threading.Thread):
 
     def create_new_system_instance(self):
         # Generate system id and add new system instance
-        instance_name =  "System_" + str(threading.get_ident())
+        instance_name =  str(threading.get_ident())
         self.system_reference_array.append(shared_variables.Shared_Variables(name=instance_name, config=self.config))
+        print("Created system with id " + str(instance_name))
 
     def run(self):
         args = None
@@ -96,12 +97,9 @@ class parse_controller(threading.Thread):
         print ("----- Program -----")
         print (" type help or h to see functions")
         while True:
-
             input_str = input('Program>')
             input_str_array = input_str.split(' ')
-
             if self.get_first_arg(input_str_array) is not None:
-
                 if self.run_command(input_str_array):
                     pass
                 else:
@@ -111,7 +109,6 @@ class parse_controller(threading.Thread):
         for s in arr:
             if len(s) > 0:
                 return s
-
         return None
 
 
@@ -121,12 +118,9 @@ class parse_controller(threading.Thread):
         for s in arr:
             if len(s) > 0 :
                 res.append(s)
-
         return res
 
-
     def run_command(self,arr):
-
         arg_arr = self.get_all_arg(arr);
         s = arg_arr[0]
 
@@ -152,6 +146,9 @@ class parse_controller(threading.Thread):
             self.call_autostart()
             return True
         elif s == "imshow":
+            self.call_imshow(arg_arr)
+            return True
+        elif s == "show":
             self.call_show(arg_arr)
             return True
         elif s == "stop":
@@ -173,15 +170,6 @@ class parse_controller(threading.Thread):
 # --------- CALL FUNCTION DOWN HERE -----------
 #
 
-    def call_log(self):
-        pass
-
-    def call_kill(self,args = None):
-        pass
-
-    def call_killall(self,args = None):
-        pass
-
     def call_autostart(self):
         # New Shared_Variables
         self.create_new_system_instance()
@@ -196,16 +184,15 @@ class parse_controller(threading.Thread):
         # Start default cameras
         if(self.config.getboolean('DEFAULT','START_WEBCAMERA')):
             camera = self.config.getint('DEFAULT', 'WEBCAMERA')
-            self.shared_variables.start_webcamera_stream(camera, index = camera_amount)
+            self.shared_variables.start_webcamera_stream(camera)
             camera_amount += 1
 
         time.sleep(1) # sleep between captures!
 
         if(self.config.getboolean('DEFAULT','START_IPCAMERA')):
-            camera = self.config.getint('DEFAULT', 'IPCAMERA')
-            self.shared_variables.start_ip_camera_stream(index = camera_amount)
+            camera = self.config.get('DEFAULT', 'IPCAMERA')
+            self.shared_variables.start_ip_camera_stream(camera)
             camera_amount += 1
-
 
         # For each camera
         for i in range(0, camera_amount):
@@ -219,7 +206,6 @@ class parse_controller(threading.Thread):
             if(self.config.getboolean('DEFAULT','TENSORFLOW_DETECTION')):
                 self.shared_variables.start_tf_detection_thread(i)
 
-
             # Start default functions
             if(self.config.getboolean('DEFAULT','AGE_GENDER_ESTIMATION')):
                 self.shared_variables.start_age_gender_thread(i)
@@ -230,125 +216,104 @@ class parse_controller(threading.Thread):
             if(self.config.getboolean('DEFAULT','EXPRESSION')):
                 self.shared_variables.start_expression_thread(i)
 
-
             # Tracking
             if(self.config.getboolean('DEFAULT','TRACKING')):
                 self.shared_variables.start_tracking_thread(i)
 
+    def get_system_index(self, name):
+        res = 0
+        for sys in self.system_reference_array:
+            if(sys.name ==  name):
+                return res
+            res += 1
+
+        return None
+
     def call_start(self, args = None):
-
         if args is not None :
-            if len(args) >= 3:
+            if args[1] == "-SYS":
+                # start new system
+                self.create_new_system_instance()
+                return
 
-                if args[1] == "-read":
-                    if args[2] == "-web":
-                        self.status_array.append(["web", args[3]])
-                        #self.shared_variables.start_intern_camera_stream(int(args[3]))
-                    elif args[2] == "-gige":
-                        self.status_array.append(list("gige", args[3]))
-                        #self.shared_variables.start_intern_camera_stream(int(args[2]))
-                    elif args[2] == "-ip":
-                        self.status_array.append(list("ip", args[3]))
-                        #self.shared_variables.start_intern_camera_stream(int(args[2]))
-
-                elif args[1] == "-detect":
-                    if args[2] == "-dlib":
-                        self.shared_variables.start_dlib_detection_thread(0)
-                        pass
-                    elif args[2] == "-tf":
-                        self.shared_variables.start_tf_detection_thread(0)
-                        pass
-
+            system_index = self.get_system_index(args[1])
+            if system_index is not None:
+                # Functions 3 args
+                if len(args) >= 3:
+                    if args[2] == "-DLIB_DETECTION":
+                        self.system_reference_array[system_index].start_dlib_detection_thread(int(args[3]))
+                    elif args[2] == "-TENSORFLOW_DETECTION":
+                        self.system_reference_array[system_index].start_tf_detection_thread(int(args[3]))
+                    elif args[2] == "-TRACKING":
+                        self.system_reference_array[system_index].start_tracking_thread(int(args[3]))
+                    elif args[2] == "-AGE_GENDER_ESTIMATION":
+                        self.system_reference_array[system_index].start_age_gender_thread(int(args[3]))
+                    elif args[2] == "-EXPRESSION":
+                        self.system_reference_array[system_index].start_expression_thread(int(args[3]))
+                    elif args[2] == "-SKIN_COLOR":
+                        self.system_reference_array[system_index].setting[shared_variables.SETTINGS.SKIN_COLOR] = True
+                    elif args[2] == "-BLINK_FREQUENCY":
+                        self.system_reference_array[system_index].start_blink_thread(int(args[3]))
+                    elif args[2] == "-WEBCAMERA":
+                        self.system_reference_array[system_index].start_webcamera_stream(int(args[3]))
+                    elif args[2] == "-IPCAMERA":
+                        self.system_reference_array[system_index].start_ip_camera_stream(args[3])
+                    elif args[2] == "-IMSHOW":
+                        self.system_reference_array[system_index].start_show_camera(int(args[3]))
+                    else:
+                        print("Command " + args + " is invalid,")
                 else:
-                    print("No such parameter")
-
-
-        else:
-            print("No parameters!")
-
-        pass
-
-    def call_stop(self, args):
-         if args is not None:
-            if len(args) > 2:
-
-                if args[1] == "-web":
-
-                    self.status_array.remove()
-                    self.shared_variables.start_camera_thread()
-                    #self.shared_variables.start_intern_camera_stream(int(args[2]))
-                elif args[1] == "-gige":
-                    self.status_array.append(list("show gige", args[2]))
-                    #self.shared_variables.start_intern_camera_stream(int(args[2]))
-                elif args[1] == "-ip":
-                    self.status_array.append(list("show ip", args[2]))
-                    #self.shared_variables.start_intern_camera_stream(int(args[2]))
-
-                else:
-                    print("No such parameter")
-         else:
-            print("No parameters!")
-
-
-    def call_show(self, args):
-         if args is not None:
-            if len(args) >= 2:
-
-                if args[1] == "-web":
-
-                    self.status_array.append(["show web", args[2]])
-                    print("gere")
-                    self.shared_variables.start_camera_thread()
-                    #self.shared_variables.start_intern_camera_stream(int(args[2]))
-                elif args[1] == "-gige":
-                    self.status_array.append(list("show gige", args[2]))
-                    #self.shared_variables.start_intern_camera_stream(int(args[2]))
-                elif args[1] == "-ip":
-                    self.status_array.append(list("show ip", args[2]))
-                    #self.shared_variables.start_intern_camera_stream(int(args[2]))
-
-                else:
-                    print("No such parameter")
-         else:
-            print("No parameters!")
-
-    def call_kill(self):
-
-        pass
+                    print("Not enought parameters in start call. Ex start -SYS or start -11111 -SKIN_COLOR -0")
 
     def call_exit(self):
         os._exit(1)
 
-    def call_status(self):
-
-        print()
-        print("Running threads:")
-        print()
-
-        for s in self.status_array:
-            string = ""
-            for i in s:
-                string += i + " "
-
-            print(string)
-
-        pass
-
-
     def call_help(self):
-
         print()
         print("This is program, see functions below. ")
         print()
         print("Help: ")
-
-
         for s in self.func_info:
             print( s[0]   + "\t\t" + s[1])
-
         print()
-
 
     def call_clear(self):
         os.system('cls' if os.name=='nt' else 'clear')
+
+    def call_status(self):
+        print()
+        print("----- Show Systems and info below -----")
+        print()
+
+        if(len(self.system_reference_array) > 0 ):
+            for sys in self.system_reference_array:
+                print ("----------------------------------------")
+                print(" ----- System id: " + str(sys.name) + " ----- ")
+                print("Amount of camera sources: " + str(sys.reference_length))
+                for cam in range(0,sys.reference_length):
+                    print(" ----- Camera id : " + str(cam) +" -----")
+                    settings = sys.setting[cam]
+                    print("Active functions: ")
+                    temp = 0
+                    for b in settings:
+                        if b == True:
+                            print(shared_variables.SETTINGS(temp).name)
+
+                        temp += 1
+
+                print("----------------------------------------")
+        else:
+            print("No running systems")
+
+    def call_show(self, args):
+        pass
+    def call_stop(self, args):
+        pass
+    def call_imshow(self, args):
+        pass
+    def call_kill(self):
+        pass
+    def call_kill(self,args = None):
+        pass
+    def call_killall(self,args = None):
         pass

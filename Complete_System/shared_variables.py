@@ -48,8 +48,6 @@ class SETTINGS(Enum):
 # Global shared variables
 # an instace of this class share variables between system threads
 class Shared_Variables():
-# Enum
-
 
     '''
     ----- Setting Variables -----
@@ -94,13 +92,19 @@ class Shared_Variables():
     eye_left = []
     eye_right = []
 
-
+    #is
+    is_dlib_detection = []
+    is_tensorflow_detection = []
+    is_tracking = []
+    is_age_gender_estimation = []
+    is_expression = []
 
     '''
     ----- Status Variables -----
     '''
     system_running = True
     config = None
+    reference_length = 0
 
     def __init__(self, name=None, config=None):
         threading.Thread.__init__(self)
@@ -162,18 +166,21 @@ class Shared_Variables():
         self.flipp_test_degree.append(0)
         self.tracking_running.append(False)
         self.setting.append(self.set_init_settings())
+        self.reference_length += 1
 
     '''
     ----- CAMERAS -----
     '''
 
-    def start_ip_camera_stream(self, address = "", index = 0):
+    def start_ip_camera_stream(self, address = ""):
+        index = self.reference_length
         self.add_camera()
         self.camera_stream_thread = ip_camera.ip_camera_stream(shared_variables = self, address = address , index = index)
         self.camera_stream_thread.start()
 
 
-    def start_webcamera_stream(self, cam_id=0, index = 0):
+    def start_webcamera_stream(self, cam_id=0):
+        index = self.reference_length
         self.add_camera()
         self.camera_stream_thread = web_camera.camera_stream(shared_variables = self, id = cam_id, index = index)
         self.camera_stream_thread.start()
@@ -183,10 +190,12 @@ class Shared_Variables():
     '''
 
     def start_dlib_detection_thread(self, cam_id):
+        self.setting[cam_id][SETTINGS.DLIB_DETECTION.value] = True
         self.dlib_detection_thread = dlib_detection.Detection(name = cam_id, shared_variables = self)
         self.dlib_detection_thread.start()
 
     def start_tf_detection_thread(self, cam_id):
+        self.setting[cam_id][SETTINGS.TENSORFLOW_DETECTION.value] = True
         self.tf_detection_thread = tf_detection.Detection(name = cam_id, shared_variables = self)
         self.tf_detection_thread.start()
 
@@ -196,6 +205,7 @@ class Shared_Variables():
     '''
 
     def start_tracking_thread(self, index = 0):
+        self.setting[index][SETTINGS.TRACKING.value] = True
         self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self, index = index)
         self.tracking_thread.start()
 
@@ -204,6 +214,7 @@ class Shared_Variables():
     '''
 
     def start_show_camera(self, index = 0):
+        #self.setting[index][SETTINGS.SHOW_FRAME.value] = True
         self.camera_thread = show_camera.Show_Camera(name = "Show_Camera", shared_variables = self, index = index)
         self.camera_thread.start()
 
@@ -213,15 +224,18 @@ class Shared_Variables():
     '''
 
     def start_age_gender_thread(self, index = 0):
+        self.setting[index][SETTINGS.AGE_GENDER_ESTIMATION.value] = True
         age_gender_thread = age_gender_estimation.Age_gender_estimation(name = "Age_Gender_Estimation", shared_variables = self, index = index)
         age_gender_thread.start()
 
     def start_expression_thread(self, index = 0):
+        self.setting[index][SETTINGS.EXPRESSION.value] = True
         express = expression.Expression(name = "Expression", shared_variables = self, index = index)
         express.start()
 
 
     def start_blink_thread(self, index = 0):
+        self.setting[index][SETTINGS.BLINK_FREQUENCY.value] = True
         blink_thread = blink_frequency.Blink_frequency(name = "Blink_frequence", shared_variables = self, index = index)
         blink_thread.start()
 
