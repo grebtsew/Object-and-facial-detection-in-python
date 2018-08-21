@@ -29,15 +29,30 @@ This is my own implementation if a test system with a parse-controller. The syst
 ![Screenshot](images/arkitektur.png)
 
 
-As seen in the architecture several extra functions has been added, those are :
-
+As seen in the architecture several extra functions has been added, most relevant are (feel free to add more):
 
 * blink frequency - intresting to know if someone is tierd
 * age/gender estimation - just for fun
 * expressions - intresting to know if someone is struggling
 * skincolor - to see if there are any skin color changes in realtime.
-
+* logger - log system events in data.log
+* config - use settings in config.ini (i recommend editing this and use command autostart)
+* parse-controller - a controller that lets you controll program from terminal
+* flipp-test - a method to flipp camera of detection not found
+* energy-save - do less detections missed alot of detections
 
 If it is hard to understand how to use the parse-controller type help or h for some extra information. Let me know if something is hard to understand.
+All models used most be downloaded from github repon linked in code!
 
-/Grebtsew
+Here are some example images:
+
+
+![Screenshot](images/complete_system_1.png)
+![Screenshot](images/complete_system_2.png)
+
+
+# Known issues
+At this time there are some known issues with the complete system:
+* Only one of the major functions can run at a time due to Keras using several models on same session.
+* SKIN_COLOR doesn't use an instance
+* Expression uses deprecated models
