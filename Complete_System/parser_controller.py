@@ -23,7 +23,7 @@ class parse_controller(threading.Thread):
     system_reference_array = []
     func_info = (('help, h', 'show how to use all commands'),
                  ('helpsh', 'open python help shell'),
-                 ('start  -sys/sysid -func -camid', 'start instance in system or system. Ex: start -sys , start 000 -SKIN_COLOR 0 (anything func, cam or thread) '),
+                 ('start  -sys/sysid -func -camid', 'start instance in system or system. Ex: start -SYS , start 000 -SKIN_COLOR 0 (anything func, cam or thread) '),
                  ('autostart', 'starts system with default values from config file. Edit config.ini.'),
                  ('imshow -sysid -camid', 'start imshow thread in system, and camid'),
                  ('show -sysid -camid -func true/false', 'show function of camera. Ex, show 000 0 LANDMARKS True, then start new imshow instance!'),
