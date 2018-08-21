@@ -3,22 +3,20 @@
 This repo contains, training material, dlib implementation and tensorflow implementation.
 Too large files (mostly models) is ignored due to Github limitations, the models can be found in github-repos linked in learning folder readme.
 
-# Models
+## Models
 Models used in this repo are as mentioned above excluded. You will need to download them from linked repos, see code or readme in Learning & documentation folder. I'm working with the models outside of the git repo in a folder named "model". The folder architecture looks like this:
 
 github/
-  
-  model/
-
-  Object-and-facial-detection-in-python/
+- model/
+- Object-and-facial-detection-in-python/
 
 
 
-# Training Material
+## Training Material
 See folder Learning & Documentation.
 In the folder Learning & Documentation show my learning process of object detection, facial detection and how to work with tensorflow and dlib. Repos used to develop code in this repo is linked in Learning & Documentation-folder README.
 
-# Dlib
+## Dlib
 See dlib folder.
 Here I share a singel and multi threaded dlib solution for facial detection.
 I am using code from several other repos with my code here.
@@ -28,7 +26,7 @@ This is how the dlib program look like during execution.
 
 ![Screenshot](images/tf_demo.png)
 
-# Tensorflow
+## Tensorflow
 See tensorflow folder.
 Here I share a singel and multi threaded tensorflow solution for facial detection and some functions like skin_color.
 I am using code from several other repos with my code here.
@@ -67,7 +65,7 @@ Here are some example images:
 ![Screenshot](images/complete_system_2.png)
 
 
-# Known issues
+## Known issues
 At this time there are some known issues with the complete system:
 * Only one of the major functions can run at a time due to Keras using several models on same session.
 * SKIN_COLOR doesn't use an instance
