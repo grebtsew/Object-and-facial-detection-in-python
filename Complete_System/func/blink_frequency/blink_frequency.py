@@ -7,10 +7,18 @@ from scipy.spatial import distance as dist
 from imutils import face_utils
 import sys
 from tensorflow import Graph, Session
+import utils.logging_data as LOG
+
+
+'''
+Blink frequence, This file predicts blinking
+Make sure models are reachable!
+Code assumes from:
+https://github.com/iparaskev/simple-blink-detector
+'''
 
 
 from keras import backend as K
-
 
 # Blink detector
 # Class that calcualte blink frequence
@@ -29,16 +37,10 @@ class Blink_frequency(threading.Thread):
 
     # make this run at correct time
     def run(self):
+        LOG.info("Start blink frequency "+ str(self.index), "SYSTEM-"+self.shared_variables.name)
 
-        print("loading blink model")
         # load model
-
-
         model = load_model('../../model/blinkModel.hdf5')
-
-
-        print("model loaded")
-        print("start detection")
 
         close_counter = blinks = mem_counter= 0
         state = ''
@@ -46,9 +48,6 @@ class Blink_frequency(threading.Thread):
         #Wait for detection
         while self.shared_variables.frame[self.index] is None:
             pass
-
-
-
         while self.shared_variables.system_running is not None:
 
             if self.shared_variables.frame[self.index] is not None:
@@ -87,6 +86,10 @@ class Blink_frequency(threading.Thread):
                 #eye_right
                 self.shared_variables.eye_right[self.index] = right_eye
 
+                if self.shared_variables.debug:
+                    LOG.debug(str(state) + " " + str(blinks) + " from "+str(self.index),"SYSTEM-"+self.shared_variables.name)
+
+        LOG.info("Ending blink freq " + str(self.index), "SYSTEM-"+self.shared_variables.name)
 
     # make the image to have the same format as at training
     def cnnPreprocess(self,img):

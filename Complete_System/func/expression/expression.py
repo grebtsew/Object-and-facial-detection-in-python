@@ -5,6 +5,16 @@ import os
 import tensorflow as tf
 import threading
 
+import utils.logging_data as LOG
+
+'''
+Expression calculate expression on face.
+This program currently takes some minutes to start!
+Make sure models are reachable!
+Assumes from:
+https://github.com/barkdong123/face_expression_detector
+'''
+
 class Expression(threading.Thread):
 
     index = 0
@@ -39,8 +49,8 @@ class Expression(threading.Thread):
 
     # make this run at correct time
     def run(self):
+        LOG.info("Start expression "+str(self.index),"SYSTEM-"+self.shared_variables.name)
 
-        print("Load expression models")
         face_cascade = cv2.CascadeClassifier('../../model/haarcascade_frontalface_default.xml')
         eye_cascade = cv2.CascadeClassifier('../../model/haarcascade_eye.xml')
 
@@ -57,7 +67,6 @@ class Expression(threading.Thread):
 
         sentiment_arr =[]
 
-        print("Start detection")
         while True:
             #ret,frame = cap.read()
             frame = self.shared_variables.frame[self.index]
@@ -89,3 +98,4 @@ class Expression(threading.Thread):
             self.shared_variables.expression_result[self.index] = sentiment_arr
             self.shared_variables.face_image[self.index] = res
         sess.close()
+        LOG.info("Close expression " + str(self.index), "SYSTEM-"+self.shared_variables.name)

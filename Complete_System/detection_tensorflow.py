@@ -1,14 +1,8 @@
-# Detection thread
-
-# imports
 import utils.logging_data as LOG
 import tensorflow as tf
 import cv2
-
 from tensorflow.python.platform import gfile
 from utils import detect_and_align
-
-
 import imutils
 import os
 import sys
@@ -17,6 +11,14 @@ import numpy as np
 import re
 import time
 import datetime
+
+'''
+Tensorflow detection
+This file contains a tensorflow MTCNN implementation
+make sure models are reachable
+code assumes from:
+https://github.com/habrman/FaceRecognition
+'''
 
 #Detection
 # Class that handle detection in own thread
@@ -73,6 +75,8 @@ class Detection(threading.Thread):
         self.sleep_time = self.SHORT_SLEEP
         self.model_path = self.get_model_path()
         self.index = int(name)
+        LOG.info("Loading Tensorflow modell " + str(self.index), "SYSTEM-"+self.shared_variables.name)
+
 
     # Convert_tensorflow_box_to_OpenCV_box(box)
     # @param takes in a tensorflow box
@@ -87,22 +91,20 @@ class Detection(threading.Thread):
             x = int(landmarks[0, i])
             y = int(landmarks[0, i + 5])
             res.append([x, y])
-
         return res
-
 
     #Run
     #Detection function
     def run(self):
         with tf.Session() as sess:
-            LOG.log("Loading Tensorflow modell",self.shared_variables.name)
+            LOG.info("Loading Tensorflow modell " + str(self.index),"SYSTEM-"+self.shared_variables.name)
 
             # Load model
             self.pnet, self.rnet, self.onet = detect_and_align.create_mtcnn(sess, None)
 
             self.Loaded_model = True
 
-            LOG.log("Start detections",self.shared_variables.name)
+            LOG.info("Start tf detections " + str(self.index),"SYSTEM-"+self.shared_variables.name)
 
             # Start Loop
             while self.shared_variables.system_running:
@@ -123,10 +125,6 @@ class Detection(threading.Thread):
                     self.shared_variables.detection_score[self.index] = score
 
                     self.no_face_count = 0
-
-                    # Save frames (Deprecated)
-                    #self.shared_variables.detection_frame[self.index] = frame
-                    #self.shared_variables.tracking_and_detection_frame[self.index] = frame
 
                     # Save landmark
                     #self.shared_variables.landmarks[self.index] = self.convert_to_dlib_landmarks(landmarks)
@@ -154,7 +152,7 @@ class Detection(threading.Thread):
 
 
                             # log frame change
-                            LOG.log("Flipp test successful add degree :" + str(self.flipp_test_nr*self.flipp_test_degree),self.shared_variables.name)
+                            LOG.info("Flipp test successful add degree :" + str(self.flipp_test_nr*self.flipp_test_degree),self.shared_variables.name)
 
                             # end flipp test
                             self.do_flipp_test = False
@@ -206,6 +204,7 @@ class Detection(threading.Thread):
 
             # Debug detection time
             if self.shared_variables.debug:
-                LOG.log('Detection time:' + str(self.end_time - self.start_time),self.shared_variables.name)
+                LOG.debug('TF Detection time:' + str(self.end_time - self.start_time),self.shared_variables.name)
 
             time.sleep(self.sleep_time) # sleep if wanted
+        LOG.info('Ending tf detection' + str(self.index),"SYSTEM-"+self.shared_variables.name)

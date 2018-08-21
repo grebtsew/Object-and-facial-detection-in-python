@@ -1,16 +1,17 @@
-#This file contains start methods
-
-#own imports
 import utils.logging_data as LOG
-import shared_variables
 import sys
-import threading
-import cv2
 import parser_controller as controller
+
+'''
+Start the program by running this file!
+'''
 
 # Main function
 def main():
-    LOG.log("Starting system", "SYSTEM")
+    LOG.clear_log()
+    LOG.info("Log cleared", "ROOT")
+    LOG.info("Starting program", "ROOT")
+
     controll_thread = controller.parse_controller()
     controll_thread.start()
 

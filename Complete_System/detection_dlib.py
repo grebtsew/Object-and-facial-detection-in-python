@@ -1,6 +1,3 @@
-# Detection thread
-
-# imports
 import utils.logging_data as LOG
 import cv2
 from imutils import face_utils
@@ -15,6 +12,12 @@ import numpy as np
 import re
 import time
 import datetime
+
+'''
+Dlib detection
+This file contains a dlib detection implementation
+Make sure 68 face landmark model is reachable!
+'''
 
 #Detection
 # Class that handle detection in own thread
@@ -58,6 +61,7 @@ class Detection(threading.Thread):
         self.shared_variables = shared_variables
         self.sleep_time = self.SHORT_SLEEP
         self.index = int(name)
+        LOG.info("Create dlib detection" + str(self.index), "SYSTEM-"+self.shared_variables.name)
 
     # Convert_dlib_box_to_OpenCV_box(box)
     # @param takes in a dlib box
@@ -65,8 +69,6 @@ class Detection(threading.Thread):
     def convert_dlib_box_to_openCV_box(self, box):
         return (int(box.left()), int(box.top()), int(box.right() - box.left()),
                          int(box.bottom() - box.top()) )
-
-
 
     # Object_detection
     # @ returns True if detections successful
@@ -97,6 +99,7 @@ class Detection(threading.Thread):
         face_box = self.convert_dlib_box_to_openCV_box(box_arr[0])
         face_found = True
 
+        # Fix score later!
         score = 100
         #success, face_box, landmarks, score
         return face_found, face_box, landmarks, score
@@ -106,7 +109,7 @@ class Detection(threading.Thread):
     #Detection function
     def run(self):
         if not self.Loaded_model:
-            LOG.log("Loading Dlib modell",self.shared_variables.name)
+            LOG.info("Loading Dlib modell" + str(self.index),"SYSTEM-"+self.shared_variables.name)
 
                 # Load model
             self.face_detector = dlib.get_frontal_face_detector()
@@ -115,7 +118,7 @@ class Detection(threading.Thread):
                 #face_cascade = cv2.CascadeClassifier(face_cascade_path)
             self.Loaded_model = True
 
-        LOG.log("Start detections",self.shared_variables.name)
+        LOG.info("Start dlib detections" + str(self.index),"SYSTEM-"+self.shared_variables.name)
 
         #wait for first cam frame
         while self.shared_variables.frame[self.index] is None:
@@ -141,10 +144,6 @@ class Detection(threading.Thread):
 
                 self.no_face_count = 0
 
-                    # Save frames (deprecated)
-                #self.shared_variables.detection_frame[self.index] = frame
-                #self.shared_variables.tracking_and_detection_frame[self.index] = frame
-
                     # Save landmark
                 #self.shared_variables.landmarks[self.index] = landmarks
                 self.shared_variables.set_landmarks(landmarks, self.index)
@@ -165,7 +164,7 @@ class Detection(threading.Thread):
                         self.shared_variables.flipp_test_degree[self.index] = degree
 
                             # log frame change
-                        LOG.log("Flipp test successful add degree :" + str(self.flipp_test_nr*self.flipp_test_degree),self.shared_variables.name)
+                        LOG.info("Flipp test successful add degree :" + str(self.flipp_test_nr*self.flipp_test_degree),self.shared_variables.name)
 
                             # end flipp test
                         self.do_flipp_test = False
@@ -218,6 +217,8 @@ class Detection(threading.Thread):
 
                 # Debug detection time
             if  self.shared_variables.debug:
-                LOG.log('Detection time:' + str(self.end_time - self.start_time),self.shared_variables.name)
+                LOG.debug('Dlib Detection time:' + str(self.end_time - self.start_time),self.shared_variables.name)
 
             time.sleep(self.sleep_time) # sleep if wanted
+
+        LOG.info("Ending dlib detection " + str(self.index), "SYSTEM-"+self.shared_variables.name )

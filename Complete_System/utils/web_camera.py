@@ -1,9 +1,16 @@
 import cv2
 import threading
 import imutils
+import utils.logging_data as LOG
+
+'''
+This file handle webcam read functions
+'''
+
 
 # Functions to calculate available cameras copied from
 #https://stackoverflow.com/questions/7322939/how-to-count-cameras-in-opencv-2-3
+
 def clearCapture(capture):
     capture.release()
     cv2.destroyAllWindows()
@@ -35,18 +42,20 @@ class camera_stream(threading.Thread):
         self.id = id
         self.index = index
         self.shared_variables = shared_variables
+        LOG.info("Started a webcam at " + str(index) + " from " + str(id),"SYSTEM-"+self.shared_variables.name)
 
     def capture(self):
         try:
-
             self.capture = cv2.VideoCapture(self.id)
-
+            return True
         except Exception as e:
-            print('Failed to capture camera')
+            LOG.warning("Failed to capture camera","SYSTEM-"+self.shared_variables.name)
+            return False
 
     def run(self):
-
-        self.capture()
+        success = self.capture()
+        if(not success):
+            return
 
         while self.shared_variables.system_running:
             if self.capture.isOpened():
@@ -57,3 +66,5 @@ class camera_stream(threading.Thread):
                     self.shared_variables.frame[self.index] = imutils.rotate(frame, self.shared_variables.flipp_test_degree[self.index])
                 else:
                     self.shared_variables.frame[self.index] = frame
+
+        LOG.info("Ending webcam stream " + str(self.index),"SYSTEM-"+self.shared_variables.name)

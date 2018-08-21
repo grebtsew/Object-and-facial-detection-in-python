@@ -2,6 +2,11 @@ import cv2
 import requests
 import numpy as np
 import threading
+import utils.logging_data as LOG
+
+'''
+This file handle ipcamera read functions
+'''
 
 ip_adress_list = ['http://192.168.0.200:8080/video2.mjpg',
                   'http://192.168.1.242:8080/video']
@@ -38,20 +43,21 @@ def get_connected_cameras():
 class ip_camera_stream(threading.Thread):
 
     capture = None
-
-    def __init__(self, shared_variables = None, address = "", index = 0):
+    address = None
+    def __init__(self, shared_variables = None, address = "rtsp://admin:admin@192.168.0.10:554/live.sdp", index = 0):
         threading.Thread.__init__(self)
         self.shared_variables = shared_variables
-
+        self.address = address
+        LOG.info("Started ipcamera " + str(index) + " from " + address,"SYSTEM-"+self.shared_variables.name)
 
     '''
     ----- RTSP solution -----
     '''
     def run(self):
         try:
-            self.capture = cv2.VideoCapture("rtsp://admin:admin@192.168.0.10:554/live.sdp")
+            self.capture = cv2.VideoCapture(self.address)
         except Exception as e:
-            print("Could not open ip camera")
+            LOG.warning("Could not open ip camera " + address,"SYSTEM-"+self.shared_variables.name)
             return
 
 
@@ -65,9 +71,11 @@ class ip_camera_stream(threading.Thread):
                 else:
                     self.shared_variables.frame[self.index] = frame
 
+        LOG.info("End ipcamera stream " + address,"SYSTEM-"+self.shared_variables.name)
 
     '''
     ----- HTTP solution -----
+    Deprecated code, works but not as reliable!
     '''
 
     def run_http(self):

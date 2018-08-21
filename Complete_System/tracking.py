@@ -1,14 +1,16 @@
-# Tracking thread
 
-# imports
 import utils.logging_data as LOG
-from math import hypot
 import math
 import cv2
 import sys
 import threading
-import listener
 import datetime
+
+'''
+This file contains code for tracking objects from detection thread
+Takes a box and an image
+Can change type of tracker, see below
+'''
 
 # Tracking
 # Class that handles tracking thread
@@ -33,7 +35,7 @@ class Tracking(threading.Thread):
         self.name = name
         self.shared_variables = shared_variables
         self.index = index
-
+        LOG.info("Start tracking " + str(self.index), "SYSTEM-"+self.shared_variables.name)
 
     # Run
     # Thread run function
@@ -57,8 +59,9 @@ class Tracking(threading.Thread):
             self.end_time = datetime.datetime.now()
 
             if self.shared_variables.debug :
-                LOG.log("Tracking time : " + str(self.end_time - self.start_time),self.shared_variables.name)
+                LOG.debug("Tracking time : " + str(self.end_time - self.start_time),"SYSTEM-"+self.shared_variables.name)
 
+        LOG.info("Stopped tracking "+str(self.index), "SYSTEM-"+self.shared_variables.name)
 
 
     # Create_custom_tracker

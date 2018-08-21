@@ -2,11 +2,17 @@ import sys
 import os
 import threading
 import time
-import cv2
 import shared_variables
 import types
 from subprocess import call
 import configparser
+import utils.logging_data as LOG
+
+'''
+This is our parse controller
+This class controlls the program from the terminal
+See commands and usage below
+'''
 
 class parse_controller(threading.Thread):
 
@@ -17,15 +23,15 @@ class parse_controller(threading.Thread):
     system_reference_array = []
     func_info = (('help, h', 'show how to use all commands'),
                  ('helpsh', 'open python help shell'),
-                 ('start -sys/sysid -camid', 'start instance in system or system. Ex: start -sys , start -000 -0 -SKIN_COLOR (anything func, cam or thread)'),
-                 ('stop -sys/sysid -camid', 'stop instance in system or system. Ex: stop -sys , stop -000 -0 -SKIN_COLOR -WEBCAM'),
-                 ('autostart', 'starts system with default values from config file.'),
-                 ('imshow -sysid', 'start imshow thread in system'),
-                 ('show -Func -camid', 'show function of camera. Ex, show -LANDMARKS -0'),
+                 ('start  -sys/sysid -func -camid', 'start instance in system or system. Ex: start -sys , start 000 -SKIN_COLOR 0 (anything func, cam or thread) '),
+                 ('autostart', 'starts system with default values from config file. Edit config.ini.'),
+                 ('imshow -sysid -camid', 'start imshow thread in system, and camid'),
+                 ('show -sysid -camid -func true/false', 'show function of camera. Ex, show 000 0 LANDMARKS True, then start new imshow instance!'),
                  ('status', 'show system status'),
                  ('kill -sysid', 'Stop running system with threads'),
                  ('killall', 'Stop all running system with threads'),
                  ('log', 'Show log, make sure to activate logging in config to see anything'),
+                 ('debug -sysid','debug toggle printing.'),
                  ('clear', 'clear terminal'),
                 ('exit', 'exit program and all threads.'))
 
@@ -75,6 +81,7 @@ class parse_controller(threading.Thread):
         temp_Config.set('SHOW','SCORE', False)
         temp_Config.set('SHOW','GRAYSCALE', False)
         temp_Config.set('SHOW','EYES', False)
+        temp_Config.set('SHOW','FACE', False)
         temp_Config.add_section('LOG')
         temp_Config.set('LOG','LOG_DATA', True)
         temp_Config.add_section('DEBUG')
@@ -89,6 +96,7 @@ class parse_controller(threading.Thread):
         # Generate system id and add new system instance
         instance_name =  str(threading.get_ident())
         self.system_reference_array.append(shared_variables.Shared_Variables(name=instance_name, config=self.config))
+        LOG.info("Created system with id " + str(instance_name), "SYSTEM-" + str(instance_name))
         print("Created system with id " + str(instance_name))
 
     def run(self):
@@ -98,6 +106,7 @@ class parse_controller(threading.Thread):
         print (" type help or h to see functions")
         while True:
             input_str = input('Program>')
+            LOG.info("Run command "+input_str, "ROOT")
             input_str_array = input_str.split(' ')
             if self.get_first_arg(input_str_array) is not None:
                 if self.run_command(input_str_array):
@@ -123,6 +132,7 @@ class parse_controller(threading.Thread):
     def run_command(self,arr):
         arg_arr = self.get_all_arg(arr);
         s = arg_arr[0]
+        s = s.lower()
 
         if s == "help" or s == "h":
             self.call_help()
@@ -151,17 +161,17 @@ class parse_controller(threading.Thread):
         elif s == "show":
             self.call_show(arg_arr)
             return True
-        elif s == "stop":
-            self.call_stop(arg_arr)
-            return True
         elif s == "kill":
             self.call_kill(arg_arr)
             return True
         elif s == "killall":
-            self.call_killall(arg_arr)
+            self.call_killall()
             return True
         elif s == "exit":
             self.call_exit()
+            return True
+        elif s == "debug":
+            self.call_debug()
             return True
         else:
             return False
@@ -305,15 +315,68 @@ class parse_controller(threading.Thread):
         else:
             print("No running systems")
 
-    def call_show(self, args):
-        pass
-    def call_stop(self, args):
-        pass
+    def call_kill(self,args):
+        if(len(args) >= 1):
+            system_index = self.get_system_index(args[1])
+            if system_index is not None:
+                self.system_reference_array[system_index].system_running = False
+                del self.system_reference_array[system_index]
+            else:
+                print("Invalid arguments in system call kill.")
+        else:
+            print("Invalid arguments in system call kill.")
+
+    def call_killall(self):
+        for system in self.system_reference_array:
+            system.system_running = False
+        self.system_reference_array = []
+        print("Removed all Systems!")
+
     def call_imshow(self, args):
-        pass
-    def call_kill(self):
-        pass
-    def call_kill(self,args = None):
-        pass
-    def call_killall(self,args = None):
-        pass
+        if(len(args) >= 2):
+            system_index = self.get_system_index(args[1])
+            if(system_index is not None):
+                self.system_reference_array[system_index].start_show_camera(args[2])
+            else:
+                print("Invalid arguments in system call imshow.")
+
+    def str2bool(v):
+        return v.lower() in ("yes", "true", "t", "1")
+
+    def call_show(self, args):
+        if(len(args) >= 4):
+            system_index = self.get_system_index(args[1])
+            if(system_index is not None):
+                if(args[3] == "EYES"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_EYES.value] = str2bool(args[4])
+                elif (args[3] == "FACE"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_FACE.value] = str2bool(args[4])
+                elif (args[3] == "SCORE"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_SCORE.value] = str2bool(args[4])
+                elif (args[3] == "TRACKING"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_TRACKING.value] = str2bool(args[4])
+                elif (args[3] == "DETECTION"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_DETECTION.value] = str2bool(args[4])
+                elif (args[3] == "GRAYSCALE"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_GRAYSCALE.value] = str2bool(args[4])
+                elif (args[3] == "LANDMARKS"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_LANDMARKS.value] = str2bool(args[4])
+                elif (args[3] == "BACKPROJECTEDIMAGE"):
+                    self.system_reference_array[system_index].setting[args[2]][shared_variables.SETTINGS.SHOW_BACKPROJECTEDIMAGE.value] = str2bool(args[4])
+            else:
+                print("Invalid arguments in system call imshow.")
+
+    def call_debug(self, args):
+        if(len(args) >= 1):
+            system_index = self.get_system_index(args[1])
+            if(system_index is not None):
+                if self.system_reference_array.debug :
+                    self.system_reference_array.debug = False
+                    self.system_reference_array[system_index].setting[args[1]][shared_variables.SETTINGS.DEBUG.value] = False
+                else:
+                    self.system_reference_array.debug = True
+                    self.system_reference_array[system_index].setting[args[1]][shared_variables.SETTINGS.DEBUG.value] = True
+
+    def call_log(self):
+        with open("data.log", 'r') as fin:
+            print (fin.read())

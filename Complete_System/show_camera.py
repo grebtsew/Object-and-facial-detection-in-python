@@ -1,15 +1,15 @@
-# Visualize Camera thread
-
-# imports
 import utils.logging_data as LOG
 from trackers.camshifttracker import CAMShiftTracker
 import shared_variables
-import numpy
 import cv2
 import sys
 import threading
 import time
-import configparser
+
+'''
+This file display a system and camera instance
+Alot of settings can be changed, i recommed editing config.ini
+'''
 
 # Show_camera
 # Class that show camera in thread
@@ -23,6 +23,7 @@ class Show_Camera(threading.Thread):
     show_detection_score = False
     grayscale = False
     show_eyes = False
+    show_face = False
 
     frame = None
     do_once = True              # initiate backprojektedframe once
@@ -37,6 +38,7 @@ class Show_Camera(threading.Thread):
         self.shared_variables = shared_variables
         self.index = index
         self.initiate_variables()
+        LOG.info("Started imshow "+str(index), "SYSTEM-"+self.shared_variables.name)
 
     def initiate_variables(self):
         self.show_detection = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_DETECTION.value]
@@ -46,7 +48,7 @@ class Show_Camera(threading.Thread):
         self.show_detection_score = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_SCORE.value]
         self.grayscale = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_GRAYSCALE.value]
         self.show_eyes = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_EYES.value]
-
+        self.show_face = self.shared_variables.setting[self.index][shared_variables.SETTINGS.SHOW_FACE.value]
 
     #Run
     # Get image, add detections, create and show in window
@@ -54,7 +56,6 @@ class Show_Camera(threading.Thread):
 
         while True:
             if self.shared_variables.system_running:
-
                 self.frame = self.shared_variables.frame[self.index]
 
                  # Show tracking GREEN
@@ -69,8 +70,9 @@ class Show_Camera(threading.Thread):
                     self.draw_label(self.frame, (10,50), str(int(self.shared_variables.blinks[self.index])) + " " + str(self.shared_variables.eye_state[self.index]))
 
                 #show face
-                if(self.shared_variables.face_image[self.index] is not None):
-                    cv2.imshow('FACE %s' % self.shared_variables.name+ "_"+ str(self.index),self.shared_variables.face_image[self.index])
+                if self.show_face:
+                    if(self.shared_variables.face_image[self.index] is not None):
+                        cv2.imshow('FACE %s' % self.shared_variables.name+ "_"+ str(self.index),self.shared_variables.face_image[self.index])
 
                 #show expression data
                 if(self.shared_variables.expression_result[self.index] is not None):
@@ -151,6 +153,7 @@ class Show_Camera(threading.Thread):
 
         # stop camera
         cv2.destroyAllWindows()
+        LOG.info("Stopping imshow " + str(self.index), "SYSTEM-"+self.shared_variables.name)
 
     def get_emotion_by_index(self,index):
         # 0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral

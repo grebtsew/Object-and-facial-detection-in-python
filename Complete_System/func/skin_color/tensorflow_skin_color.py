@@ -31,7 +31,7 @@ class skin_color(threading.Thread):
         # calculate median rgb
         mean_RGB = self.calculate_medium(color_array)
 
-        LOG.log( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
+        LOG.info( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
 
 
     # Calculates mean color of several pointlists and transform bgr to rgb

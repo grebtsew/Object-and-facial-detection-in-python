@@ -3,8 +3,6 @@ This is Shared variables class. This is the center Node of the system where alot
 '''
 
 # Imports
-import detection_dlib as dlib_detection
-import detection_tensorflow as tf_detection
 import tracking
 import show_camera
 import sys
@@ -14,18 +12,15 @@ import listener
 import imutils
 from enum import Enum
 
+# Our imports
+import detection_dlib as dlib_detection
+import detection_tensorflow as tf_detection
+import utils.logging_data as LOG
 from func.expression import expression
 from utils import web_camera
 from utils import ip_camera
 from func.blink_frequency import blink_frequency as blink_frequency
 from func.age_gender_estimation import age_gender_estimation as age_gender_estimation
-
-# Create Enums with this class
-#class Enum(set):
-#    def __getattr__(self, name):
-#        if name in self:
-#            return name
-#        raise AttributeError
 
 class SETTINGS(Enum):
     SKIN_COLOR = 0
@@ -42,8 +37,9 @@ class SETTINGS(Enum):
     SHOW_SCORE = 11
     SHOW_GRAYSCALE = 12
     SHOW_EYES = 13
-    LOG_DATA = 14
-    DEBUG = 15
+    SHOW_FACE = 14
+    LOG_DATA = 15
+    DEBUG = 16
 
 # Global shared variables
 # an instace of this class share variables between system threads
@@ -105,6 +101,7 @@ class Shared_Variables():
     system_running = True
     config = None
     reference_length = 0
+    log = True
 
     def __init__(self, name=None, config=None):
         threading.Thread.__init__(self)
@@ -112,6 +109,7 @@ class Shared_Variables():
         self.config = config
         if self.config is None:
             self.initiate_configfile()
+        self.log = self.config.getboolean('LOG','LOG_DATA')
 
 
     def initiate_configfile(self):
@@ -137,6 +135,7 @@ class Shared_Variables():
                  self.config.getboolean('SHOW', 'SCORE'),
                  self.config.getboolean('SHOW', 'GRAYSCALE'),
                  self.config.getboolean('SHOW', 'EYES'),
+                 self.config.getboolean('SHOW', 'FACE'),
                  self.config.getboolean('LOG', 'LOG_DATA'),
                  self.config.getboolean('DEBUG', 'DEBUG')
             ]

@@ -1,6 +1,10 @@
 from pynput import keyboard
 import time
 
+'''
+This is a test implementation of a keyboard listener, I was thinking about implementing
+this in complete system.
+'''
 
 
 def on_press(key):
