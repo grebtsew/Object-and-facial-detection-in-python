@@ -1,11 +1,22 @@
-# Facial-detection-and-functionallity-in-python
+# Object-and-facial-detection-in-python
 
 This repo contains, training material, dlib implementation and tensorflow implementation.
 Too large files (mostly models) is ignored due to Github limitations, the models can be found in github-repos linked in learning folder readme.
 
+# Models
+Models used in this repo are as mentioned above excluded. You will need to download them from linked repos, see code or readme in Learning & documentation folder. I'm working with the models outside of the git repo in a folder named "model". The folder architecture looks like this:
+
+github/
+  
+  model/
+
+  Object-and-facial-detection-in-python/
+
+
+
 # Training Material
 See folder Learning & Documentation.
-In the folder Learning & Documentation show my learning process of object detection, facial detection and how to work with tensorflow and dlib. Repos used to develop code in this repo is linked in Learning-folder README.
+In the folder Learning & Documentation show my learning process of object detection, facial detection and how to work with tensorflow and dlib. Repos used to develop code in this repo is linked in Learning & Documentation-folder README.
 
 # Dlib
 See dlib folder.
@@ -43,7 +54,7 @@ As seen in the architecture several extra functions has been added, most relevan
 * logger - log system events in data.log
 * config - use settings in config.ini (i recommend editing this and use command autostart)
 * parse-controller - a controller that lets you controll program from terminal
-* flipp-test - a method to flipp camera of detection not found
+* flipp-test - a method to flipp camera if detection not found
 * energy-save - do less detections missed alot of detections
 
 If it is hard to understand how to use the parse-controller type help or h for some extra information. Let me know if something is hard to understand.
