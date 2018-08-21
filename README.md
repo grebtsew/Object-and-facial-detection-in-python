@@ -13,6 +13,8 @@ Here I share a singel and multi threaded dlib solution for facial detection.
 I am using code from several other repos with my code here.
 
 This is how the dlib program look like during execution.
+
+
 ![Screenshot](images/tf_demo.png)
 
 # Tensorflow
@@ -21,10 +23,13 @@ Here I share a singel and multi threaded tensorflow solution for facial detectio
 I am using code from several other repos with my code here.
 
 This is how the tf program look like during execution.
-![Screenshot](images/tf_demo.png)
+
+
+![Screenshot](images/dlib_demo.png)
 
 # Complete System Implementation
 This is my own implementation if a test system with a parse-controller. The system architecture is described by the image below. Here follows a short explaination of the architecture. Start starts the parseController that initiate the system. Shared_Variables is the Shared and centered node class that handle all data shared in the program. First of there is a read thread that reads images from a camera stream. These images are then sent to detection and tracking when renewed. The result is returned to shared_variables. Shared_variables then invoke the on_set_frame listener and execute activated functions on seperate threads. Last the frame is sent to Visualize class that show the image. This is a multithreaded implementation and I recommend to run it on a high preformance computer.
+
 
 ![Screenshot](images/arkitektur.png)
 
