@@ -70,21 +70,22 @@ class Show_Camera(threading.Thread):
                     # Show detections RED
                     if self.shared_variables.detection_box is not None:
                         if self.show_detection:
-                            faces = self.shared_variables.detection_box
-                            for (x,y,w,h) in faces:
-                                cv2.rectangle(self.frame,(x,y),(x+w,y+h),(255,0,0),2)
-                                roi_color = self.frame[y:y+h, x:x+w]
-                                for (ex,ey,ew,eh) in facials:
-                                    cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,100,0),2)
+                    
+                            i = 0
+                            while i < len(self.shared_variables.detection_box):
+                                topLeft = (int(self.shared_variables.detection_box[i][0]), int(self.shared_variables.detection_box[i][1]))
+                                bottomRight = (int(self.shared_variables.detection_box[i][0] + self.shared_variables.detection_box[i][2]), int(self.shared_variables.face_box[i][1] + self.shared_variables.face_box[i][3]))
+                                cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
+                                i += 1
 
-                    # Show Landmarks
+                    # Show Landmarks RED
                     if self.show_landmarks:
-                        if len(self.shared_variables.landmarks) >= 1:
-                            facials = self.shared_variables.landmarks
-                            for (x,y,w,h) in self.shared_variables.detection_box:
-                                roi_color = self.frame[y:y+h, x:x+w]
-                                for (ex,ey,ew,eh) in facials:
-                                    cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,100,0),2)
+                        if self.shared_variables.landmarks is not None:
+                            # loop over the (x, y)-coordinates for the facial landmarks
+                            # and draw them on the image
+                            for (x, y) in self.shared_variables.landmarks:
+                                cv2.circle(self.frame, (x, y), 1, (0, 0, 255), -1)
+
 
                 # show frame
                 if self.frame is not None:

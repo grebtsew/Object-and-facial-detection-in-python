@@ -88,14 +88,20 @@ class Detection(threading.Thread):
                 if frame is not None :
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-                    landmarks = []
+                    landmarksAndFaces = []
+
+
                     face_patches = face_cascade.detectMultiScale(gray, 1.3, 5)
 
                     for (x,y,w,h) in face_patches:
 
                         roi_gray = gray[y:y+h, x:x+w]
-                        landmarks.append(facial_features_cascade.detectMultiScale(roi_gray))
 
+                        # To dont use landmarks, instead use boxes
+                        for (ex,ey,ew,eh) in facial_features_cascade.detectMultiScale(roi_gray):
+                             landmarksAndFaces.append( [x + ex,  y + ey, ew, eh] )
+
+                        landmarksAndFaces.append(face_patches[0].tolist())
 
                     # if found faces
                     if len(face_patches) > 0:
@@ -108,12 +114,11 @@ class Detection(threading.Thread):
                         self.shared_variables.detection_frame = frame
                         self.shared_variables.tracking_and_detection_frame = frame
 
-                        # Save landmark
-                        self.shared_variables.landmarks = landmarks[0]
+
 
                         # Save boxes
-                        self.shared_variables.face_box = face_patches
-                        self.shared_variables.detection_box = face_patches
+                        self.shared_variables.face_box = landmarksAndFaces
+                        self.shared_variables.detection_box = landmarksAndFaces
 
                         # Do flipp test on detection
                         if self.shared_variables.flipp_test and self.do_flipp_test:

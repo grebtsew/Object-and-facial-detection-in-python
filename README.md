@@ -61,8 +61,9 @@ This is how the tf program look like during execution.
 See opencv folder.
 Here I share a single- and multithreaded OpenCV
 solution for facial detection and some functions liked SIFT detection.
-This code assume from opencv documentation an is a machine learning approach to detection.
+This code assume from opencv documentation and is a machine learning approach to detection.
 
+This is how the opencv program look like during execution.
 
 ![Screenshot](images/opencv_demo.png)
 

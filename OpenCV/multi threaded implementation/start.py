@@ -24,7 +24,7 @@ def start_instance(instance_name,camera_id,camera_mode='NORMAL'):
     _shared_variables.start_detection_thread()
 
     # tracking Thread
-    #_shared_variables.start_tracking_thread()
+    _shared_variables.start_tracking_thread()
 
     # show camera thread
     _shared_variables.start_camera_thread(camera_mode)
