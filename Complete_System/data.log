@@ -1,23 +1,10 @@
 DEBUG:root:ROOT :  Log cleared 
 DEBUG:root:ROOT :  Starting program 
 DEBUG:root:ROOT :  Run command autostart 
-DEBUG:root:SYSTEM-14912 :  Created system with id 14912 
-DEBUG:root:SYSTEM-14912 :  Started a webcam at 0 from 0 
-DEBUG:root:SYSTEM-14912 :  Started imshow 0 
-DEBUG:root:SYSTEM-14912 :  Create dlib detection0 
-DEBUG:root:SYSTEM-14912 :  Loading Dlib modell0 
-DEBUG:root:SYSTEM-14912 :  Start expression 0 
-DEBUG:root:SYSTEM-14912 :  Start tracking 0 
-DEBUG:root:SYSTEM-14912 :  Start dlib detections0 
-DEBUG:root:ROOT :  Run command status 
-WARNING:tensorflow:From C:\Users\Daniel\Documents\GitHub\Object-and-facial-detection-in-python\Complete_System\func\expression\model.py:60: softmax_cross_entropy_with_logits (from tensorflow.python.ops.nn_ops) is deprecated and will be removed in a future version.
-Instructions for updating:
-
-Future major versions of TensorFlow will allow gradients to flow
-into the labels input on backprop by default.
-
-See @{tf.nn.softmax_cross_entropy_with_logits_v2}.
-
-INFO:tensorflow:Restoring parameters from ../../model/checkpoint\facial expression
-DEBUG:root:ROOT :  Run command  
-DEBUG:root:ROOT :  Run command log 
+DEBUG:root:SYSTEM-12752 :  Created system with id 12752 
+DEBUG:root:SYSTEM-12752 :  Started a webcam at 0 from 0 
+DEBUG:root:SYSTEM-12752 :  Started imshow 0 
+DEBUG:root:SYSTEM-12752 :  Create dlib detection0 
+DEBUG:root:SYSTEM-12752 :  Loading Dlib model0 
+DEBUG:root:SYSTEM-12752 :  Start tracking 0 
+DEBUG:root:SYSTEM-12752 :  Start dlib detections0 

@@ -68,6 +68,7 @@ class parse_controller(threading.Thread):
         temp_Config.set('DEFAULT','START_IPCAMERA', False)
         temp_Config.set('DEFAULT','TENSORFLOW_DETECTION', False)
         temp_Config.set('DEFAULT','DLIB_DETECTION', True)
+        temp_Config.set('DEFAULT','OPENCV_DETECTION', False)
         temp_Config.set('DEFAULT','TRACKING', True)
         temp_Config.set('DEFAULT','AGE_GENDER_ESTIMATION', False)
         temp_Config.set('DEFAULT','EXPRESSION', False)
@@ -215,6 +216,8 @@ class parse_controller(threading.Thread):
                 self.shared_variables.start_dlib_detection_thread(i)
             if(self.config.getboolean('DEFAULT','TENSORFLOW_DETECTION')):
                 self.shared_variables.start_tf_detection_thread(i)
+            if(self.config.getboolean('DEFAULT','OPENCV_DETECTION')):
+                self.shared_variables.start_opencv_detection_thread(i)
 
             # Start default functions
             if(self.config.getboolean('DEFAULT','AGE_GENDER_ESTIMATION')):
@@ -254,6 +257,8 @@ class parse_controller(threading.Thread):
                         self.system_reference_array[system_index].start_dlib_detection_thread(int(args[3]))
                     elif args[2] == "-TENSORFLOW_DETECTION":
                         self.system_reference_array[system_index].start_tf_detection_thread(int(args[3]))
+                    elif args[2] == "-OPENCV_DETECTION":
+                        self.system_reference_array[system_index].start_opencv_detection_thread(int(args[3]))
                     elif args[2] == "-TRACKING":
                         self.system_reference_array[system_index].start_tracking_thread(int(args[3]))
                     elif args[2] == "-AGE_GENDER_ESTIMATION":

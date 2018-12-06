@@ -109,7 +109,7 @@ class Detection(threading.Thread):
     #Detection function
     def run(self):
         if not self.Loaded_model:
-            LOG.info("Loading Dlib modell" + str(self.index),"SYSTEM-"+self.shared_variables.name)
+            LOG.info("Loading Dlib model" + str(self.index),"SYSTEM-"+self.shared_variables.name)
 
                 # Load model
             self.face_detector = dlib.get_frontal_face_detector()
@@ -149,9 +149,8 @@ class Detection(threading.Thread):
                 self.shared_variables.set_landmarks(landmarks, self.index)
 
                     # Save boxes
-                self.shared_variables.face_box[self.index] = face_box
-                #self.shared_variables.detection_box[self.index] = face_box
-                self.shared_variables.set_detection_box(face_box, self.index)
+                self.shared_variables.face_box[self.index] = [face_box]
+                self.shared_variables.set_detection_box([face_box], self.index)
 
                 self.shared_variables.face_found[self.index] = True
                     # Do flipp test on detection

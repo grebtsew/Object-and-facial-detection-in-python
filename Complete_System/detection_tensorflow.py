@@ -131,7 +131,10 @@ class Detection(threading.Thread):
                     self.shared_variables.set_landmarks(self.convert_to_dlib_landmarks(landmarks), self.index)
 
                     # Convert box from Tensorflow to OpenCV
-                    face_box = self.convert_tensorflow_box_to_openCV_box(padded_bounding_boxes[0])
+                    i = 0
+                    while i < len(padded_bounding_boxes):
+                        face_box.append(self.convert_tensorflow_box_to_openCV_box(padded_bounding_boxes[i]))
+                        i += 1
 
                     # Save boxes
                     self.shared_variables.face_box[self.index] = face_box

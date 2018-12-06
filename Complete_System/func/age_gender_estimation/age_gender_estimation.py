@@ -61,10 +61,10 @@ class Age_gender_estimation(threading.Thread):
 
 
 
-            w = self.shared_variables.face_box[self.index][0]
-            h = self.shared_variables.face_box[self.index][1]
-            x1 = self.shared_variables.face_box[self.index][2]
-            y1 = self.shared_variables.face_box[self.index][3]
+            w = self.shared_variables.face_box[self.index][0][0]
+            h = self.shared_variables.face_box[self.index][0][1]
+            x1 = self.shared_variables.face_box[self.index][0][2]
+            y1 = self.shared_variables.face_box[self.index][0][3]
             x2 = w + x1
             y2 = h + y1
 

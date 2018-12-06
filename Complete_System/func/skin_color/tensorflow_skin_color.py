@@ -31,8 +31,8 @@ class skin_color(threading.Thread):
         # calculate median rgb
         mean_RGB = self.calculate_medium(color_array)
 
-        LOG.info( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
-
+    #    LOG.info( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
+        print( "Face RGB: " + str(mean_RGB), "SKIN_COLOR: ")
 
     # Calculates mean color of several pointlists and transform bgr to rgb
     def calculate_medium_color(self, arr):
@@ -65,7 +65,7 @@ class skin_color(threading.Thread):
         return (median(r), median(g), median(b))
 
     def get_color(self, x, y):
-        return self.frame[y][x]
+        return self.frame[x][y]
 
     # Get Facial
     # return coordinates of facial

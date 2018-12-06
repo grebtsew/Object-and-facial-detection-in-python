@@ -84,7 +84,10 @@ class Tracking(threading.Thread):
 
         self.create_custom_tracker()
 
-        self.tracker_test = self.tracker.init( self.frame, self.shared_variables.detection_box[self.index])
+        if len(self.shared_variables.detection_box[self.index]) > 0:
+            self.tracker_test = self.tracker.init( self.frame, tuple(self.shared_variables.detection_box[self.index][0]))
+        else:
+            self.tracker_test = False
 
     def distance_between_boxes(self, box1, box2):
         #print (int(abs(math.hypot(box2[0]-box1[0], box2[1]-box1[1]))))

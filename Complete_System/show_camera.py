@@ -62,8 +62,9 @@ class Show_Camera(threading.Thread):
                 if self.shared_variables.tracking_box[self.index] is not None:
                     if self.show_tracking:
                         topLeft = (int(self.shared_variables.tracking_box[self.index][0]), int(self.shared_variables.tracking_box[self.index][1]))
-                        bottomRight = (int(self.shared_variables.tracking_box[self.index][0] + self.shared_variables.tracking_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
-                        cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1 )
+                        bottomRight = (int(self.shared_variables.tracking_box[self.index][0] + self.shared_variables.tracking_box[self.index][2]),
+                         int(self.shared_variables.tracking_box[self.index][1] + self.shared_variables.tracking_box[self.index][3]))
+                        cv2.rectangle(self.frame, topLeft,bottomRight, (0,255,0), 2,1)
 
                 #show blink data
                 if (self.shared_variables.blinks[self.index] is not None and self.shared_variables.eye_state[self.index] is not None):
@@ -92,9 +93,9 @@ class Show_Camera(threading.Thread):
                 if self.shared_variables.face_found[self.index]:
 
                     #show score in terminal
-                    #if self.show_detection_score:
-                    #    if self.shared_variables.detection_score[self.index] is not None:
-                    #        print(self.shared_variables.detection_score[self.index])
+                    if self.show_detection_score:
+                       if self.shared_variables.detection_score[self.index] is not None:
+                            print(self.shared_variables.detection_score[self.index])
 
                     if(self.show_eyes):
                         if(self.shared_variables.eye_left[self.index] is not None):
@@ -106,9 +107,12 @@ class Show_Camera(threading.Thread):
                     # Show detections BLUE
                     if self.shared_variables.detection_box[self.index] is not None:
                         if self.show_detection:
-                            topLeft = (int(self.shared_variables.detection_box[self.index][0]), int(self.shared_variables.detection_box[self.index][1]))
-                            bottomRight = (int(self.shared_variables.detection_box[self.index][0] + self.shared_variables.detection_box[self.index][2]), int(self.shared_variables.face_box[self.index][1] + self.shared_variables.face_box[self.index][3]))
-                            cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
+                            i = 0
+                            while i < len(self.shared_variables.detection_box[self.index]):
+                                topLeft = (int(self.shared_variables.detection_box[self.index][i][0]), int(self.shared_variables.detection_box[self.index][i][1]))
+                                bottomRight = (int(self.shared_variables.detection_box[self.index][i][0] + self.shared_variables.detection_box[self.index][i][2]), int(self.shared_variables.face_box[self.index][i][1] + self.shared_variables.face_box[self.index][i][3]))
+                                cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
+                                i += 1
 
                             #show score in image
                             if self.show_detection_score:
@@ -125,8 +129,9 @@ class Show_Camera(threading.Thread):
                     if self.show_landmarks:
                         # loop over the (x, y)-coordinates for the facial landmarks
                         # and draw them on the image
-                        for (x, y) in self.shared_variables.landmarks[self.index]:
-                            cv2.circle(self.frame, (x, y), 1, (0, 0, 255), -1)
+                        if self.shared_variables.landmarks[self.index] is not None:
+                            for (x, y) in self.shared_variables.landmarks[self.index]:
+                                cv2.circle(self.frame, (x, y), 1, (0, 0, 255), -1)
 
                 # show frame
                 if self.frame is not None:

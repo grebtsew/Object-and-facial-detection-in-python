@@ -15,6 +15,7 @@ from enum import Enum
 # Our imports
 import detection_dlib as dlib_detection
 import detection_tensorflow as tf_detection
+import detection_opencv as opencv_detection
 import utils.logging_data as LOG
 from func.expression import expression
 from utils import web_camera
@@ -29,6 +30,7 @@ class SETTINGS(Enum):
     AGE_GENDER_ESTIMATION = 3
     TENSORFLOW_DETECTION = 4
     DLIB_DETECTION = 5
+    OPENCV_DETECTION = 17
     TRACKING = 6
     SHOW_DETECTION = 7
     SHOW_TRACKING = 8
@@ -137,7 +139,8 @@ class Shared_Variables():
                  self.config.getboolean('SHOW', 'EYES'),
                  self.config.getboolean('SHOW', 'FACE'),
                  self.config.getboolean('LOG', 'LOG_DATA'),
-                 self.config.getboolean('DEBUG', 'DEBUG')
+                 self.config.getboolean('DEBUG', 'DEBUG'),
+                  self.config.getboolean('DEFAULT', 'OPENCV_DETECTION')
             ]
 
     def add_camera(self):
@@ -198,6 +201,10 @@ class Shared_Variables():
         self.tf_detection_thread = tf_detection.Detection(name = cam_id, shared_variables = self)
         self.tf_detection_thread.start()
 
+    def start_opencv_detection_thread(self, cam_id):
+        self.setting[cam_id][SETTINGS.OPENCV_DETECTION.value] = True
+        self.tf_detection_thread = opencv_detection.Detection(name = cam_id, shared_variables = self)
+        self.tf_detection_thread.start()
 
     '''
     ----- TRACKING -----
