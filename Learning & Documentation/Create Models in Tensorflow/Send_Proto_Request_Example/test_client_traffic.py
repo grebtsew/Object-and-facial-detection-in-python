@@ -3,6 +3,8 @@ from threading import Thread
 
 '''
 Start Several clients at once to test server traffic ability
+Also test how fast Serving can be
+Try adding 10000 clients!
 '''
 
 # It appears that 100 requests to server at once over wifi = error!

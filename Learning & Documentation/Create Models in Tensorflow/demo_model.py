@@ -12,7 +12,7 @@ import numpy as np
 import shutil
 import os
 
-test = '[{"name":"rcnn","patient":1,"parameters":[[{"id":3552,"time":1550244990,"value":68,"patient":1,"parameter":"pulse"}]]}]'
+test = '[{"name":"rcnn","data":1}]'
 
 #in_json = tf.placeholder( tf.string, name="IN_JSON")
 in_data =  tf.placeholder( tf.float32, shape=[10], name="IN_DATA")

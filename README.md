@@ -2,7 +2,7 @@
   <img width="460" height="250" src="images/logo.png">
 </p>
 
-Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, building, tree, car, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
+Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, buildings, trees, cars, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
 * training material for learning and using object and face detection.
 * `dlib`, `opencv` and `tensorflow` implementation.
 * Complete System - A system i created that makes it possible to test several cool functions with face detections.
@@ -25,7 +25,7 @@ Object detection (OB) is one of the computer technologies which are connected to
 - [Known issues](#Known issues)
 - [Contribute](#contribute)
 - [License](#license)
-- [License](#References, Sources & Contributors)
+- [References, Sources & Contributors](#References, Sources & Contributors)
 <!-- tocstop -->
 
 
@@ -55,18 +55,19 @@ I share the model folder as .rar on google-drive. Download it and replicate the 
 
 ### Links to models (origin)
 Here are links to repos where models can be downloaded:
-* tensorflow MTCNN (already in repo) : https://github.com/habrman/FaceRecognition
-* dlib (landmarks) and blink detection : https://github.com/iparaskev/simple-blink-detector
-* Expression detector : https://github.com/JostineHo/mememoji
-* age/gender estimation : https://github.com/yu4u/age-gender-estimation
+* tensorflow `MTCNN` (already in repo) : https://github.com/habrman/FaceRecognition
+* `dlib` with `landmarks and blink detection` : https://github.com/iparaskev/simple-blink-detector
+* `Expression detector` : https://github.com/JostineHo/mememoji
+* `age/gender estimation` : https://github.com/yu4u/age-gender-estimation
 * yolo implementations : https://github.com/qqwweee/keras-yolo3, https://github.com/heartkilla/yolo-v3
 
 # Learning & Documentation
 See folder `Learning & Documentation`.
-In the folder `Learning & Documentation` show my learning process of object detection, facial detection and how to work with `tensorflow` and `dlib`. Repos used to develop code in this repo is linked in `Learning & Documentation`-folder `README`.
+In the folder `Learning & Documentation` we show my learning process of object detection, facial detection and how to work with `tensorflow` and `dlib`. Repos used to develop code in this repo is linked in `Learning & Documentation`-folder `README`. This folder also contains a short tutorial of how to fastly create your own `tensorflow`-models.
 
 # Implementations
-
+In this part we shortly describe the content and usage of the folders `dlib`, `OpenCV`, `tensorflow` and `Complete_Sytem`.
+Each of these folders contains a README-file that describe the implementations more detailed.
 
 ## ![Screenshot](images/dlib_logo.png) Dlib
 See `dlib` folder.
@@ -130,14 +131,15 @@ At this time there are some known issues with the complete system:
 * Expression uses deprecated models, code that need to be changed, you will see some warnings.
 * Too large files (mostly models) is ignored due to Github limitations, the models can be found in github-repos linked in learning folder readme.
 
-## Contribute
+# Contribute
 If you want to add own content or want me to create more functions just let me know!
 
-## License
+# License
 Several implementations in this repo are forks from other creators, with those implementations the original License follows.
 For content originaly created in this repository we use `MIT` [LICENSE](#LICENSE).
 
-## References, Sources & Contributors
-
+# References, Sources & Contributors
+Each of the folders of this repository contains README-files that describe used references and source material.
+Creator of this repo and contributor: Grebtsew.
 
 COPYRIGHT (c) 2019 Grebtsew

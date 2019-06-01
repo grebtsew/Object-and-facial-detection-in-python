@@ -1,8 +1,8 @@
  ----------- SKAPA BILDER ----------- Swedish commentary
 
-bilder med tillhörande xml filer
+bilder med tillhï¿½rande xml filer
 
-ändra xml_to_script:
+ï¿½ndra xml_to_script:
 def main():
     for directory in ['train','test']:
         image_path = os.path.join(os.getcwd(), 'images/{}'.format(directory))
@@ -12,16 +12,16 @@ def main():
 
 
 
-kör:
+kï¿½r:
 xml_to_script.py # skapar filer i data-mappen
 
-Ska se ut såhär:
+Ska se ut sï¿½hï¿½r:
 Object-Detection
 -data/
 --test_labels.csv
 --train_labels.csv
 -images/
---test/ # 10 % av bilderna i träning
+--test/ # 10 % av bilderna i trï¿½ning
 ---testingimages.jpg
 --train/
 ---testingimages.jpg
@@ -32,14 +32,14 @@ Object-Detection
 
   --------  SKAPA RECORDS   ------------
 
-Ändra generate_tfrecord:
+ï¿½ndra generate_tfrecord:
 def class_text_to_int(row_label):
     if row_label == 'macncheese':
         return 1
     else:
         None
 
-Now we can run the generate_tfrecord.py script. 
+Now we can run the generate_tfrecord.py script.
 We will run it twice, once for the train TFRecord and once for the test TFRecord.
 
 python generate_tfrecord.py --csv_input=data/train_labels.csv --output_path=data/train.record
@@ -52,14 +52,14 @@ Now, in your data directory, you should have train.record and test.record.
 
 https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/
 
-ändra config filen:
+ï¿½ndra config filen:
 
-Currently, it is set to 24 in my configuration file. 
-Other models may have different batch sizes. 
-If you get a memory error, you can try to decrease the batch 
-size to get the model to fit in your VRAM. Finally, 
-you also need to change the checkpoint name/path, 
-num_classes to 1, num_examples to 12, and label_map_path: 
+Currently, it is set to 24 in my configuration file.
+Other models may have different batch sizes.
+If you get a memory error, you can try to decrease the batch
+size to get the model to fit in your VRAM. Finally,
+you also need to change the checkpoint name/path,
+num_classes to 1, num_examples to 12, and label_map_path:
 "training/object-detect.pbtxt"
 
 
@@ -73,7 +73,7 @@ item {
 }
 
 
------------- STARTA träning -----------------
+------------ STARTA trï¿½ning -----------------
 
 python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/ssd_mobilenet_v1_pets.config
 
@@ -87,4 +87,3 @@ tensorboard --logdir=training
 
 ------------ TESTNING ------------
 Byt ut mot de nya mallarna vi skapat
-
