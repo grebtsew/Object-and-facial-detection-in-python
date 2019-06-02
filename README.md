@@ -8,10 +8,10 @@ Object detection (OB) is one of the computer technologies which are connected to
 * Complete System - A system i created that makes it possible to test several cool functions with face detections.
 
 <p align="center" >
-  <img style="display: inline-block;" width="100" height="100" src="images/python_logo.png"> 
-  <img style="display: inline-block;" width="100" height="100" src="images/dlib_logo.png">
-  <img style="display: inline-block;" width="100" height="100" src="images/tensorflow_logo.png"> 
-  <img style="display: inline-block;" width="100" height="100" src="images/opencv_logo.png"> 
+  <img width="100" height="100" src="images/python_logo.png"> 
+  <img width="100" height="100" src="images/dlib_logo.png">
+  <img width="100" height="100" src="images/tensorflow_logo.png"> 
+  <img width="100" height="100" src="images/opencv_logo.png"> 
 </p>
 
 <details>
@@ -23,9 +23,9 @@ Object detection (OB) is one of the computer technologies which are connected to
 - [Requirements](#Requirements)
 - [Models](#Models)
 - [Training Material](#Training-Material)
-- [Dlib](#Dlib)
-- [Tensorflow](#Tensorflow)
-- [OpenCV](#OpenCV)
+- [Dlib](#Dlib-)
+- [Tensorflow](#Tensorflow-)
+- [OpenCV](#OpenCV-)
 - [Complete System Implementation](#Complete-System-Implementation)
 - [Known issues](#Known-issues)
 - [Contribute](#contribute)
