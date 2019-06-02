@@ -1,6 +1,10 @@
 <p align="center">
-  <img width="300" height="150" src="images/logo.png">
+  
    <img width="50" height="50" src="images/python_logo.png">
+  <img width="350" height="150" src="images/logo.png">
+  <img width="50" height="50" src="images/dlib_logo.png">
+  <img width="50" height="50" src="images/tensorflow_logo.png"> 
+  <img width="50" height="50" src="images/opencv_logo.png"> 
 </p>
 
 Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, buildings, trees, cars, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
@@ -75,7 +79,7 @@ In this part we shortly describe the content and usage of the folders `dlib`, `O
 Each of these folders contains a README-file that describe the implementations more detailed.
 
 
-<p align="center">
+<p align="left">
 <img width="100" height="100" src="images/dlib_logo.png"> 
 </p>
  
@@ -87,7 +91,7 @@ This is how the `dlib` program look like during execution.
 
 ![Screenshot](images/dlib_demo.png)
 
-<p align="center">
+<p align="left">
 <img width="100" height="100" src="images/tensorflow_logo.png"> 
 Tensorflow
 </p>
@@ -100,7 +104,7 @@ This is how the tf program look like during execution.
 
 ![Screenshot](images/tf_demo.png)
 
-<p align="center">
+<p align="left">
 <img width="100" height="100" src="images/opencv_logo.png"> 
 </p>
 
