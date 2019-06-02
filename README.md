@@ -85,7 +85,7 @@ Each of these folders contains a README-file that describe the implementations m
 
 See `dlib` folder.
 
-Here I share a singel- and multithreaded ![dlib](#https://github.com/davisking/dlib) solution for facial detection.
+Here I share a singel- and multithreaded [dlib](https://github.com/davisking/dlib) solution for facial detection.
 I am using code from several other repos with my code here.
 
 This is how the `dlib` program look like during execution.
@@ -97,7 +97,7 @@ This is how the `dlib` program look like during execution.
 
 See `tensorflow` folder.
 
-Here I share a singel- and multithreaded ![tensorflow](#https://www.tensorflow.org/) solution for facial detection and some functions like `skin_color`.
+Here I share a singel- and multithreaded [tensorflow](https://www.tensorflow.org/) solution for facial detection and some functions like `skin_color`.
 I am using code from several other repos with my code here.
 
 This is how the tf program look like during execution.
@@ -109,7 +109,7 @@ This is how the tf program look like during execution.
 
 See `opencv` folder.
 
-Here I share a single- and multithreaded ![OpenCV](#https://opencv.org/)
+Here I share a single- and multithreaded [OpenCV](https://opencv.org/)
 solution for facial detection and some functions liked SIFT detection.
 This code assume from opencv documentation and is a machine learning approach to detection.
 
