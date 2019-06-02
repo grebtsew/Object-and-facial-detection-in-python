@@ -23,7 +23,7 @@ Object detection (OB) is one of the computer technologies which are connected to
 - [Requirements](#Requirements)
 - [Models](#Models)
 - [Training Material](#Training-Material)
-- [Dlib](#Dlib)
+- [Dlib](#Dlib-<img-width="100"-height="100"-src="images/dlib_logo.png">)
 - [Tensorflow](#Tensorflow)
 - [OpenCV](#Opencv)
 - [Complete System Implementation](#Complete-System-Implementation)
@@ -84,7 +84,7 @@ Each of these folders contains a README-file that describe the implementations m
 
 ## Dlib <img width="100" height="100" src="images/dlib_logo.png"> 
 
- 
+
 See `dlib` folder.
 Here I share a singel- and multithreaded [dlib](#https://github.com/davisking/dlib) solution for facial detection.
 I am using code from several other repos with my code here.
