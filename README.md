@@ -28,6 +28,7 @@ Object detection (OB) is one of the computer technologies which are connected to
 - [References, Sources & Contributors](#References, Sources & Contributors)
 <!-- tocstop -->
 
+</details>
 
 ## Getting Started
 Here we describe how to run different implementations.
@@ -49,13 +50,13 @@ git clone https://github.com/grebtsew/Object-and-facial-detection-in-python.git
 ```
 
 ### Models
-Models used in this repo are as mentioned above excluded. You will need to download them from linked repos or from link below, see code or readme in Learning & documentation folder. I'm working with the models outside of the git repo in a folder named "model". The folder architecture looks like this:
+Models used in this repo are as mentioned above excluded. You will need to download them from linked repos or from link below, see code or readme in `Learning & documentation folder`. I'm working with the models outside of the git repo in a folder named "model". The folder architecture looks like this:
 
 github/
 - model/
 - Object-and-facial-detection-in-python/
 
-I share the model folder as .rar on google-drive. Download it and replicate the hierarchy above.
+I share the model folder as .rar on google-drive. (This might get removed in the future!) Download it and replicate the hierarchy above.
 * Link to models on drive:  https://drive.google.com/open?id=1-_h1t8SBnTqh52xsZtY186zdrPjfnAtA
 
 ### Links to models (origin)
@@ -68,7 +69,7 @@ Here are links to repos where models can be downloaded:
 
 # Learning & Documentation
 See folder `Learning & Documentation`.
-In the folder `Learning & Documentation` we show my learning process of object detection, facial detection and how to work with `tensorflow` and `dlib`. Repos used to develop code in this repo is linked in `Learning & Documentation`-folder `README`. This folder also contains a short tutorial of how to fastly create your own `tensorflow`-models.
+In the folder `Learning & Documentation` I show my learning process of object detection, facial detection and how to work with `tensorflow` and `dlib`. Repositories used to develop code in this repository is linked in `Learning & Documentation`-folder `README`. This folder also contains a short tutorial of how to fastly create your own `tensorflow`-models.
 
 # Implementations
 In this part we shortly describe the content and usage of the folders `dlib`, `OpenCV`, `tensorflow` and `Complete_Sytem`.
@@ -90,7 +91,6 @@ I am using code from several other repos with my code here.
 
 This is how the tf program look like during execution.
 
-
 ![Screenshot](images/tf_demo.png)
 
 ## ![Screenshot](images/opencv_logo.png) OpenCV
@@ -105,7 +105,7 @@ This is how the opencv program look like during execution.
 
 
 ## Complete System Implementation
-This is my own implementation of a test system with a `parse-controller`. The system architecture is described by the image below. Here follows a short explaination of the architecture. `Start.py` starts the `parse-controller` that initiate the system. `Shared_Variables` is the centered shared node class that handle all data shared in the program. First of there is a read thread that reads images from a camera stream. These images are then sent to detection and tracking when renewed. The result is returned to `shared_variables`. Shared_variables then invoke the on_set_frame listener and execute activated functions on seperate threads. Lastly the frame is sent to `Visualize` class that show the image. This is a multithreaded implementation and I recommend to run it on a high preformance computer. However it works just fine on my laptop!
+This is my own implementation of a test system with a `parse-controller`. The system architecture is described by the image below. Here follows a short explaination of the architecture. `Start.py` starts the `parse-controller` that initiate the system. `Shared_Variables` is the centered shared node class that handle all data shared in the program. First of there is a read thread that reads images from a camera stream. These images are then sent to detection and tracking when renewed. The result is returned to `Shared_variables`. `Shared_variables` then invoke the `on_set_frame` listener and execute activated functions on seperate threads. Lastly the frame is sent to `Visualize` class that show the image. This is a multithreaded implementation and I recommend to run it on a high preformance computer. However it works just fine on my laptop!
 
 ![Screenshot](images/arkitektur.png)
 
@@ -144,7 +144,7 @@ Several implementations in this repo are forks from other creators, with those i
 For content originaly created in this repository we use `MIT` [LICENSE](#LICENSE).
 
 # References, Sources & Contributors
-Each of the folders of this repository contains README-files that describe used references and source material.
+Each of the folders of this repository contains `README`-files that describe used references and source material.
 Creator of this repo and contributor: Grebtsew.
 
 COPYRIGHT (c) 2019 Grebtsew
