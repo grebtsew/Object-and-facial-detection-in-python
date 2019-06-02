@@ -7,11 +7,11 @@ Object detection (OB) is one of the computer technologies which are connected to
 * `dlib`, `opencv` and `tensorflow` implementation.
 * Complete System - A system i created that makes it possible to test several cool functions with face detections.
 
-<p align="center">
-  <img width="100" height="100" src="images/python_logo.png">
-  <img width="100" height="100" src="images/dlib_logo.png">
-  <img width="100" height="100" src="images/tensorflow_logo.png"> 
-  <img width="100" height="100" src="images/opencv_logo.png"> 
+<p align="center" >
+  <img style="display: inline-block;" width="100" height="100" src="images/python_logo.png"> 
+  <img style="display: inline-block;" width="100" height="100" src="images/dlib_logo.png">
+  <img style="display: inline-block;" width="100" height="100" src="images/tensorflow_logo.png"> 
+  <img style="display: inline-block;" width="100" height="100" src="images/opencv_logo.png"> 
 </p>
 
 <details>
@@ -25,7 +25,7 @@ Object detection (OB) is one of the computer technologies which are connected to
 - [Training Material](#Training-Material)
 - [Dlib](#Dlib)
 - [Tensorflow](#Tensorflow)
-- [OpenCV](#Opencv)
+- [OpenCV](#OpenCV)
 - [Complete System Implementation](#Complete-System-Implementation)
 - [Known issues](#Known-issues)
 - [Contribute](#contribute)
@@ -55,7 +55,7 @@ git clone https://github.com/grebtsew/Object-and-facial-detection-in-python.git
 ```
 
 ### Models
-Models used in this repo are as mentioned above excluded. You will need to download them from linked repos or from link below, see code or readme in `Learning & documentation folder`. I'm working with the models outside of the git repo in a folder named "model". The folder architecture looks like this:
+Models used in this repo are as mentioned above excluded. You will need to download them from linked repos or from link below, see code or readme in `Learning & documentation`-folder. I'm working with the models outside of the git repo in a folder named "model". The folder architecture looks like this:
 
 github/
 - model/
