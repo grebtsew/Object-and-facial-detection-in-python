@@ -1,12 +1,12 @@
 <p align="center"> 
-  <img width="350" height="150" src="images/logo.png">
+  <img width="375" height="225" src="images/logo.png">
 </p>
 
 <p align="center">
-  <img width="50" height="50" src="images/python_logo.png">
-  <img width="50" height="50" src="images/dlib_logo.png">
-  <img width="50" height="50" src="images/tensorflow_logo.png"> 
-  <img width="50" height="50" src="images/opencv_logo.png"> 
+  <img width="100" height="100" src="images/python_logo.png">
+  <img width="100" height="100" src="images/dlib_logo.png">
+  <img width="100" height="100" src="images/tensorflow_logo.png"> 
+  <img width="100" height="100" src="images/opencv_logo.png"> 
 </p>
 
 
@@ -20,18 +20,18 @@ Object detection (OB) is one of the computer technologies which are connected to
 
 <!-- toc -->
 
-- [Getting Started](#Getting Started)
+- [Getting Started](#Getting-Started)
 - [Requirements](#Requirements)
 - [Models](#Models)
-- [Training Material](#Training Material)
+- [Training Material](#Training-Material)
 - [Dlib](#Dlib)
 - [Tensorflow](#Tensorflow)
 - [OpenCV](#Opencv)
-- [Complete System Implementation](#Complete System Implementation)
-- [Known issues](#Known issues)
+- [Complete System Implementation](#Complete-System-Implementation)
+- [Known issues](#Known-issues)
 - [Contribute](#contribute)
 - [License](#license)
-- [References, Sources & Contributors](#References, Sources & Contributors)
+- [References, Sources & Contributors](#References,-Sources-&-Contributors)
 <!-- tocstop -->
 
 </details>
@@ -82,9 +82,9 @@ In this part we shortly describe the content and usage of the folders `dlib`, `O
 Each of these folders contains a README-file that describe the implementations more detailed.
 
 
-<p align="left">
-<img width="100" height="100" src="images/dlib_logo.png"> 
-</p>
+
+## Dlib <img width="100" height="100" src="images/dlib_logo.png"> 
+
  
 See `dlib` folder.
 Here I share a singel- and multithreaded [dlib](#https://github.com/davisking/dlib) solution for facial detection.
@@ -94,10 +94,8 @@ This is how the `dlib` program look like during execution.
 
 ![Screenshot](images/dlib_demo.png)
 
-<p align="left">
-<img width="100" height="100" src="images/tensorflow_logo.png"> 
-Tensorflow
-</p>
+
+## Tensorflow <img width="100" height="100" src="images/tensorflow_logo.png"> 
 
 See `tensorflow` folder.
 Here I share a singel- and multithreaded [tensorflow](#https://www.tensorflow.org/) solution for facial detection and some functions like `skin_color`.
@@ -107,9 +105,8 @@ This is how the tf program look like during execution.
 
 ![Screenshot](images/tf_demo.png)
 
-<p align="left">
-<img width="100" height="100" src="images/opencv_logo.png"> 
-</p>
+
+## OpenCV <img width="100" height="100" src="images/opencv_logo.png"> 
 
 See `opencv` folder.
 Here I share a single- and multithreaded [OpenCV](#https://opencv.org/)
