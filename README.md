@@ -82,7 +82,7 @@ Each of these folders contains a README-file that describe the implementations m
 
 
 
-## Dlib <img width="100" height="100" src="images/dlib_logo.png"> 
+## Dlib <img width="100" height="100" src="images/dlib_logo.png">
 
 
 See `dlib` folder.
