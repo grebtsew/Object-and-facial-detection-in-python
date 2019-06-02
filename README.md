@@ -81,7 +81,7 @@ In the folder `Learning & Documentation` I show my learning process of object de
 In this part I shortly describe the content and usage of the folders `dlib`, `OpenCV`, `tensorflow` and `Complete_Sytem`.
 Each of these folders contains a README-file that describe the implementations more detailed.
 
-## Dlib <img width="100" height="100" src="images/dlib_logo.png">
+## Dlib <img align="left" width="100" height="100" src="images/dlib_logo.png">
 
 See `dlib` folder.
 
@@ -93,7 +93,7 @@ This is how the `dlib` program look like during execution.
 ![Screenshot](images/dlib_demo.png)
 
 
-## Tensorflow <img width="100" height="100" src="images/tensorflow_logo.png"> 
+## Tensorflow <img align="left" width="100" height="100" src="images/tensorflow_logo.png"> 
 
 See `tensorflow` folder.
 
@@ -105,7 +105,7 @@ This is how the tf program look like during execution.
 ![Screenshot](images/tf_demo.png)
 
 
-## OpenCV <img width="100" height="100" src="images/opencv_logo.png"> 
+## OpenCV <img align="left" width="100" height="100" src="images/opencv_logo.png"> 
 
 See `opencv` folder.
 
