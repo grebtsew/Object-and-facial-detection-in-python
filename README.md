@@ -1,11 +1,14 @@
-<p align="center">
-  
-   <img width="50" height="50" src="images/python_logo.png">
+<p align="center"> 
   <img width="350" height="150" src="images/logo.png">
+</p>
+
+<p align="center">
+  <img width="50" height="50" src="images/python_logo.png">
   <img width="50" height="50" src="images/dlib_logo.png">
   <img width="50" height="50" src="images/tensorflow_logo.png"> 
   <img width="50" height="50" src="images/opencv_logo.png"> 
 </p>
+
 
 Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, buildings, trees, cars, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
 * training material for learning and using object and face detection.
