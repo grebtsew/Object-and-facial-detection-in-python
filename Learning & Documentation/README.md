@@ -18,7 +18,9 @@ Here you will learn how to: (video or text format tutorial)
 * Train own models
 
 This tutorial assume around this code: (1)
+
 https://github.com/tensorflow/models
+
 Which is the actual tensorflow opensource project!
 
 After this tutorial you will have a fair idea about how to work with tensorflow. I recommend going through the entire tutorial.
@@ -27,12 +29,14 @@ After this tutorial you will have a fair idea about how to work with tensorflow.
 Now you know the basics of object detection.
 
 At this time I wanted to look closer at `facial recognition` in `tensorflow` and found this: (2)
+
 https://github.com/habrman/FaceRecognition
 
 Repo (2) is a project using a model for facial detection and uses landmarks to find several features on the face.
 The model from this repo can be used in the first tutorial too.
 
 With this starting knowledge of how to detect faces and some attributes I wanted to take it to the next level.
+
 And found this tutorial:
 https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78
 
@@ -49,10 +53,14 @@ You can also look at `OpenCV` object detection about now. Just Google and you wi
 # Object Tracking and reaching higher preformance
 
 To achive a object detection with much greater preformance we can look at object tracking and detection. (4)
+
 https://github.com/inayatkh/tracking-python3
+
 This is a repo using `OpenCV` for `tracking and face recognition` with great examples. Note that one example runs
 object detection at really high speed. Find out how, here:
+
 https://www.learnopencv.com/object-tracking-using-opencv-cpp-python/
+
 In this article they explain how object tracking works.
 
 From here on you probably have a great overall competence of object and facial detection
@@ -62,12 +70,14 @@ You are ready to create your own content.
 The preformance of detections can also be greatly increased by teaching your model or implementing the right kind of architecture for your situation. Here you will have to make a compromise between speed, memory and precision of detections. Some great models i would recommend are:
 
 * `Yolo` (You Only Look Once) - This is probably the fastest one, here is an implementation in tensorflow:
+
 https://github.com/xiaochus/YOLOv3
 https://github.com/qqwweee/keras-yolo3
 
 * `SSD` (Single Shot Detection) - A fast mobile designed model with low precision.
 
 * `Mask-RCNN` - A model that also masks detections:
+
 https://github.com/matterport/Mask_RCNN
 
 # Why different models?
