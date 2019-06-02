@@ -1,15 +1,12 @@
 <p align="center">
   <img width="300" height="150" src="images/logo.png">
+   <img width="50" height="50" src="images/python_logo.png">
 </p>
 
 Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, buildings, trees, cars, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
 * training material for learning and using object and face detection.
 * `dlib`, `opencv` and `tensorflow` implementation.
 * Complete System - A system i created that makes it possible to test several cool functions with face detections.
-
-<p align="center">
-  <img width="50" height="50" src="images/python_logo.png">
-</p>
 
 <details>
   <summary><strong>Table of Contents</strong> (click to expand)</summary>
@@ -77,7 +74,11 @@ In the folder `Learning & Documentation` I show my learning process of object de
 In this part we shortly describe the content and usage of the folders `dlib`, `OpenCV`, `tensorflow` and `Complete_Sytem`.
 Each of these folders contains a README-file that describe the implementations more detailed.
 
-## ![Screenshot](images/dlib_logo.png) Dlib
+
+<p align="center">
+<img width="100" height="100" src="images/dlib_logo.png"> 
+</p>
+ 
 See `dlib` folder.
 Here I share a singel- and multithreaded [dlib](#https://github.com/davisking/dlib) solution for facial detection.
 I am using code from several other repos with my code here.
@@ -86,7 +87,11 @@ This is how the `dlib` program look like during execution.
 
 ![Screenshot](images/dlib_demo.png)
 
-## ![Screenshot](images/tensorflow_logo.png) Tensorflow
+<p align="center">
+<img width="100" height="100" src="images/tensorflow_logo.png"> 
+Tensorflow
+</p>
+
 See `tensorflow` folder.
 Here I share a singel- and multithreaded [tensorflow](#https://www.tensorflow.org/) solution for facial detection and some functions like `skin_color`.
 I am using code from several other repos with my code here.
@@ -95,7 +100,10 @@ This is how the tf program look like during execution.
 
 ![Screenshot](images/tf_demo.png)
 
-## ![Screenshot](images/opencv_logo.png) OpenCV
+<p align="center">
+<img width="100" height="100" src="images/opencv_logo.png"> 
+</p>
+
 See `opencv` folder.
 Here I share a single- and multithreaded [OpenCV](#https://opencv.org/)
 solution for facial detection and some functions liked SIFT detection.
