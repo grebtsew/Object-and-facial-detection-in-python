@@ -1,6 +1,11 @@
 <p align="center"> 
-  <img width="375" height="225" src="images/logo.png">
+  <img width="450" height="225" src="images/logo.png">
 </p>
+
+Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, buildings, trees, cars, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
+* training material for learning and using object and face detection.
+* `dlib`, `opencv` and `tensorflow` implementation.
+* Complete System - A system i created that makes it possible to test several cool functions with face detections.
 
 <p align="center">
   <img width="100" height="100" src="images/python_logo.png">
@@ -8,12 +13,6 @@
   <img width="100" height="100" src="images/tensorflow_logo.png"> 
   <img width="100" height="100" src="images/opencv_logo.png"> 
 </p>
-
-
-Object detection (OB) is one of the computer technologies which are connected to the image processing and computer vision spectra of artificial intelligence. OB interacts with detecting instances of an object such as human faces, buildings, trees, cars, etc. The primary aim of face detection algorithms is to determine whether there are any human faces in an image or not. This repo primarly contains:
-* training material for learning and using object and face detection.
-* `dlib`, `opencv` and `tensorflow` implementation.
-* Complete System - A system i created that makes it possible to test several cool functions with face detections.
 
 <details>
   <summary><strong>Table of Contents</strong> (click to expand)</summary>
