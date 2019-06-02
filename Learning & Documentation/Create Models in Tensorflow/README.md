@@ -15,7 +15,7 @@ In this tutorial we won't look closer into building bigger neural networks. We r
 
 This is how you get indata:
 
-``python3
+```python3
 
 x = tf.placeholder(tf.float32, name='X')
 y = tf.placeholder(tf.float32, name='Y')
@@ -27,7 +27,7 @@ Later you will be able to recieve outdata from placeholders and variables.
 
 This is how you train a variable: (regression example)
 
-``python3
+```python3
 b = tf.Variable([.3], tf.float32, name='bias')
 W = tf.Variable([-.3], tf.float32, name='weight')
 
@@ -47,7 +47,7 @@ W = tf.Variable([-.3], tf.float32, name='weight')
 
 This is how you calculate something from Placeholder:
 
-``python3
+```python3
 
 # Calculate Mean of array
 mean = tf.reduce_mean(in_data, name="MEAN")
@@ -57,7 +57,7 @@ mean = tf.reduce_mean(in_data, name="MEAN")
 # Saving & Building
 This is how you save your graph as checkpoints.
 
-``python3
+```python3
 
 # Add ops to save and restore all the variables.
 saver = tf.train.Saver()
@@ -68,7 +68,7 @@ save_path = saver.save(sess, "/tmp/model.ckpt")
 
 This is how you save your model as `.pb`-files ready to be Served with `signature_def`:
 
-``python3
+```python3
 
 builder = tf.saved_model.builder.SavedModelBuilder(export_path)
 builder.add_meta_graph_and_variables(
@@ -89,7 +89,7 @@ To make a model servable you need to add some metadata to the model to help the 
 It's helpful to understand proto request calls when doing this part.
 
 An example of creating `signature_def` that calculate mean of incoming float32 array:
-``python3
+```python3
 
     x_info = tf.saved_model.utils.build_tensor_info(in_data)
     z_info = tf.saved_model.utils.build_tensor_info(mean)
@@ -116,7 +116,7 @@ An example of creating `signature_def` that calculate mean of incoming float32 a
 
 This is how can load and run model files:
 
-``python3
+```python3
 
 #Our test program
 with tf.Session(graph=tf.Graph()) as sess:
@@ -139,7 +139,7 @@ with tf.Session(graph=tf.Graph()) as sess:
 
 This is how you would run a model that has been loaded into Tensorflow Serving standard:
 
-``python3
+```python3
 
 from predict_client.prod_client import ProdClient
 
