@@ -1,7 +1,7 @@
 # Learning & Documentation
-During my learning process of Object detection and AI I read alot of articles and followed a few tutorials while also doing a couple of university courses on general AI usages. One reason I decided to create this repository was to help with the learning process for future generations. I have tried a couple of models for object and facial detection in python3. In this repo I share some of the problems and solutions I had during my learning process with some of my comments on the subject.
-Only code in Own_Implementation can solo-run, but other code can also be intresting to look at or copy into finished tutorials descibed below.
-Make sure to read though all repo-readme files in the linked repos below and star repos you like.
+During my learning process of Object detection and AI I read a lot of articles and followed a few tutorials while also doing a couple of university courses on general AI usages. One reason I decided to create this repository was to help with the learning process for future generations. I have tried a couple of models for object and facial detection in python3. In this repo I share some of the problems and solutions I had during my learning process with some of my comments on the subject.
+Only code in Own_Implementation can solo-run, but other code can also be interesting to look at or copy into finished tutorials described below.
+Make sure to read through all repo-readme files in the linked repos below and star repos you like.
 
 In folder `Create Models in Tensorflow` I have also added a short tutorial on how to create your own models and neural networks ready to be served by `Tensorflow Serving`.
 
@@ -50,9 +50,9 @@ https://github.com/ColeMurray/medium-facenet-tutorial
 
 You can also look at `OpenCV` object detection about now. Just Google and you will find suitable examples. The reason you should wait with this implementation is that `OpenCV` has abstracted and made the process more automatic which makes it easier to create but harder to understand!
 
-# Object Tracking and reaching higher preformance
+# Object Tracking and reaching higher performance
 
-To achive a object detection with much greater preformance we can look at object tracking and detection. (4)
+To achive a object detection with much greater performance we can look at object tracking and detection. (4)
 
 https://github.com/inayatkh/tracking-python3
 
@@ -67,7 +67,7 @@ From here on you probably have a great overall competence of object and facial d
 You are ready to create your own content.
 
 # Speeding up your models
-The preformance of detections can also be greatly increased by teaching your model or implementing the right kind of architecture for your situation. Here you will have to make a compromise between speed, memory and precision of detections. Some great models i would recommend are:
+The performance of detections can also be greatly increased by teaching your model or implementing the right kind of architecture for your situation. Here you will have to make a compromise between speed, memory and precision of detections. Some great models I would recommend are:
 
 * `Yolo` (You Only Look Once) - This is probably the fastest one, here is an implementation in tensorflow:
 
@@ -81,7 +81,7 @@ https://github.com/qqwweee/keras-yolo3
 https://github.com/matterport/Mask_RCNN
 
 # Why different models?
-As mentioned above it can be a preformance boost. Another great advantage of selecting your model carefully is the variants of usage. In some neural networks we don't want to classify objects, or detect faces. Sometimes we want to detect facial details like with the MTCNN model above. I would recommend reading some papers on the matter before deciding which model to use.
+As mentioned above it can be a performance boost. Another great advantage of selecting your model carefully is the variants of usage. In some neural networks we don't want to classify objects, or detect faces. Sometimes we want to detect facial details like with the MTCNN model above. I would recommend reading some papers on the matter before deciding which model to use.
 
 # Dlib or Tensorflow or something else?
 A great amount of different machine learning projects exist today some of the more common would be caffe, Dlib, tensorflow, opencv, darknet and so on. Each project have its own advantages and disadvantages. Tensorflow is often ranked the best because of its scalability and huge application scope. Tensorflow also support machine learning and training of own models. My favorite advantage of tensorflow would be the production capability that tensorflow serving model server supports. Dlib is more strict to preinstalled models just like opencv and not as easy to implement in huge scales. My opinion is therefore that Tensorflow at current stage is the most complete ai project, but this can change rapidly.
@@ -93,4 +93,4 @@ I have looked closer at some extra functions used with facial detections, here a
 * `age/gender estimation` : https://github.com/yu4u/age-gender-estimation
 
 # Own implementation
-In folders `../"tensorflow"/"dlib"/"OpenCV"` (in root folder) I have combinated some code from the repos linked above to create a customable python script using `face-detection`, `face-recognition` and `object-tracking`. The result is realtime facial features detection with `OpenCV` tracking to boost preformance. One solution for `tensorflow` detection, one solution for `dlib` detection and one solution for `OpenCV` detection. The tracking models can be easily changed.
+In folders `../"tensorflow"/"dlib"/"OpenCV"` (in root folder) I have combined some code from the repos linked above to create a customable python script using `face-detection`, `face-recognition` and `object-tracking`. The result is realtime facial features detection with `OpenCV` tracking to boost performance. One solution for `tensorflow` detection, one solution for `dlib` detection and one solution for `OpenCV` detection. The tracking models can be easily changed.
