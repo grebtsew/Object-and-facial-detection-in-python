@@ -1,7 +1,6 @@
 # Detection thread
 
 # imports
-import utils.logging_data as LOG
 import cv2
 from imutils import face_utils
 import dlib

@@ -2,9 +2,15 @@
 This is Shared variables class. This is the center Node of the system where alot of threads share variables.
 '''
 
+import threading
+
+# Core functions
 from visualise_gui.visualisation import Visualisation
 from input.camera import camera
 from object_detection.detection import Object_Detection
+from tracking.tracking import Tracking
+
+# On zoom in effects
 from face_detection.detection import Face_Detection
 
 # Global shared variables
@@ -38,10 +44,15 @@ class Shared_Variables():
     # Frames, can be showed in show_camera
     frame = None     # current camera frame
 
+    model_loaded = False
+    boxes = []
     '''
     ----- Status Variables -----
     '''
     system_running = True
+    detection_lock = False
+    tracking_lock = False
+    tracking_threads = []
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -71,9 +82,18 @@ class Shared_Variables():
     ----- TRACKING -----
     '''
 
-    def start_tracking_thread(self, ):
-        self.tracking_thread = tracking.Tracking(name = "Tracking", shared_variables = self, index = index)
+    def start_tracking_thread(self, frame, box):
+        self.tracking_thread = Tracking(name = "Tracking", shared_variables = self, frame =frame,box = box)
         self.tracking_thread.start()
+        return self.tracking_thread
+
+    '''
+    ----- Visualisation -----
+    '''
+
+    def start_visualisation_thread(self, ):
+        self.visualisation_thread = Visualisation(name = "Show", shared_variables = self)
+        self.visualisation_thread.start()
 
     '''
     ----- FUNCTIONS -----

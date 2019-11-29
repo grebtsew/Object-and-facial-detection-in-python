@@ -17,3 +17,5 @@ face_recognition
 matplotlib
 pip
 opencv-python
+pafy
+youtube_dl
