@@ -1,12 +1,11 @@
 # Run this file to start implementation
 from shared_variables import Shared_Variables
 
-
 # input list can contain:
 # Webcameras as Integer
 # Ipcameras as rtps
 # Youtube videos as http
-input_sources = ['https://www.youtube.com/watch?v=Hw8YtsAFDaQ']
+input_sources = [0]#['https://www.youtube.com/watch?v=Hw8YtsAFDaQ']
 
 def main():
     shared_variables = Shared_Variables()

@@ -47,7 +47,8 @@ class Object_Detection(Thread):
         return int(abs(math.hypot(box2[0]-box1[0], box2[1]-box1[1])))
 
     def box_exist(self, tracking_list, box):
-
+        # if inside, replace!
+        
         for t in tracking_list:
             if t is not None:
                 if len(t.box) > 0:
@@ -117,7 +118,7 @@ class Object_Detection(Thread):
                                 if not c == "person":
                                     continue
 
-                                if w*h > 100000:
+                                if w*h > 10000000:
                                     continue
 
                                 if scores[i] > 0.6:

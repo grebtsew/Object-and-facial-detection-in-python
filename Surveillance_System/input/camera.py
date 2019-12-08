@@ -18,10 +18,8 @@ class camera(threading.Thread):
             #start the video
             cap = cv2.VideoCapture(play.url)
 
-        elif isinstance(self.address, int()) or str(self.address).__contains__("rtsp"):
+        elif isinstance(self.address, type(int())) or str(self.address).__contains__("rtsp"):
             cap = cv2.VideoCapture(self.address)
-            fps = cam.get(cv2.CAP_PROP_FPS)
-            print("FPS", fps)
 
         doonce = False
         frame_counter = 0
@@ -43,6 +41,7 @@ class camera(threading.Thread):
                     self.shared_variables.frame = frame #cv2.resize(frame, (640,640))
 
                     if frame_counter % 10 == 0:
+                        #print("detect")
                         self.shared_variables.detection_lock = True
 
             else:

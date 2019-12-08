@@ -8,6 +8,7 @@ import threading
 import time
 import numpy as np
 
+
 # Show_camera
 # Class that show camera in thread
 class Visualisation(threading.Thread):
@@ -24,12 +25,24 @@ class Visualisation(threading.Thread):
     frame = None
     do_once = True              # initiate backprojektedframe once
 
+    def click_event(self, event, x, y, flags, param):
+        # grab references to the global variables
+
+        if event == cv2.EVENT_LBUTTONDOWN:
+            refPt = [(x, y)]
+            print(str(refPt))
+
+        elif event == cv2.EVENT_LBUTTONUP:
+            refPt = [(x, y)]
+            print(str(refPt))
+
     # Initiate function
     # Parameters CameraName, Shared_variables reference, show_mode
     def __init__(self, name=None,  shared_variables = None):
         threading.Thread.__init__(self)
-
+        self.name =  "SURVEILLANCE SYSTEM"
         self.shared_variables = shared_variables
+
 
     def all_tracking_done(self):
         for t in self.shared_variables.tracking_threads:
@@ -40,6 +53,7 @@ class Visualisation(threading.Thread):
     #Run
     # Get image, add detections, create and show in window
     def run(self):
+
         while True:
             if self.shared_variables.frame is not None and self.shared_variables.model_loaded:
                 current_boxes = []
@@ -56,7 +70,8 @@ class Visualisation(threading.Thread):
                     cv2.rectangle(self.frame, topLeft,bottomRight, (0,0,255), 2,1 )
                     current_boxes.append((topLeft,bottomRight))
 
-                cv2.imshow("SURVEILLANCE SYSTEM", cv2.resize( self.frame, (640, 480)))
+                cv2.imshow(self.name, cv2.resize( self.frame, (640, 480)))
+                cv2.setMouseCallback(self.name, self.click_event)
 
                 # close program
                 if cv2.waitKey(1) == 27:
