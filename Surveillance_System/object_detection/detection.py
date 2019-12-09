@@ -48,7 +48,7 @@ class Object_Detection(Thread):
 
     def box_exist(self, tracking_list, box):
         # if inside, replace!
-        
+
         for t in tracking_list:
             if t is not None:
                 if len(t.box) > 0:
@@ -69,6 +69,8 @@ class Object_Detection(Thread):
                 tf.import_graph_def(od_graph_def, name='')
         return detection_graph
 
+    def box_inside_box(self, box1, box2): # see if box is inside another box
+        return box1[0] >= box2[0] and box1[1] >= box2[0] and box1[0] + box1[2] < box2[0] + box2[2] and box1[1] + box1[3] < box2[1] + box2[3]
 
     def run(self):
         while True:
@@ -124,9 +126,16 @@ class Object_Detection(Thread):
                                 if scores[i] > 0.6:
                                     #detection_list.append(((x,y,w,h), c, scores[i]))
                                     if len(self.shared_variables.tracking_threads) > 0:
-                                        if not self.box_exist(self.shared_variables.tracking_threads,(x,y,w,h)):
+                                        if not self.box_exist(self.shared_variables.tracking_threads,(x,y,w,h)): # remove too close boxes
 
-                                            self.shared_variables.tracking_threads.append(self.shared_variables.start_tracking_thread(frame, (x,y,w,h)))
+                                            updated = False
+                                            for b in self.shared_variables.tracking_threads:
+                                                if self.box_inside_box((x,y,w,h),b.box):
+                                                    updated = True
+                                                    b.update_custom_tracker(frame, (x,y,w,h))
+                                                    break;
+                                            if not updated: # create new
+                                                self.shared_variables.tracking_threads.append(self.shared_variables.start_tracking_thread(frame, (x,y,w,h)))
                                     else:
                                         self.shared_variables.tracking_threads.append(self.shared_variables.start_tracking_thread(frame, (x,y,w,h)))
                                     #print("Found detection")
