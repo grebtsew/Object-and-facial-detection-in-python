@@ -28,6 +28,30 @@ class Visualisation(threading.Thread):
     selected_box = None
     clicked_pos = []
 
+    def draw_box(self, img, pt1, pt2, color, thickness, r, d):
+        x1,y1 = pt1
+        x2,y2 = pt2
+
+        # Top left
+        cv2.line(img, (x1 + r, y1), (x1 + r + d, y1), color, thickness)
+        cv2.line(img, (x1, y1 + r), (x1, y1 + r + d), color, thickness)
+        cv2.ellipse(img, (x1 + r, y1 + r), (r, r), 180, 0, 90, color, thickness)
+
+        # Top right
+        cv2.line(img, (x2 - r, y1), (x2 - r - d, y1), color, thickness)
+        cv2.line(img, (x2, y1 + r), (x2, y1 + r + d), color, thickness)
+        cv2.ellipse(img, (x2 - r, y1 + r), (r, r), 270, 0, 90, color, thickness)
+
+        # Bottom left
+        cv2.line(img, (x1 + r, y2), (x1 + r + d, y2), color, thickness)
+        cv2.line(img, (x1, y2 - r), (x1, y2 - r - d), color, thickness)
+        cv2.ellipse(img, (x1 + r, y2 - r), (r, r), 90, 0, 90, color, thickness)
+
+        # Bottom right
+        cv2.line(img, (x2 - r, y2), (x2 - r - d, y2), color, thickness)
+        cv2.line(img, (x2, y2 - r), (x2, y2 - r - d), color, thickness)
+        cv2.ellipse(img, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, thickness)
+
     def click_event(self, event, x, y, flags, param):
         # grab references to the global variables
 
@@ -75,13 +99,14 @@ class Visualisation(threading.Thread):
                     h = int(box[3])
                     topLeft = (x, y)
                     bottomRight = (x+w, y+h)
+
                     if self.selected_box is not None:
                         if self.selected_box == b:
-                            cv2.rectangle(self.frame, topLeft,bottomRight, (255,0,0), 2,1 )
+                            self.draw_box(self.frame, (x, y), (x + w, y + h), (255, 0, 0),3, 20, 10)
                         else:
-                            cv2.rectangle(self.frame, topLeft,bottomRight, (0,0,255), 2,1 )
+                            self.draw_box(self.frame, (x, y), (x + w, y + h), (0, 0, 255),3, 20, 10)
                     else:
-                        cv2.rectangle(self.frame, topLeft,bottomRight, (0,0,255), 2,1 )
+                        self.draw_box(self.frame, (x, y), (x + w, y + h), (0, 0, 255),3,20,10)
 
                     current_boxes.append((topLeft,bottomRight))
 
