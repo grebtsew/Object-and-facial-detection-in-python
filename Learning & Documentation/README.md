@@ -1,13 +1,12 @@
 # Learning & Documentation
-During my learning process of Object detection and AI I read a lot of articles and followed a few tutorials while also doing a couple of university courses on general AI usages. One reason I decided to create this repository was to help with the learning process for future generations. I have tried a couple of models for object and facial detection in python3. In this repo I share some of the problems and solutions I had during my learning process with some of my comments on the subject.
-Only code in Own_Implementation can solo-run, but other code can also be interesting to look at or copy into finished tutorials described below.
+During my learning process of Object detection and AI I read a lot of articles and followed a few tutorials while also doing a couple of university courses on general AI usages. One reason I decided to create this repository was to help with the learning process for future generations. I have tried a couple of models for object and facial detection in python3. In this repo I share some of the problems and solutions I had during my learning process with some of my comments on the subject.Code in this folder cannot solo run but can be interesting to look at or copy into finished tutorials described below.
 Make sure to read through all repo-readme files in the linked repos below and star repos you like.
 
 In folder `Create Models in Tensorflow` I have also added a short tutorial on how to create your own models and neural networks ready to be served by `Tensorflow Serving`.
 
 # This is my process of learning how to work with Tensorflow and later Dlib
 
-# First tutorial
+## First tutorial
 I found this beginner-friendly tutorial to be great, probably the best tutorial out there!
 https://pythonprogramming.net/introduction-use-tensorflow-object-detection-api-tutorial/
 
@@ -25,7 +24,7 @@ Which is the actual tensorflow opensource project!
 
 After this tutorial you will have a fair idea about how to work with tensorflow. I recommend going through the entire tutorial.
 
-# Further Testing and Facial detection, good practice
+## Further Testing and Facial detection, good practice
 Now you know the basics of object detection.
 
 At this time I wanted to look closer at `facial recognition` in `tensorflow` and found this: (2)
@@ -66,10 +65,31 @@ In this article they explain how object tracking works.
 From here on you probably have a great overall competence of object and facial detection
 You are ready to create your own content.
 
+# Motion Detection to boost detection precision
+
+By adding motion detection algorithms we can find fast moving objects that might be impossible for the object detection to detect on an image.
+
+Opencv contains several functions for handling motion detection.
+Motion detection has been added to some of my example programs.
+
+Some useful links to understand what motion detection is:
+* [https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_video/py_bg_subtraction/py_bg_subtraction.html](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_video/py_bg_subtraction/py_bg_subtraction.html)
+* [https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/](https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/)
+
+# Speed up execution with multithreading
+
+By multithreading a solution we can achive a better result. The program will not lock while detecting and the user will have a better experience.
+Some examples of multithreading can be found in my example programs.
+
+# Boost result smoothness with Kalman-filters
+
+The results can also be influenced by adding filters and thresholds. One of the prefered filters to use are the Kalman filter. This filter will need some initiation values for boxes and will make the boxes move smooth over fast transactions.
+Examples of kalman filters are added to my example programs.
+
 # Speeding up your models
 The performance of detections can also be greatly increased by teaching your model or implementing the right kind of architecture for your situation. Here you will have to make a compromise between speed, memory and precision of detections. Some great models I would recommend are:
 
-* `Yolo` (You Only Look Once) - This is probably the fastest one, here is an implementation in tensorflow:
+* `Yolo` (You Only Look Once) 1,2,3 and so on - This is probably the fastest one, here is an implementation in tensorflow:
 
 https://github.com/xiaochus/YOLOv3
 https://github.com/qqwweee/keras-yolo3
