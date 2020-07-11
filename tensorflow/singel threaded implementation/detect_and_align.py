@@ -4,7 +4,8 @@ import tensorflow as tf
 import numpy as np
 import os
 import cv2
-
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 def align_image(img, pnet, rnet, onet):
     margin = 44
@@ -216,7 +217,7 @@ class Network(object):
         session: The current TensorFlow session
         ignore_missing: If true, serialized weights for missing layers are ignored.
         '''
-        data_dict = np.load(data_path, encoding='latin1').item()
+        data_dict = np.load(data_path, allow_pickle=True, encoding='latin1').item()
 
         for op_name in data_dict:
             with tf.variable_scope(op_name, reuse=True):

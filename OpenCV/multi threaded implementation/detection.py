@@ -68,8 +68,7 @@ class Detection(threading.Thread):
 
         face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         facial_features_cascade = cv2.CascadeClassifier('haarcascade_facial_features.xml')
-
-
+        
         LOG.log("Start detections",self.shared_variables.name)
 
         # Start Loop

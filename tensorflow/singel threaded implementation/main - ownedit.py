@@ -14,7 +14,8 @@ import re
 import cv2
 import argparse
 import time
-
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 
 

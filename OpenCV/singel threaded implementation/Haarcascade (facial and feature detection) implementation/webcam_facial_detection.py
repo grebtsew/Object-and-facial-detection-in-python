@@ -12,9 +12,9 @@ https://docs.opencv.org/3.4/dc/d88/tutorial_traincascade.html
 
 # Code from https://docs.opencv.org/3.4/d7/d8b/tutorial_py_face_detection.html
 
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
 
-facial_features_cascade = cv2.CascadeClassifier('haarcascade_facial_features.xml')
+facial_features_cascade = cv2.CascadeClassifier('./haarcascade_facial_features.xml')
 
 
 cap = cv2.VideoCapture(0)

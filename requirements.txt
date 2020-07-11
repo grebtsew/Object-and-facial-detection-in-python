@@ -17,6 +17,7 @@ keras
 pynput
 six
 requests
+seaborn
 
 matplotlib
 

@@ -6,7 +6,8 @@ Object detection (OB) is one of the computer technologies which are connected to
 * training material for learning and using object and face detection.
 * `dlib`, `opencv` and `tensorflow` implementation.
 * Development System - A system I created that makes it possible to test several cool functions with face detections.
-* Surveillance System - A system I created to illustrate how all the techniques can be used.
+
+**NOTE**: This repo has become somewhat deprecated, some functions won't work anymore due to library patches. I will update documentation, and small fixes if wanted. 
 
 <p align="center" >
   <img width="100" height="100" src="images/python_logo.png"> 
@@ -118,8 +119,13 @@ This is how the tf program look like during execution.
 See `opencv` folder.
 
 Here I share a single- and multithreaded [OpenCV](https://opencv.org/)
-solution for facial detection and some functions liked SIFT detection.
+solution for facial detection and some functions liked ORB detection.
 This code assume from opencv documentation and is a machine learning approach to detection.
+
+**NOTE**: With latest OpenCV absolut path to models must be set. Change them for detection implementations to work!
+
+**NOTE**: SIFT and some feature detections in OpenCV has been patented, so those implementations won't work as they did before.
+I have exchanged SIFT for ORB!
 
 This is how the opencv program look like during execution.
 
@@ -152,21 +158,13 @@ Here are some example images:
 ![Screenshot](images/complete_system_2.png)
 
 ### Known issues
-
-These are some issues I will be solving nearby hopefully:
-
-* New versions of Tensorflow/python and so on, added and updated, make sure all implementations can run.
-* Add motion detection 
-* Add kalman filter 
-* Surveillance system under construction.
-* Update README
-* Dockerize the implementation
-
 At this time there are some known issues with the `Development System`:
 * Only one of the major functions can run at a time due to current Keras implementation only can use one model at the same session.
 * SKIN_COLOR doesn't use an instance, therefore will only work on the first running camera on system.
 * Expression uses deprecated models, code that need to be changed, you will see some warnings.
 * Too large files (mostly models) is ignored due to Github limitations, the models can be found in github-repos linked in learning folder readme.
+
+**NOTE**: The surveillance system will be developed in a seperate repository. This repo is more for a wide usage and learning plattform. That has unfortunatly become deprecated.
 
 # Contribute
 If you want to add own content or want me to create more functions just let me know!
